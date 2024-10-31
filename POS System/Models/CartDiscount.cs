@@ -1,8 +1,8 @@
 ﻿namespace POS_System.Models
 {
-    public class OrderDiscount : Discount
+    public class CartDiscount : Discount
     {
-        public OrderDiscount(int id, int amount, bool isPercentage, DateTime startDate, int version, bool isDeleted, DateTime? endDate = null, string description = null)
+        public CartDiscount(int id, int amount, bool isPercentage, DateTime startDate, int version, bool isDeleted, DateTime? endDate = null, string description = null)
         {
             base.Id = id;
             base.Description = description;
