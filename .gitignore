@@ -1,0 +1,5 @@
+# IDE Files
+*.suo
+*.userprefs
+.vs/
+.vscode/
