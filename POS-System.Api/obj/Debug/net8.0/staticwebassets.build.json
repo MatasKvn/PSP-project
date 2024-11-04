@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "4bMKSfJqA0GaQN+3+4cUiJTjrXKRjOTREOgj7GjKoOk=",
+  "Source": "POS-System.Api",
+  "BasePath": "_content/POS-System.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,0 +1,12 @@
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\bin\Debug\net8.0\POS-System.Business.deps.json
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\bin\Debug\net8.0\POS-System.Business.dll
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\bin\Debug\net8.0\POS-System.Business.pdb
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.AssemblyInfoInputs.cache
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.AssemblyInfo.cs
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.csproj.CoreCompileInputs.cache
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.sourcelink.json
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.dll
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\refint\POS-System.Business.dll
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\POS-System.Business.pdb
+C:\Users\03bri\Desktop\PSP-project\POS-System.Business\obj\Debug\net8.0\ref\POS-System.Business.dll
