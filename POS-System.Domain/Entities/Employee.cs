@@ -5,40 +5,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("Employees")]
-    public class Employee(int id, string firstName, string lastName, string email, string phoneNumber, string password,
-            DateOnly birthDate, DateOnly startDate, AccesibilityEnum accesibility, int version, DateOnly? endDate = null, bool isDeleted = false)
+    public record Employee(int id, string firstName, string lastName, string email, string phoneNumber, string password,
+            DateOnly birthDate, DateOnly startDate, AccesibilityEnum accesibility, DateTime version, DateOnly? endDate = null, bool isDeleted = false)
     {
-        [Key]
-        public int Id { get; } = id;
-        [Required]
+        [Key, Column(Order = 0)]
+        public int Id { get; init; } = id;
         [MaxLength(30)]
-        public string FirstName { get; } = firstName;
-        [Required]
+        public string FirstName { get; init; } = firstName;
         [MaxLength(30)]
-        public string LastName { get; } = lastName; 
-        [Required]
-        public string Email { get; set; } = email;
-        [Required]
+        public string LastName { get; init; } = lastName; 
+        public string Email { get; init; } = email;
         [MaxLength(15)]
-        public string PhoneNumber { get; } = phoneNumber;
-        [Required]
-        public string Password { get; } = password;
-        [Required]
-        public DateOnly BirthDate { get; } = birthDate;
-        [Required]
-        public DateOnly StartDate { get; } = startDate;
-        public DateOnly? EndDate { get; } = endDate;
-        [Required]
-        public AccesibilityEnum Accesibility { get; } = accesibility;
+        public string PhoneNumber { get; init; } = phoneNumber;
+        public string Password { get; init; } = password;
+        public DateOnly BirthDate { get; init; } = birthDate;
+        public DateOnly StartDate { get; init; } = startDate;
+        public DateOnly? EndDate { get; init; } = endDate;
+        public AccesibilityEnum Accesibility { get; init; } = accesibility;
 
         //Versioning
-        [Required]
-        public int Version { get; } = version;
-        [Required]
-        public bool IsDeleted { get; } = isDeleted;
+        [Key, Column(Order = 1)]
+        public DateTime Version { get; init; } = version;
+        public bool IsDeleted { get; init; } = isDeleted;
 
         //Authentication, I think we said we will use Identity so this might be usseless
-        [Required]
-        public byte[] PasswordHash { get; }
+        public byte[] PasswordHash { get; init; }
     }
 }

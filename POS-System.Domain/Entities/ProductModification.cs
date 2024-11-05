@@ -4,24 +4,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("ProductModifications")]
-    public class ProductModification(int id, int productId, string name, string description, int price, int version, bool isDeleted = false)
+    public record ProductModification(int id, int productId, DateTime productVersion, string name, string description, int price, DateTime version, bool isDeleted = false)
     {
         [Key]
-        public int Id { get; } = id;
-        [Required]
-        public int ProductId { get; } = productId;
-        [Required]
+        public int Id { get; init; } = id;
+        public int ProductId { get; init; } = productId;
+        public DateTime ProductVersion { get; init; } = productVersion;
         [MaxLength(40)]
-        public string Name { get; } = name;
-        [Required]
-        public string Description { get; } = description;
-        [Required]
-        public int Price { get; } = price;
+        public string Name { get; init; } = name;
+        public string Description { get; init; } = description;
+        public int Price { get; init; } = price;
 
         //Versioning
-        [Required]
-        public int Version { get; } = version;
-        [Required]
-        public bool IsDeleted { get; } = isDeleted;
+        public DateTime Version { get; init; } = version;
+        public bool IsDeleted { get; init; } = isDeleted;
     }
 }
