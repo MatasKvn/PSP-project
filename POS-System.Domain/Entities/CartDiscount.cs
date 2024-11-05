@@ -17,7 +17,7 @@ namespace POS_System.Domain.Entities
 
         //Versioning
         [Key, Column(Order = 1)]
-        public int Version { get; init; } = version;
+        public DateTime Version { get; init; } = version;
         public bool IsDeleted { get; init; } = isDeleted;
     }
 }
