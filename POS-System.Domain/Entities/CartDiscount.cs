@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
@@ -9,7 +8,7 @@ namespace POS_System.Domain.Entities
     {
         [Key, Column(Order = 0)]
         public int Id { get; init; } = id;
-        public int value { get; init; } = value;
+        public int Value { get; init; } = value;
         public bool IsPercentage { get; init; } = isPercentage;
         public string Description { get; init; } = description;
         public DateTime StartDate { get; init; } = startDate;

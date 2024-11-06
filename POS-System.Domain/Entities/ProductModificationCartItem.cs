@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("ProductModificationOnCartItems")]
-    public record ProductModificationOnCartItem(int cartItemId, DateTime cartItemVersion, int productModificationId, DateTime productModificationVersion)
+    public record ProductModificationCartItem(int cartItemId, DateTime cartItemVersion, int productModificationId, DateTime productModificationVersion)
     {
         [Key, Column(Order = 0)]
         [ForeignKey("CartItem")]
