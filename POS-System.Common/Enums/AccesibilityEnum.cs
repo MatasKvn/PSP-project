@@ -6,5 +6,5 @@ public enum AccesibilityEnum
     SERVICE_PROVIDER,
     CASHIER,
     OWNER,
-    SUPERADMIN
+    SUPER_ADMIN
 }
