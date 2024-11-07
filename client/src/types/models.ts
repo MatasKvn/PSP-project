@@ -1,5 +1,3 @@
-// TODO: check on this when backend models are finalized
-
 export type Cart = {
     id: number
     dateCreated: Date
@@ -17,7 +15,6 @@ export type CartDiscount = {
 
 export type ItemDiscount = {
     id: number
-    itemType: string // Not sure
     value: number
     isPercentage: boolean
     description: string
@@ -38,14 +35,12 @@ export type Product = {
     name: string
     description: string
     price: number
-    dateAdded: Date
     dateModified: Date
+    imageUrl: string
 }
 
 export type ServiceReservation = {
     id: number
-    // what is this, is this nescessary, as timeslot is already linked
-    bookingTime: Date
     timeSlot: TimeSlot
     customerName: string
     customerPhone: string
@@ -63,7 +58,6 @@ export type Employee = {
     lastName: string
     email: string
     phoneNumber: string
-    // password: string // Not sure
     birthDate: Date
     startDate: Date
     endDate?: Date
@@ -83,7 +77,7 @@ export type Tax = {
     name: string
     rate: number
     isPercentage: boolean
-    dateModified: Date // Version
+    dateModified: Date
 }
 
 export type ProductModification = {
@@ -91,7 +85,7 @@ export type ProductModification = {
     name: string
     description: string
     price: number
-    dateModified: Date // Version
+    dateModified: Date
 }
 
 export type Service = {
