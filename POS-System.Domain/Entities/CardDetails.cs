@@ -1,19 +1,18 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("CardDetails")]
-    public record CardDetails(DateTime id, string holderName, string expireDate, string cardDetails)
+    public record CardDetails
     {
         [Key]
-        public DateTime Id { get; set; } = id;
+        public DateTime Id { get; init; }
         [MaxLength(70)]
-        public string HolderName { get; set; } = holderName;
+        public required string HolderName { get; init; }
         [MaxLength(4)]
-        public string ExpireDate { get; set; } = expireDate;
+        public required string ExpireDate { get; init; }
         [MaxLength(4)]
-        public string CardDigits { get; set; } = cardDetails;
+        public required string CardDigits { get; init; }
     }
 }

@@ -1,21 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Taxes")]
-    public record Tax(int id, string name, int rate, DateTime version, bool isPercentage = true, bool isDeleted = false)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record Tax
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [MaxLength(64)]
-        public string Name { get; init; } = name;
-        public int Rate { get; init; } = rate;
-        public bool IsPercentage { get; init; } = isPercentage;
+        public required string Name { get; init; }
+        public int Rate { get; init; }
+        public bool IsPercentage { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
     }
 }

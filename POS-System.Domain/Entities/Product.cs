@@ -1,22 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Products")]
-    public record Product(int id, string name, string description, int price, string imageURL, DateTime version, bool isDeleted = false)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record Product
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [MaxLength(40)]
-        public string Name { get; init; } = name;
-        public string Description { get; init; } = description;
-        public int Price { get; init; } = price; //We hold prices in cents
-        public string ImageURL { get; init; } = imageURL;
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public int Price { get; init; }
+        public required string ImageURL { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
     }
 }

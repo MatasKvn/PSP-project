@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("GiftCards")]
-    public record GiftCard(int id, DateTime date, int value, string code)
+    public record GiftCard
     {
         [Key]
-        public int Id { get; set; } = id;
-        public DateTime Date { get; set; } = date;
-        public int Value { get; set; } = value;
+        public int Id { get; init; }
+        public DateTime Date { get; init; }
+        public int Value { get; init; }
         [MaxLength(8)]
-        public string Code { get; set; } = code;
+        public required string Code { get; init; }
     }
 }

@@ -1,23 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Services")]
-    public record Service(int id, string name, string description, int duration, int price, string imageURL, DateTime version, bool isDeleted = false)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record Service
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [MaxLength(40)]
-        public string Name { get; init; } = name;
-        public string Description { get; init; } = description;
-        public int Duration { get; init; } = duration; //In minutes?
-        public int Price { get; init; } = price; //We hold prices in cents
-        public string ImageURL { get; init; } = imageURL;
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public int Duration { get; init; }
+        public int Price { get; init; }
+        public required string ImageURL { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
     }
 }

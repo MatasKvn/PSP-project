@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("GiftCardDetails")]
-    public record GiftCardDetails(int id, int giftCardId)
+    public record GiftCardDetails
     {
         [Key]
-        public int Id { get; set; } = id;
+        public int Id { get; init; }
         [ForeignKey("GiftCardDetails")]
-        public int GiftCardId { get; set; } = giftCardId;
+        public int GiftCardId { get; init; }
     }
 }

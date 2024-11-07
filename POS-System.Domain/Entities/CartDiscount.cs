@@ -1,23 +1,21 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("CartDiscounts")]
-    public record CartDiscount(int id, int value, string description, DateTime startDate, DateTime endDate, DateTime version, bool isDeleted = false, bool isPercentage = true)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record CartDiscount
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
-        public int value { get; init; } = value;
-        public bool IsPercentage { get; init; } = isPercentage;
-        public string Description { get; init; } = description;
-        public DateTime StartDate { get; init; } = startDate;
-        public DateTime EndDate { get; init; } = endDate;
+        public int Id { get; init; }
+        public int value { get; init; }
+        public bool IsPercentage { get; init; }
+        public required string Description { get; init; }
+        public DateTime StartDate { get; init; }
+        public DateTime EndDate { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
     }
 }

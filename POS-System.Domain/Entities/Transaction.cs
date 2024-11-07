@@ -5,18 +5,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("Transactions")]
-    public record Transaction(DateTime id, int amount, int tip, string transactionRef, TransactionStatusEnum status, int cardId, int cardDetailsId)
+    public record Transaction
     {
         [Key]
-        public DateTime Id { get; set; } = id;
-        public int Amount { get; set; } = amount;
-        public int Tip { get; set; } = tip;
+        public DateTime Id { get; init; }
+        public int Amount { get; init; }
+        public int Tip { get; init; }
         [MaxLength(18)]
-        public string TransactionRef { get; set; } = transactionRef;
-        public TransactionStatusEnum Status { get; set; } = status;
+        public required string TransactionRef { get; init; }
+        public TransactionStatusEnum Status { get; init; }
         [ForeignKey("CardDetails")]
-        public int CardId { get; set; } = cardId;
+        public int CardId { get; init; }
         [ForeignKey("GiftCardDetails")]
-        public int CardDetailsId { get; set;} = cardDetailsId;
+        public int CardDetailsId { get; init; }
     }
 }

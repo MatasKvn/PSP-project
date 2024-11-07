@@ -1,34 +1,33 @@
 ﻿using POS_System.Common.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Employees")]
-    public record Employee(int id, string firstName, string lastName, string email, string phoneNumber, string password,
-            DateOnly birthDate, DateOnly startDate, AccesibilityEnum accesibility, DateTime version, DateOnly? endDate = null, bool isDeleted = false)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record Employee
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [MaxLength(30)]
-        public string FirstName { get; init; } = firstName;
+        public required string FirstName { get; init; }
         [MaxLength(30)]
-        public string LastName { get; init; } = lastName; 
-        public string Email { get; init; } = email;
+        public required string LastName { get; init; }
+        public required string Email { get; init; }
         [MaxLength(15)]
-        public string PhoneNumber { get; init; } = phoneNumber;
-        public string Password { get; init; } = password;
-        public DateOnly BirthDate { get; init; } = birthDate;
-        public DateOnly StartDate { get; init; } = startDate;
-        public DateOnly? EndDate { get; init; } = endDate;
-        public AccesibilityEnum Accesibility { get; init; } = accesibility;
+        public required string PhoneNumber { get; init; }
+        public required string Password { get; init; }
+        public DateOnly BirthDate { get; init; }
+        public DateOnly StartDate { get; init; }
+        public DateOnly? EndDate { get; init; }
+        public AccesibilityEnum Accesibility { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
 
         //Authentication, I think we said we will use Identity so this might be usseless
-        public byte[] PasswordHash { get; init; }
+        public required byte[] PasswordHash { get; init; }
     }
 }

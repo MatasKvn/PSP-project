@@ -4,24 +4,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace POS_System.Domain.Entities
 {
     [Table("CartItems")]
-    public record CartItem(int id, int cartId, int itemId, DateTime itemVersion, bool isProduct = true, int quantity = 1)
+    public record CartItem
     {
         [Key]
-        public int Id { get; init; } = id;
-        [ForeignKey("Cart")]
-        public int CartId { get; init; } = cartId;
-        public int Quantity { get; init; } = quantity;
+        public int Id { get; init; }
+        public int CartId { get; init; }
+        public int Quantity { get; init; }
 
         [ForeignKey("Product")]
-        public int? ProductId { get; init; } = isProduct ? itemId : null;
+        public int? ProductId { get; init; }
         [ForeignKey("Product")]
-        public DateTime? ProductVersion { get; init; } = isProduct ? itemVersion : null;
+        public DateTime? ProductVersion { get; init; }
 
         [ForeignKey("Service")]
-        public int? ServiceId { get; init; } = isProduct ? null : itemId;
+        public int? ServiceId { get; init; }
         [ForeignKey("Service")]
-        public DateTime? ServiceVersion { get; init; } = isProduct ? null : itemVersion;
+        public DateTime? ServiceVersion { get; init; }
 
-        public bool IsProduct { get; init; } = isProduct;
+        public bool IsProduct { get; init; }
     }
 }
