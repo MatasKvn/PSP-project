@@ -58,6 +58,24 @@ namespace POS_System.Data.Database
 
         private void DatabaseLinking(ModelBuilder modelBuilder)
         {
+            // GiftCard -> GiftCardDetails
+            modelBuilder.Entity<GiftCard>()
+                .HasMany(e => e.GiftCardDetails)
+                .WithOne(e => e.GiftCard)
+                .HasForeignKey(e => e.GiftCardId)
+                .IsRequired();
+
+            // Service -> ServiceTax <- Tax
+            modelBuilder.Entity<Service>()
+                .HasMany(e => e.Taxes)
+                .WithMany(e => e.Services)
+                .UsingEntity<ServiceTax>();
+
+            // Product -> ProductTax <- Tax
+            modelBuilder.Entity<Product>()
+                .HasMany(e => e.Taxes)
+                .WithMany(e => e.Products)
+                .UsingEntity<ProductTax>();
 
         }
     }

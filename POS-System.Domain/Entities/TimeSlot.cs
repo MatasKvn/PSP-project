@@ -14,5 +14,7 @@ namespace POS_System.Domain.Entities
         public DateTime EmployeeVersion { get; init; }
         public DateTime StartTime { get; init; }
         public bool IsAvailable { get; init; }
+
+        public ServiceReservation? ServiceReservation { get; init; }
     }
 }

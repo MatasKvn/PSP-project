@@ -11,5 +11,6 @@ namespace POS_System.Domain.Entities
         public int Value { get; init; }
         [MaxLength(8)]
         public required string Code { get; init; }
+        public ICollection<GiftCardDetails> GiftCardDetails { get; } = new List<GiftCardDetails>();
     }
 }

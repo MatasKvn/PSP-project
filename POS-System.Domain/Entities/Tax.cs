@@ -17,5 +17,9 @@ namespace POS_System.Domain.Entities
         //Versioning
         public DateTime Version { get; init; }
         public bool IsDeleted { get; init; }
+        public List<Service> Services { get; } = [];
+        public List<Product> Products { get; } = [];
+        public List<ServiceTax> ServiceTaxes { get; } = [];
+        public List<ProductTax> ProductTaxes { get; } = [];
     }
 }
