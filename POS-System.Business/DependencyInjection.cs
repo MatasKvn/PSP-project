@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace POS_System.Business
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddBusinessServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register Business layer services
 

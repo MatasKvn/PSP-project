@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using POS_System.Data.Database;
 using POS_System.Data.Identity;
 
-namespace POS_System.Data
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DependencyInjection
     {

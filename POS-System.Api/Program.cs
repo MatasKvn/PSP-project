@@ -1,5 +1,3 @@
-using POS_System.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 //You can add your own environment variable, which will hold your connection string without hardcoding it
@@ -9,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 builder.Services.AddAuthentication();
+builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
+builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddDataServices(builder.Configuration);
 
 // builder.Services
