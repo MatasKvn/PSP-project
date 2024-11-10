@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using POS_System.Data.Database;
+using POS_System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,12 +6,38 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Open command prompt
 // 2. Write setx DATABASE_URL "<your_conn_string>"
 // 3. Restart IDE
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+// var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+builder.Services.AddAuthentication();
+builder.Services.AddDataServices(builder.Configuration);
+
+// builder.Services
+//     .AddIdentityApiEndpoints<IdentityUser>()
+//     .AddEntityFrameworkStores<ApplicationDbContext>();
+// builder.Services.AddDbContext<ApplicationDbContext<ApplicationUser<Guid>, IdentityRole<Guid>, Guid>>(options => options.UseNpgsql("Host=localhost;Port=5555;Username=postgres;Password=postgres;Database=postgres;", b => b.MigrationsAssembly("POS-System.Api")));
+// builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.WebHost.UseUrls("http://localhost:3000");
+
+// builder.Services.Configure<IdentityOptions>(options =>
+// {
+//     // Password settings.
+//     options.Password.RequireDigit = true;
+//     options.Password.RequireLowercase = true;
+//     options.Password.RequireNonAlphanumeric = true;
+//     options.Password.RequireUppercase = true;
+//     options.Password.RequiredLength = 6;
+//     options.Password.RequiredUniqueChars = 1;
+//     // Lockout settings.
+//     // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+//     // options.Lockout.MaxFailedAccessAttempts = 5;
+//     // options.Lockout.AllowedForNewUsers = true;
+//     // User settings.
+//     options.User.AllowedUserNameCharacters =
+//     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//     options.User.RequireUniqueEmail = false;
+// });
 
 builder.Services.AddCors(options =>
 {
@@ -33,32 +58,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 app.UseCors();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseRouting();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
