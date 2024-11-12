@@ -1,23 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("EmployeeServices")]
-    public record EmployeeService(int employeeId, DateTime employeeVersion, int serviceId, DateTime serviceVersion)
+    [PrimaryKey(nameof(EmployeeId), nameof(EmployeeVersion), nameof(ServiceId), nameof(ServiceVersion))]
+    public record EmployeeService
     {
-        [Key, Column(Order = 0)]
         [ForeignKey("Employee")]
-        public int EmployeeId { get; init; } = employeeId;
-        [Key, Column(Order = 1)]
+        public int EmployeeId { get; init; }
         [ForeignKey("Employee")]
-        public DateTime EmployeeVersion { get; init; } = employeeVersion;
+        public DateTime EmployeeVersion { get; init; }
 
-        [Key, Column(Order = 2)]
         [ForeignKey("Service")]
-        public int ServiceId { get; init; } = serviceId;
-        [Key, Column(Order = 3)]
+        public int ServiceId { get; init; }
         [ForeignKey("Service")]
-        public DateTime ServiceVersion { get; init; } = serviceVersion;
+        public DateTime ServiceVersion { get; init; }
     }
 }

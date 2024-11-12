@@ -1,22 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace POS_System.Domain.Entities
 {
     [Table("ServiceTax")]
-    public record ServiceTax(int serviceId, DateTime serviceVersion, int taxId, DateTime taxVersion)
+    [PrimaryKey(nameof(ServiceId), nameof(ServiceVersion), nameof(TaxId), nameof(TaxVersion))]
+    public record ServiceTax
     {
-        [Key, Column(Order = 0)]
-        [ForeignKey("Service")]
-        public int ServiceId { get; init; } = serviceId;
-        [Key, Column(Order = 1)]
-        [ForeignKey("Service")]
-        public DateTime ServiceVersion { get; init; } = serviceVersion;
-        [Key, Column(Order = 2)]
-        [ForeignKey("Tax")]
-        public int TaxId { get; init; } = taxId;
-        [Key, Column(Order = 3)]
-        [ForeignKey("Tax")]
-        public DateTime TaxVersion { get; init; } = taxVersion;
+        public int ServiceId { get; init; }
+        public DateTime ServiceVersion { get; init; }
+        public int TaxId { get; init; }
+        public DateTime TaxVersion { get; init; }
+        public Service Service { get; init; } = null!;
+        public Tax Tax { get; init; } = null!;
     }
 }

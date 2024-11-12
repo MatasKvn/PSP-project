@@ -1,25 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("ProductModifications")]
-    public record ProductModification(int id, int productId, DateTime productVersion, string name, string description, int price, DateTime version, bool isDeleted = false)
+    [PrimaryKey(nameof(Id), nameof(Version))]
+    public record ProductModification
     {
-        [Key, Column(Order = 0)]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [ForeignKey("Product")]
-        public int ProductId { get; init; } = productId;
+        public int ProductId { get; init; }
         [ForeignKey("Product")]
-        public DateTime ProductVersion { get; init; } = productVersion;
+        public DateTime ProductVersion { get; init; }
         [MaxLength(40)]
-        public string Name { get; init; } = name;
-        public string Description { get; init; } = description;
-        public int Price { get; init; } = price;
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public int Price { get; init; }
 
         //Versioning
-        [Key, Column(Order = 1)]
-        public DateTime Version { get; init; } = version;
-        public bool IsDeleted { get; init; } = isDeleted;
+        public DateTime Version { get; init; }
+        public bool IsDeleted { get; init; }
     }
 }

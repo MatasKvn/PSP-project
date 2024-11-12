@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 namespace POS_System.Domain.Entities
 {
     [Table("Carts")]
-    public record Cart(int id, int employeeId, DateTime employeeVersion, DateTime dateCreated)
+    public record Cart
     {
         [Key]
-        public int Id { get; init; } = id;
+        public int Id { get; init; }
         [ForeignKey("Employee")]
-        public int EmployeeId { get; init; } = employeeId;
+        public int EmployeeId { get; init; }
         [ForeignKey("Employee")]
-        public DateTime EmployeeVersion { get; init; } = employeeVersion;
-        public DateTime DateCreated { get; init; } = dateCreated;
+        public DateTime EmployeeVersion { get; init; }
+        public DateTime DateCreated { get; init; }
     }
 }

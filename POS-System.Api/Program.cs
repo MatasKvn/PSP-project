@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using POS_System.Data.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//You can add your own environment variable, which will hold your connection string without hardcoding it
+// 1. Open command prompt
+// 2. Write setx DATABASE_URL "<your_conn_string>"
+// 3. Restart IDE
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.WebHost.UseUrls("http://localhost:3000");
