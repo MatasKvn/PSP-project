@@ -9,11 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -23,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POS-System.Business\POS-System.Business.csproj" />
-    <ProjectReference Include="..\POS-System.Domain\POS-System.Domain.csproj" />
+    <ProjectReference Include="..\POS-System.Data\POS-System.Data.csproj" />
   </ItemGroup>
 
 </Project>
