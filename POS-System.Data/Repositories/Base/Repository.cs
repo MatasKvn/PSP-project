@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using POS_System.Data.Repositories.Base;
 using POS_System.Data.Database;
+using POS_System.Data.Repositories.Base;
+using System.Linq.Expressions;
 
 namespace MedicalCenter.Data.Repositories.Base;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly ApplicationDbContext _dbContext;
+    protected readonly ApplicationDbContext<int> _dbContext;
     protected readonly DbSet<T> _dbSet;
 
-    public Repository(ApplicationDbContext dbContext)
+    public Repository(ApplicationDbContext<int> dbContext)
     {
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<T>();

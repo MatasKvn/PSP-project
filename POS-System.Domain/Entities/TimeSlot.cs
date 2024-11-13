@@ -6,15 +6,19 @@ namespace POS_System.Domain.Entities
     [Table("TimeSlots")]
     public record TimeSlot
     {
+        //Primary key
         [Key]
         public int Id { get; init; }
-        [ForeignKey("Employee")]
-        public int EmployeeId { get; init; }
-        [ForeignKey("Employee")]
-        public DateTime EmployeeVersion { get; init; }
-        public DateTime StartTime { get; init; }
-        public bool IsAvailable { get; init; }
 
-        public ServiceReservation? ServiceReservation { get; init; }
+        //Foreign keys
+        [ForeignKey("Employee")]
+        public int EmployeeVersionId { get; init; }
+
+        //Navigation properties
+        public virtual ServiceReservation ServiceReservation { get; set; }
+
+        //Fields
+        public required DateTime StartTime { get; init; }
+        public required bool IsAvailable { get; init; }
     }
 }

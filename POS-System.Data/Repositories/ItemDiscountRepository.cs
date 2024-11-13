@@ -5,6 +5,6 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
-public class ItemDiscountRepository(ApplicationDbContext dbContext) : Repository<ItemDiscount>(dbContext), IItemDiscountRepository
+public class ItemDiscountRepository(ApplicationDbContext<int> dbContext) : Repository<ItemDiscount>(dbContext), IItemDiscountRepository
 {
 }

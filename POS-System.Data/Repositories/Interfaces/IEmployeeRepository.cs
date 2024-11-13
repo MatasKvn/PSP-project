@@ -1,8 +1,8 @@
-﻿using POS_System.Data.Repositories.Base;
-using POS_System.Domain.Entities;
+﻿using POS_System.Data.Identity;
+using POS_System.Data.Repositories.Base;
 
 namespace POS_System.Data.Repositories.Interfaces;
 
-public interface IEmployeeRepository : IRepository<Employee>
+public interface IEmployeeRepository : IRepository<ApplicationUser<int>>
 {
 }

@@ -10,16 +10,16 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            // var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            var connectionString = configuration.GetConnectionString("LocalConnection");
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+            //var connectionString = configuration.GetConnectionString("LocalConnection");
+            services.AddDbContext<ApplicationDbContext<int>>(options =>
+                options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             services
-                .AddIdentity<ApplicationUser<int>, IdentityRole>()
+                .AddIdentity<ApplicationUser<int>, IdentityRole<int>>()
                 .AddRoles<IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext<int>>();
-
-            services.AddDbContext<ApplicationDbContext<int>>(options => 
-                options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -40,9 +40,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             });
-
-            services.AddDbContext<ApplicationDbContext<int>>(options => options.UseNpgsql(connectionString));
-            services.AddScoped<ApplicationDbContext<int>>();
 
             return services;
         }
