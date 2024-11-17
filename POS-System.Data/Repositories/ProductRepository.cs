@@ -5,6 +5,6 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
-public class ProductRepository(ApplicationDbContext dbContext) : Repository<Product>(dbContext), IProductRepository
+public class ProductRepository(ApplicationDbContext<int> dbContext) : Repository<Product>(dbContext), IProductRepository
 {
 }

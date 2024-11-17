@@ -1,25 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Products")]
-    [PrimaryKey(nameof(Id), nameof(Version))]
     public record Product
     {
+        //Primary key
+        [Key]
         public int Id { get; init; }
+
+        //Navigation properties
+        public virtual ICollection<ProductOnTax> ProductOnTaxes { get; set; }
+        public virtual ICollection<ProductOnItemDiscount> ProductOnItemDiscounts { get; set; }
+        public virtual ICollection<ProductModification> ProductModifications { get; set; }
+
+        //Fields
+        public int ProductId { get; init; }
         [MaxLength(40)]
         public required string Name { get; init; }
         public required string Description { get; init; }
-        public int Price { get; init; }
+        public required int Price { get; init; }
         public required string ImageURL { get; init; }
+        public required int Stock { get; init; }
 
         //Versioning
         public DateTime Version { get; init; }
         public bool IsDeleted { get; init; }
-        public List<Tax> Taxes { get; } = [];
-        public List<ProductTax> ProductTaxes { get; } = [];
 
     }
 }

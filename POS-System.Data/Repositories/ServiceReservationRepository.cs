@@ -5,6 +5,6 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
-public class ServiceReservationRepository(ApplicationDbContext context) : Repository<ServiceReservation>(context), IServiceReservationRepository
+public class ServiceReservationRepository(ApplicationDbContext<int> context) : Repository<ServiceReservation>(context), IServiceReservationRepository
 {
 }

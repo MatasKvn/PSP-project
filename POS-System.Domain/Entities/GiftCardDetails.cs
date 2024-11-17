@@ -6,10 +6,12 @@ namespace POS_System.Domain.Entities
     [Table("GiftCardDetails")]
     public record GiftCardDetails
     {
+        //Primary key
         [Key]
         public int Id { get; init; }
-        public int GiftCardId { get; init; }
-        public GiftCard GiftCard { get; init; } = null!;
 
+        //Foreign keys
+        [ForeignKey("GiftCard")]
+        public int GiftCardId { get; init; }
     }
 }

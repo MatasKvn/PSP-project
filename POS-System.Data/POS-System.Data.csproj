@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- For potential future use -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <!-- For potential future use -->
