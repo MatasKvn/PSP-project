@@ -7,4 +7,5 @@ namespace POS_System.Data.Repositories;
 
 public class TaxRepository(ApplicationDbContext<int> dbContext) : Repository<Tax>(dbContext), ITaxRepository
 {
+    
 }
