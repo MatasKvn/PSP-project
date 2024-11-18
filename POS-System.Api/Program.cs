@@ -7,7 +7,8 @@ builder.Services.AddDataServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.WebHost.UseUrls("http://localhost:3000");
+builder.Services.AddControllers();
+builder.WebHost.UseUrls("https://localhost:3000");
 
 builder.Services.AddCors(options =>
 {
@@ -36,5 +37,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 //app.UseAuthorization(); //Throws error if uncommented, NEED FIX
+app.MapControllers();
 
 app.Run();

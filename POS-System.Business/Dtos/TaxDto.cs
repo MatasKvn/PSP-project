@@ -6,8 +6,8 @@ namespace POS_System.Business.Dtos
     public class TaxDto
     {
         //Primary key
-        [Key]
-        public int Id { get; init; }
+        //[Key]
+        //public int Id { get; init; }
 
         //Fields
         public int TaxId { get; init; }

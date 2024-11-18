@@ -10,6 +10,9 @@ namespace POS_System.Business.AutoMapper
         {
             CreateMap<Tax, TaxDto>();
             CreateMap<TaxDto, Tax>();
+
+            CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
         }
     }
 }
