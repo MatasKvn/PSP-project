@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POS-System.Business\POS-System.Business.csproj" />
-    <ProjectReference Include="..\POS-System.Data\POS-System.Data.csproj" />
+    <ProjectReference Include="..\POS-System.Common\POS-System.Common.csproj" />
   </ItemGroup>
 
 </Project>
