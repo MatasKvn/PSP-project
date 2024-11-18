@@ -13,3 +13,4 @@ bin/
 
 # Migrations
 POS-System.Data/Migrations
+/.vs

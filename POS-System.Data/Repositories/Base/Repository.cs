@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using POS_System.Data.Database;
-using POS_System.Data.Repositories.Base;
 using System.Linq.Expressions;
 
-namespace MedicalCenter.Data.Repositories.Base;
+namespace POS_System.Data.Repositories.Base;
 
 public class Repository<T> : IRepository<T> where T : class
 {
