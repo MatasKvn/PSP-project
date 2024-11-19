@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace POS_System.Data.Repositories.Base;
 
@@ -9,6 +10,8 @@ public interface IRepository<T> where T : class
     Task<T?> GetByExpressionWithIncludesAsync(Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
+    Task<T?> GetByExpressionWithIncludesNoTrackingAsync(Expression<Func<T, bool>> predicate,
+        CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
     Task<(List<T> Results, int TotalCount)> GetByExpressionWithIncludesAndPaginationAsync(
         Expression<Func<T, bool>> predicate, int pageSize, int pageNumber,
         CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
@@ -26,5 +29,6 @@ public interface IRepository<T> where T : class
 
     Task CreateAsync(T entity, CancellationToken cancellationToken = default);
 
+    void Update(T entity);
     void Delete(T entity);
 }
