@@ -8,17 +8,17 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Foreign keys
         [ForeignKey("Employee")]
-        public int EmployeeVersionId { get; init; }
+        public int EmployeeVersionId { get; set; }
 
         //Navigation properties
         public virtual ServiceReservation ServiceReservation { get; set; }
 
         //Fields
-        public required DateTime StartTime { get; init; }
-        public required bool IsAvailable { get; init; }
+        public required DateTime StartTime { get; set; }
+        public required bool IsAvailable { get; set; }
     }
 }

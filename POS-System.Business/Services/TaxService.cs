@@ -17,7 +17,6 @@ namespace POS_System.Business.Services
 
         public async Task CreateTaxAsync(TaxDto? taxDto, CancellationToken cancellationToken)
         {
-            taxDto.TaxId = await _unitOfWork.TaxRepository.GetMaxTaxIdAsync(cancellationToken) + 1;
             var tax = _mapper.Map<Tax>(taxDto);
             await _unitOfWork.TaxRepository.CreateAsync(tax);
             await _unitOfWork.SaveChangesAsync();
@@ -25,20 +24,15 @@ namespace POS_System.Business.Services
 
         public async Task DeleteTaxAsync(int id, CancellationToken cancellationToken)
         {
-            var tax = await _unitOfWork.TaxRepository.GetByExpressionWithIncludesNoTrackingAsync(x => x.Id == id);
-
-            tax = tax with { IsDeleted = true };
-
-            _unitOfWork.TaxRepository.Update(tax);
+            var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
+            tax.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateTaxAsync(int id, TaxDto? taxDto, CancellationToken cancellationToken)
         {
-            var currentTax = await _unitOfWork.TaxRepository.GetByExpressionWithIncludesNoTrackingAsync(x => x.Id == id && !x.IsDeleted);
-
-            currentTax = currentTax with { IsDeleted = true };
-            _unitOfWork.TaxRepository.Update(currentTax);
+            var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
+            currentTax.IsDeleted = true;
 
             var newTax = new Tax
             {
@@ -59,6 +53,38 @@ namespace POS_System.Business.Services
             var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
             var taxDto = _mapper.Map<TaxDto>(tax);
             return taxDto;
+        }
+
+        public async Task LinkTaxToProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
+        {
+            foreach (int productId in productIdList)
+            {
+                var productOnTax = new ProductOnTax
+                {
+                    TaxVersionId = taxId,
+                    ProductVersionId = productId,
+                    StartDate = DateTime.UtcNow,
+                    EndDate = null
+                };
+            }
+        }
+
+        public async Task UnlinkTaxFromProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
+        {
+            foreach (int productId in productIdList)
+            {
+            
+            }
+        }
+
+        public async Task LinkTaxToServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UnlinkTaxFromServicesAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

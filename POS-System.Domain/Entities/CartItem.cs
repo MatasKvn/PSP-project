@@ -8,14 +8,14 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Foreign keys
         [ForeignKey("Product")]
-        public int? ProductVersionId { get; init; }
+        public int? ProductVersionId { get; set; }
 
         [ForeignKey("Service")]
-        public int? ServiceVersionId { get; init; }
+        public int? ServiceVersionId { get; set; }
 
         //Navigational properties
         public virtual ICollection<ProductModificationOnCartItem> ProductModificationsOnCartItem { get; set; }
@@ -24,8 +24,8 @@ namespace POS_System.Domain.Entities
         public virtual ServiceReservation ServiceReservation { get; set; }
 
         //Fields
-        public int CartId { get; init; }
-        public required int Quantity { get; init; }
-        public required bool IsProduct { get; init; }
+        public int CartId { get; set; }
+        public required int Quantity { get; set; }
+        public required bool IsProduct { get; set; }
     }
 }

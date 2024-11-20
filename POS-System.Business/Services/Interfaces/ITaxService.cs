@@ -9,5 +9,9 @@ namespace POS_System.Business.Services.Interfaces
         public Task DeleteTaxAsync(int id, CancellationToken cancellationToken);
         public Task UpdateTaxAsync(int id, TaxDto? taxDto, CancellationToken cancellationToken);
         public Task<TaxDto?> GetTaxByIdAsync(int id, CancellationToken cancellationToken);
+        public Task LinkTaxToProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken);
+        public Task UnlinkTaxFromProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken);
+        public Task LinkTaxToServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken);
+        public Task UnlinkTaxFromServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken);
     }
 }

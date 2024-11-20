@@ -8,10 +8,10 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Foreign keys
         [ForeignKey("GiftCard")]
-        public int GiftCardId { get; init; }
+        public int GiftCardId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using POS_System.Business.Dtos;
 using POS_System.Business.Services.Interfaces;
 
@@ -47,7 +46,29 @@ namespace POS_System.Api.Controllers
         [HttpPut("{id}/link")]
         public async Task<IActionResult> LinkTaxToProducts(int id, [FromBody] int[] productIdList, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _taxService.LinkTaxToProductsAsync(id, productIdList, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut("{id}/unlink")]
+        public async Task<IActionResult> UnlinkTaxFromProducts(int id, [FromBody] int[] productIdList, CancellationToken cancellationToken)
+        {
+            await _taxService.UnlinkTaxFromProductsAsync(id, productIdList, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut("{id}/s_link")]
+        public async Task<IActionResult> LinkTaxToServices(int id, [FromBody] int[] serviceIdList, CancellationToken cancellationToken)
+        {
+            await _taxService.LinkTaxToServicesAsync(id, serviceIdList, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut("{id}/s_unlink")]
+        public async Task<IActionResult> UnlinkTaxFromServices(int id, [FromBody] int[] serviceIdList, CancellationToken cancellationToken)
+        {
+            await _taxService.UnlinkTaxFromServicesAsync(id, serviceIdList, cancellationToken);
+            return Ok();
         }
     }
 }

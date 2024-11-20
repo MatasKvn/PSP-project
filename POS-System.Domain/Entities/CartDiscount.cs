@@ -8,21 +8,21 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Fields
-        public int CartDiscountId { get; init; }
-        public required int Value { get; init; }
-        public required bool IsPercentage { get; init; }
-        public required string Description { get; init; }
-        public required DateTime StartDate { get; init; }
-        public required DateTime? EndDate { get; init; }
+        public int CartDiscountId { get; set; }
+        public required int Value { get; set; }
+        public required bool IsPercentage { get; set; }
+        public required string Description { get; set; }
+        public required DateTime StartDate { get; set; }
+        public required DateTime? EndDate { get; set; }
 
         //Navigation properties
         public virtual ICollection<CartOnCartDiscount> CartOnCartDiscounts { get; set; }
 
         //Versioning
-        public DateTime Version { get; init; }
-        public bool IsDeleted { get; init; }
+        public DateTime Version { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

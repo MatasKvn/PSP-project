@@ -8,22 +8,22 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Navigation properties
         public virtual ICollection<ProductOnItemDiscount> ProductOnItemDiscounts { get; set; }
         public virtual ICollection<ServiceOnItemDiscount> ServiceOnItemDiscounts { get; set; }
 
         //Fields
-        public required int ItemDiscountId { get; init; }
-        public required int Value { get; init; }
-        public required bool IsPercentage { get; init; }
-        public required string Description { get; init; }
-        public required DateTime StartDate { get; init; }
-        public DateTime? EndDate { get; init; }
+        public required int ItemDiscountId { get; set; }
+        public required int Value { get; set; }
+        public required bool IsPercentage { get; set; }
+        public required string Description { get; set; }
+        public required DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         //Versioning
-        public DateTime Version { get; init; }
-        public bool IsDeleted { get; init; }
+        public DateTime Version { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

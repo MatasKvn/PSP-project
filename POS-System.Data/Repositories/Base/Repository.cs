@@ -26,12 +26,6 @@ public class Repository<T> : IRepository<T> where T : class
         return await ApplyIncludes(_dbSet.AsQueryable(), includes).FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public async Task<T?> GetByExpressionWithIncludesNoTrackingAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default,
-    params Expression<Func<T, object>>[] includes)
-    {
-        return await ApplyIncludes(_dbSet.AsQueryable(), includes).AsNoTracking().FirstOrDefaultAsync(predicate, cancellationToken);
-    }
-
     public async Task<(List<T> Results, int TotalCount)> GetByExpressionWithIncludesAndPaginationAsync(Expression<Func<T, bool>> predicate,
        int pageSize, int pageNumber, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes)
     {
@@ -71,11 +65,6 @@ public class Repository<T> : IRepository<T> where T : class
         await _dbSet.AddAsync(entity, cancellationToken);
     }
 
-    public void Update(T entity)
-    {
-        _dbSet.Attach(entity);
-        _dbContext.Entry(entity).State = EntityState.Modified;
-    }
     public void Delete(T entity)
     {
         _dbSet.Remove(entity);
