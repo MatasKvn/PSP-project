@@ -7,14 +7,14 @@ namespace POS_System.Business.Services.Interfaces
 {
     public class CartService(IUnitOfWork _unitOfWork, IMapper _mapper) : ICartService
     {
-        public async Task<IEnumerable<CartDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<GetCartDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var carts = await _unitOfWork.CartRepository.GetAllAsync(cancellationToken);
-            var mappedCarts = _mapper.Map<IEnumerable<CartDto>>(carts);
+            var mappedCarts = _mapper.Map<IEnumerable<GetCartDto>>(carts);
             return mappedCarts;
         }
 
-        public async Task<CartDto> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<GetCartDto> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var cart = await _unitOfWork.CartRepository.GetByIdAsync(id, cancellationToken);
             // TODO: add actual exception
@@ -22,14 +22,18 @@ namespace POS_System.Business.Services.Interfaces
             {
                 throw new Exception("Cart not found.");
             }
-            var mappedCart = _mapper.Map<CartDto>(cart);
+            var mappedCart = _mapper.Map<GetCartDto>(cart);
             return mappedCart;
         }
 
-        public async Task CreateCartAsync(CartDto cartDto, CancellationToken cancellationToken)
+        public async Task CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken)
         {
-            var cart = _mapper.Map<Cart>(cartDto);
-            cart.IsCompleted = false;
+            var cart = new Cart {
+                EmployeeVersionId = cartDto.EmployeeVersionId,
+                IsCompleted = false,
+                DateCreated = DateTime.Now
+            };
+
             await _unitOfWork.CartRepository.CreateAsync(cart, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
         }

@@ -8,10 +8,13 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
+            // Tax
             CreateMap<Tax, TaxDto>();
             CreateMap<TaxDto, Tax>();
-            CreateMap<Cart, CartDto>();
-            CreateMap<CartDto, Cart>();
+
+            // Cart
+            CreateMap<Cart, GetCartDto>();
+            CreateMap<GetCartDto, Cart>();
         }
     }
 }
