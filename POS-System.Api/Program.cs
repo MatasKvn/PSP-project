@@ -1,13 +1,15 @@
+using POS_System.Api.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureSwagger();
 builder.Services.AddAuthentication();
 builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddDataServices(builder.Configuration);
+builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.WebHost.UseUrls("http://localhost:3000");
+//builder.WebHost.UseUrls("http://localhost:3000");
 
 builder.Services.AddCors(options =>
 {
@@ -33,7 +35,7 @@ app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseRouting();
-
+app.MapControllers();
 app.UseAuthentication();
 //app.UseAuthorization(); //Throws error if uncommented, NEED FIX
 
