@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Database
@@ -7,11 +8,32 @@ namespace POS_System.Data.Database
     {
         public static void SeedAll(ModelBuilder modelBuilder)
         {
+            SeedEmployees(modelBuilder);
             SeedTax(modelBuilder);
             SeedProduct(modelBuilder);
             SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
             SeedServiceOnTax(modelBuilder);
+            SeedCarts(modelBuilder);
+        }
+
+        public static void SeedEmployees(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<ApplicationUser<int>>().HasData(
+                new ApplicationUser<int> { Id = 1, FirstName = "John", LastName = "Doe", UserName = "johndoe", NormalizedUserName = "johndoe", Email = "johndoe@example.com", NormalizedEmail = "johndoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 2, FirstName = "Jane", LastName = "Doe", UserName = "janedoe", NormalizedUserName = "janedoe", Email = "janedoe@example.com", NormalizedEmail = "janedoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 3, FirstName = "Adam", LastName = "Smith", UserName = "adamsmith", NormalizedUserName = "adamsmith", Email = "adamsmith@example.com", NormalizedEmail = "adamsmith@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 4, FirstName = "Bob", LastName = "Johnson", UserName = "bobjohnson", NormalizedUserName = "bobjohnson", Email = "bobjohnson@example.com", NormalizedEmail = "bobjohnson@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 }
+            );
+        }
+
+        public static void SeedCarts(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Cart>().HasData(
+                new Cart { Id = 1, DateCreated = new DateTime(2024, 11, 21, 14, 42, 13), EmployeeVersionId = 1, IsCompleted = false },
+                new Cart { Id = 2, DateCreated = new DateTime(2022, 11, 1, 15, 0, 1), EmployeeVersionId = 1, IsCompleted = true },
+                new Cart { Id = 3, DateCreated = new DateTime(2023, 5, 10, 10, 30, 0), EmployeeVersionId = 2, IsCompleted = true },
+                new Cart { Id = 4, DateCreated = new DateTime(2023, 6, 15, 11, 45, 0), EmployeeVersionId = 3, IsCompleted = false }
+            );
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
