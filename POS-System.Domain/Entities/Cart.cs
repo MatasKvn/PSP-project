@@ -20,5 +20,6 @@ namespace POS_System.Domain.Entities
 
         //Fields
         public required DateTime DateCreated { get; init; }
+        public required bool IsCompleted { get; set; }
     }
 }
