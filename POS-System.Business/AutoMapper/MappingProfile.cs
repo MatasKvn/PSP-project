@@ -13,8 +13,8 @@ namespace POS_System.Business.AutoMapper
             CreateMap<TaxDto, Tax>();
 
             // Cart
-            CreateMap<Cart, GetCartDto>();
-            CreateMap<GetCartDto, Cart>();
+            CreateMap<Cart, CartResponse>();
+            CreateMap<CartResponse, Cart>();
         }
     }
 }

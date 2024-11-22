@@ -1,6 +1,6 @@
 namespace POS_System.Business.Dtos
 {
-    public class GetCartDto
+    public class CartResponse
     {
         public int Id { get; set; }
 

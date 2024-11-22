@@ -24,7 +24,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCartDto cartDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromBody] CartRequest cartDto, CancellationToken cancellationToken)
         {
             var cart = await _cartService.CreateCartAsync(cartDto, cancellationToken);
             return Ok(cart);

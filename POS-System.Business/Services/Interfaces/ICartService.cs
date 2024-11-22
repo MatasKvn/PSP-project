@@ -5,11 +5,11 @@ namespace POS_System.Business.Services.Interfaces
 {
     public interface ICartService
     {
-        Task<IEnumerable<GetCartDto>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<CartResponse>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task<GetCartDto> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<CartResponse> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task<GetCartDto> CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken);
+        Task<CartResponse> CreateCartAsync(CartRequest cartDto, CancellationToken cancellationToken);
 
         Task DeleteCartAsync(int id, CancellationToken cancellationToken);
     }
