@@ -9,7 +9,7 @@ namespace POS_System.Business.Services.Interfaces
 
         Task<GetCartDto> GetByIdAsync(int id, CancellationToken cancellationToken);
 
-        Task CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken);
+        Task<GetCartDto> CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken);
 
         Task DeleteCartAsync(int id, CancellationToken cancellationToken);
     }

@@ -26,7 +26,7 @@ namespace POS_System.Business.Services.Interfaces
             return mappedCart;
         }
 
-        public async Task CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken)
+        public async Task<GetCartDto> CreateCartAsync(CreateCartDto cartDto, CancellationToken cancellationToken)
         {
             var cart = new Cart {
                 EmployeeVersionId = cartDto.EmployeeVersionId,
@@ -36,6 +36,8 @@ namespace POS_System.Business.Services.Interfaces
 
             await _unitOfWork.CartRepository.CreateAsync(cart, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
+            var responseCartDto = _mapper.Map<GetCartDto>(cart);
+            return responseCartDto;
         }
 
         public async Task DeleteCartAsync(int id, CancellationToken cancellationToken)
