@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POS-System.Common\POS-System.Common.csproj" />
-    <ProjectReference Include="..\POS-System.Domain\POS-System.Domain.csproj" />
+    <ProjectReference Include="..\POS-System.Data\POS-System.Data.csproj" />
   </ItemGroup>
 
 </Project>
