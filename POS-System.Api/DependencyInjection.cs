@@ -5,6 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register Api layer services
+            services.AddControllers();
 
             return services;
         }
