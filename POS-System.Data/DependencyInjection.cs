@@ -13,15 +13,15 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            //var connectionString = configuration.GetConnectionString("LocalConnection");
+            // var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+            var connectionString = configuration.GetConnectionString("LocalConnection") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
             services.AddDbContext<ApplicationDbContext<int>>(options =>
                 options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             services
                 .AddIdentity<ApplicationUser<int>, IdentityRole<int>>()
-                .AddRoles<IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext<int>>();
 
             services.Configure<IdentityOptions>(options =>

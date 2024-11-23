@@ -1,3 +1,6 @@
+using POS_System.Business.Services;
+using POS_System.Business.Services.Interfaces;
+
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DependencyInjection

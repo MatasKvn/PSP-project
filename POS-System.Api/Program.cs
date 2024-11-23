@@ -1,6 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication();
 builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddDataServices(builder.Configuration);

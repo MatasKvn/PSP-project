@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- For potential future use -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-    <!-- For potential future use -->
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />

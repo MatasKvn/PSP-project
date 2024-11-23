@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Request;
+using POS_System.Business.Dtos.Response;
+using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Business.AutoMapper
@@ -10,6 +14,9 @@ namespace POS_System.Business.AutoMapper
         {
             CreateMap<Tax, TaxDto>();
             CreateMap<TaxDto, Tax>();
+
+            CreateMap<UserRequest, ApplicationUser<int>>()
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
         }
     }
 }
