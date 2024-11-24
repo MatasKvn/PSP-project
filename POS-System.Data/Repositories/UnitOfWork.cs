@@ -3,7 +3,7 @@ using POS_System.Data.Repositories.Interfaces;
 
 namespace POS_System.Data.Repositories;
 
-public class UnitOfWork(ApplicationDbContext<int> dbContext,
+public class UnitOfWork(ApplicationDbContext dbContext,
                         ICardDetailsRepository cardDetailsRepository,
                         ICartDiscountRepository cartDiscountRepository,
                         ICartRepository cartRepository,

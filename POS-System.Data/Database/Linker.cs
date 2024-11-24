@@ -13,19 +13,19 @@ namespace POS_System.Data.Database
 
         public static void LinkApplicationUser(ModelBuilder modelBuilder)
         {
-            //Manual links for ApplicationUser<int> (new Employee.cs)
-            modelBuilder.Entity<ApplicationUser<int>>()
+            //Manual links for ApplicationUser (new Employee.cs)
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany<EmployeeOnService>()
                 .WithOne()
                 .HasForeignKey(e => e.EmployeeVersionId)
                 .IsRequired();
 
-            modelBuilder.Entity<ApplicationUser<int>>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany<TimeSlot>()
                 .WithOne()
                 .HasForeignKey(e => e.EmployeeVersionId);
 
-            modelBuilder.Entity<ApplicationUser<int>>()
+            modelBuilder.Entity<ApplicationUser>()
                 .HasMany<Cart>()
                 .WithOne()
                 .HasForeignKey(e => e.EmployeeVersionId);

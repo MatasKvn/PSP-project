@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace POS_System.Data.Identity
 {
-    public class ApplicationUser<TKey> : IdentityUser<TKey>
-        where TKey : IEquatable<TKey>
+    public class ApplicationUser : IdentityUser<int>
     {
-        public int EmployeeId { get; set; }
         [MaxLength(30)]
         public required string FirstName { get; set; }
         [MaxLength(30)]

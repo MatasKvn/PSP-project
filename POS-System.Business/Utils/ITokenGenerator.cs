@@ -4,6 +4,6 @@ namespace POS_System.Business.Utils
 {
     public interface ITokenGenerator
     {
-        public string GenerateJwtToken(List<Claim>? claims = null);
+        public string GenerateJwtToken(List<Claim> claims);
     }
 }

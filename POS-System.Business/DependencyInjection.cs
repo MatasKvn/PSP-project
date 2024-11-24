@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options => 
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -39,6 +40,24 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<ITaxService, TaxService>();
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("TransactionWrite", policy => policy.RequireClaim("TransactionWrite"));
+                options.AddPolicy("TransactionRead", policy => policy.RequireClaim("TransactionRead"));
+                options.AddPolicy("HistoricTransactionWrite", policy => policy.RequireClaim("HistoricTransactionWrite"));
+                options.AddPolicy("HistoricTransactionRead", policy => policy.RequireClaim("HistoricTransactionRead"));
+                options.AddPolicy("ServiceWrite", policy => policy.RequireClaim("ServiceWrite"));
+                options.AddPolicy("ServiceRead", policy => policy.RequireClaim("ServiceRead"));
+                options.AddPolicy("ItemWrite", policy => policy.RequireClaim("ItemWrite"));
+                options.AddPolicy("ItemRead", policy => policy.RequireClaim("ItemRead"));
+                options.AddPolicy("EmployeesWrite", policy => policy.RequireClaim("EmployeesWrite"));
+                options.AddPolicy("EmployeesRead", policy => policy.RequireClaim("EmployeesRead"));
+                options.AddPolicy("TaxWrite", policy => policy.RequireClaim("TaxWrite"));
+                options.AddPolicy("TaxRead", policy => policy.RequireClaim("TaxRead"));
+                options.AddPolicy("HistoricWrite", policy => policy.RequireClaim("HistoricWrite"));
+                options.AddPolicy("HistoricRead", policy => policy.RequireClaim("HistoricRead"));
+            });
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Database

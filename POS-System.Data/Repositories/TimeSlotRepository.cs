@@ -5,6 +5,6 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
-public class TimeSlotRepository(ApplicationDbContext<int> dbContext) : Repository<TimeSlot>(dbContext), ITimeSlotRepository
+public class TimeSlotRepository(ApplicationDbContext dbContext) : Repository<TimeSlot>(dbContext), ITimeSlotRepository
 {
 }

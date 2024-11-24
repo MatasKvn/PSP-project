@@ -8,7 +8,7 @@ namespace POS_System.Business.Utils
 {
     public class TokenGenerator(IConfiguration configuration) : ITokenGenerator
     {
-        public string GenerateJwtToken(List<Claim>? claims = null)
+        public string GenerateJwtToken(List<Claim> claims)
         {
             var secretKey = configuration["POSJwtSecretKey"];
             var issuer = configuration["POSIssuer"];

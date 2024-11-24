@@ -16,15 +16,11 @@ namespace Microsoft.Extensions.DependencyInjection
             // var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             var connectionString = configuration.GetConnectionString("LocalConnection") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-            services.AddDbContext<ApplicationDbContext<int>>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            services
-                .AddIdentity<ApplicationUser<int>, IdentityRole<int>>()
-                .AddEntityFrameworkStores<ApplicationDbContext<int>>();
-
-            services.Configure<IdentityOptions>(options =>
+            var builder = services.AddIdentityCore<ApplicationUser>(options => 
             {
                 // Password settings.
                 options.Password.RequireDigit = true;
@@ -41,8 +37,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
             });
+
+            builder = new IdentityBuilder(builder.UserType, typeof(ApplicationRole), builder.Services);
+            builder
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddRoleManager<RoleManager<ApplicationRole>>()
+                .AddSignInManager<SignInManager<ApplicationUser>>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -62,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        
             return services;
         }
     }

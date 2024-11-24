@@ -6,10 +6,8 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Database
 {
-    public class ApplicationDbContext<TKey>(DbContextOptions<ApplicationDbContext<TKey>> options)
-        : IdentityDbContext<ApplicationUser<TKey>, IdentityRole<TKey>, TKey, IdentityUserClaim<TKey>, IdentityUserRole<TKey>,
-          IdentityUserLogin<TKey>, IdentityRoleClaim<TKey>, IdentityUserToken<TKey>>(options)
-            where TKey : IEquatable<TKey>
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : IdentityDbContext<ApplicationUser, ApplicationRole, int>(options)
     {
         //DbSets
         public DbSet<CardDetails> CardDetails { get; set; }

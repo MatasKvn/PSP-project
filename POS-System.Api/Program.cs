@@ -1,12 +1,11 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
+builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddDataServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.WebHost.UseUrls("https://localhost:3000");
 
 builder.Services.AddCors(options =>
 {
@@ -27,13 +26,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
-app.UseCors();
-
 app.UseRouting();
 
+app.UseCors();
+
 app.UseAuthentication();
-//app.UseAuthorization(); //Throws error if uncommented, NEED FIX
+app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

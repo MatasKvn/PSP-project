@@ -6,10 +6,10 @@ namespace POS_System.Data.Repositories.Base;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly ApplicationDbContext<int> _dbContext;
+    protected readonly ApplicationDbContext _dbContext;
     protected readonly DbSet<T> _dbSet;
 
-    public Repository(ApplicationDbContext<int> dbContext)
+    public Repository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<T>();
