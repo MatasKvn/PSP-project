@@ -10,7 +10,7 @@ namespace POS_System.Domain.Entities
         public int Id { get; init; }
 
         //Fields
-        public required DateTime Date { get; init; }
+        public required DateOnly Date { get; init; }
         public required int Value { get; init; }
         [MaxLength(8)]
         public required string Code { get; init; }

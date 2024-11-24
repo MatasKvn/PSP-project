@@ -12,6 +12,7 @@ namespace POS_System.Data.Database
             SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
             SeedServiceOnTax(modelBuilder);
+            SeedGiftCards(modelBuilder);
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
@@ -61,6 +62,47 @@ namespace POS_System.Data.Database
                 new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1 },
                 new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4 },
                 new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3 }
+            );
+        }
+
+        public static void SeedGiftCards(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GiftCard>().HasData(
+                new GiftCard
+                {
+                    Id = 1,
+                    Date = new DateOnly(2024, 1, 1),
+                    Value = 100,
+                    Code = "CARD100"
+                },
+                new GiftCard
+                {
+                    Id = 2,
+                    Date = new DateOnly(2024, 2, 15),
+                    Value = 150,
+                    Code = "CARD150"
+                },
+                new GiftCard
+                {
+                    Id = 3,
+                    Date = new DateOnly(2024, 3, 20),
+                    Value = 200,
+                    Code = "CARD200"
+                },
+                new GiftCard
+                {
+                    Id = 4,
+                    Date = new DateOnly(2024, 4, 10),
+                    Value = 50,
+                    Code = "CARD050"
+                },
+                new GiftCard
+                {
+                    Id = 5,
+                    Date = new DateOnly(2024, 5, 5),
+                    Value = 250,
+                    Code = "CARD250"
+                }
             );
         }
     }

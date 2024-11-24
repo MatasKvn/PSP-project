@@ -15,6 +15,9 @@ public interface IRepository<T> where T : class
 
     Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken = default);
 
+    Task<(IReadOnlyList<T> Results, int TotalCount)> GetAllWithPaginationAsync(
+    int pageSize, int pageNumber, CancellationToken cancellationToken = default);
+
     Task<List<T>> GetAllByExpressionWithIncludesAsync(Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
