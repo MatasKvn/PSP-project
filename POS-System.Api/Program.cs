@@ -1,8 +1,12 @@
 using POS_System.Api.Configuration;
+using POS_System.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureSwagger();
+builder
+    .ConfigureSwagger()
+    .ConfigureValidators();
+
 builder.Services.AddAuthentication();
 builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
@@ -13,7 +17,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.WebHost.UseUrls("https://localhost:3000");
 
 builder.Services.AddCors(options =>
 {
