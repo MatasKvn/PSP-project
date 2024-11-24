@@ -6,7 +6,8 @@ public abstract class BaseException : Exception
 {
     public abstract int StatusCode { get; }
     public abstract string Title { get; }
-    public abstract string Detail { get; }
+    public abstract string Details { get; }
+    public string? ParameterName { get; set;  }
 
     protected BaseException(string message) : base(message) { }
 
@@ -17,6 +18,7 @@ public abstract class BaseException : Exception
     {
         Status = StatusCode,
         Title = Title,
-        Detail = Detail
+        Details = Details,
+        ParameterName = ParameterName
     };
 }
