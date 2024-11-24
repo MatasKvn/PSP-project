@@ -10,6 +10,7 @@ public static class SwaggerConfiguration
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "POS-System API", Version = "v1" });
+            options.UseDateOnlyTimeOnlyStringConverters();
         });
 
         return builder;
