@@ -13,7 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            // var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             var connectionString = configuration.GetConnectionString("LocalConnection") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -37,13 +36,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(ApplicationRole), builder.Services);
             builder
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddRoleManager<RoleManager<ApplicationRole>>()
-                .AddSignInManager<SignInManager<ApplicationUser>>();
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

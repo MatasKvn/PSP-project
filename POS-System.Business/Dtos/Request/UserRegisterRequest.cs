@@ -1,6 +1,6 @@
 namespace POS_System.Business.Dtos.Request
 {
-    public record UserRequest(
+    public record UserRegisterRequest(
         string Email,
         string UserName,
         string FirstName,

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using POS_System.Business.AutoMapper;
+using POS_System.Business.Dtos;
 using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Business.Utils;
@@ -14,6 +15,12 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddBusinessServices(this IServiceCollection services, IConfiguration configuration)
         {
             var secretKey = TryGetConfigValue(configuration, "POSJwtSecretKey");
+            var emailConfig = configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+
+            services.AddSingleton(emailConfig!);
+            services.AddScoped<IEmailSender, EmailSender>();
 
             // Register Business layer services
             services.AddAuthentication(options =>
