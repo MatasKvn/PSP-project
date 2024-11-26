@@ -18,8 +18,8 @@ namespace POS_System.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTax([FromBody] TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
-            await _taxService.CreateTaxAsync(taxDto, cancellationToken);
-            return Ok();
+            var createdTax = await _taxService.CreateTaxAsync(taxDto, cancellationToken);
+            return Ok(createdTax);
         }
 
         [HttpGet("{id}")]
@@ -39,8 +39,8 @@ namespace POS_System.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTaxById(int id, [FromBody] TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
-            await _taxService.UpdateTaxAsync(id, taxDto, cancellationToken);
-            return Ok();
+            var updatedTax = await _taxService.UpdateTaxAsync(id, taxDto, cancellationToken);
+            return Ok(updatedTax);
         }
 
         [HttpPut("{id}/link")]

@@ -15,11 +15,17 @@ namespace POS_System.Business.Services
             return taxDtos;
         }
 
-        public async Task CreateTaxAsync(TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto?> CreateTaxAsync(TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
             var tax = _mapper.Map<Tax>(taxDto);
+            tax.IsDeleted = false;
+            tax.Version = DateTime.UtcNow;
+
             await _unitOfWork.TaxRepository.CreateAsync(tax);
             await _unitOfWork.SaveChangesAsync();
+
+            var responseTaxDto = _mapper.Map<TaxResponseDto>(tax);
+            return responseTaxDto;
         }
 
         public async Task DeleteTaxAsync(int id, CancellationToken cancellationToken)
@@ -29,23 +35,21 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateTaxAsync(int id, TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto?> UpdateTaxAsync(int id, TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
             var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
             currentTax.IsDeleted = true;
 
-            var newTax = new Tax
-            {
-                TaxId = currentTax.TaxId,
-                Name = taxDto.Name,
-                Rate = taxDto.Rate,
-                IsPercentage = taxDto.IsPercentage,
-                Version = DateTime.UtcNow,
-                IsDeleted = false
-            };
+            var newTax = _mapper.Map<Tax>(taxDto);
+            newTax.TaxId = currentTax.TaxId;
+            newTax.IsDeleted = false;
+            newTax.Version = DateTime.UtcNow;
 
             await _unitOfWork.TaxRepository.CreateAsync(newTax);
             await _unitOfWork.SaveChangesAsync();
+
+            var newTaxDto = _mapper.Map<TaxResponseDto>(newTax);
+            return newTaxDto;
         }
 
         public async Task<TaxResponseDto?> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
