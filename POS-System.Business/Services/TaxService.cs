@@ -8,14 +8,14 @@ namespace POS_System.Business.Services
 {
     public class TaxService(IUnitOfWork _unitOfWork, IMapper _mapper) : ITaxService
     {
-        public async Task<IEnumerable<TaxResponseDto?>> GetAllTaxesAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TaxResponseDto>> GetAllTaxesAsync(CancellationToken cancellationToken)
         {
             var taxes = await _unitOfWork.TaxRepository.GetAllByExpressionAsync(x => x.IsDeleted == false, cancellationToken);
             var taxDtos = _mapper.Map<List<TaxResponseDto>>(taxes);
             return taxDtos;
         }
 
-        public async Task<TaxResponseDto?> CreateTaxAsync(TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto> CreateTaxAsync(TaxRequestDto taxDto, CancellationToken cancellationToken)
         {
             var tax = _mapper.Map<Tax>(taxDto);
             tax.IsDeleted = false;
@@ -30,14 +30,18 @@ namespace POS_System.Business.Services
 
         public async Task DeleteTaxAsync(int id, CancellationToken cancellationToken)
         {
-            var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
+            var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new Exception("No such tax to delete!");
+
             tax.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<TaxResponseDto?> UpdateTaxAsync(int id, TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto> UpdateTaxAsync(int id, TaxRequestDto taxDto, CancellationToken cancellationToken)
         {
-            var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
+            var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new Exception("No such tax to update!");
+
             currentTax.IsDeleted = true;
 
             var newTax = _mapper.Map<Tax>(taxDto);
@@ -52,7 +56,7 @@ namespace POS_System.Business.Services
             return newTaxDto;
         }
 
-        public async Task<TaxResponseDto?> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
         {
             var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
             var taxDto = _mapper.Map<TaxResponseDto>(tax);
