@@ -6,7 +6,7 @@ namespace POS_System.Api.Controllers
 {
     [ApiController]
     [Route("api/tax")]
-    public class TaxController(ITaxService _taxService) : ControllerBase
+    public class TaxController(ITaxService _taxService, IProductOnTaxService _productOnTaxService, IServiceOnTaxService _serviceOnTaxService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAllTaxes (CancellationToken cancellationToken)
@@ -16,7 +16,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTax([FromBody] TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateTax([FromBody] TaxRequestDto taxDto, CancellationToken cancellationToken)
         {
             var createdTax = await _taxService.CreateTaxAsync(taxDto, cancellationToken);
             return Ok(createdTax);
@@ -37,37 +37,37 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTaxById(int id, [FromBody] TaxRequestDto? taxDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateTaxById(int id, [FromBody] TaxRequestDto taxDto, CancellationToken cancellationToken)
         {
             var updatedTax = await _taxService.UpdateTaxAsync(id, taxDto, cancellationToken);
             return Ok(updatedTax);
         }
 
-        [HttpPut("{id}/link")]
+        [HttpPut("{id}/p_link")]
         public async Task<IActionResult> LinkTaxToProducts(int id, [FromBody] int[] productIdList, CancellationToken cancellationToken)
         {
-            await _taxService.LinkTaxToProductsAsync(id, productIdList, cancellationToken);
+            await _productOnTaxService.LinkTaxToProductsAsync(id, productIdList, cancellationToken);
             return Ok();
         }
 
-        [HttpPut("{id}/unlink")]
+        [HttpPut("{id}/p_unlink")]
         public async Task<IActionResult> UnlinkTaxFromProducts(int id, [FromBody] int[] productIdList, CancellationToken cancellationToken)
         {
-            await _taxService.UnlinkTaxFromProductsAsync(id, productIdList, cancellationToken);
+            await _productOnTaxService.UnlinkTaxFromProductsAsync(id, productIdList, cancellationToken);
             return Ok();
         }
 
         [HttpPut("{id}/s_link")]
         public async Task<IActionResult> LinkTaxToServices(int id, [FromBody] int[] serviceIdList, CancellationToken cancellationToken)
         {
-            await _taxService.LinkTaxToServicesAsync(id, serviceIdList, cancellationToken);
+            await _serviceOnTaxService.LinkTaxToServicesAsync(id, serviceIdList, cancellationToken);
             return Ok();
         }
 
         [HttpPut("{id}/s_unlink")]
         public async Task<IActionResult> UnlinkTaxFromServices(int id, [FromBody] int[] serviceIdList, CancellationToken cancellationToken)
         {
-            await _taxService.UnlinkTaxFromServicesAsync(id, serviceIdList, cancellationToken);
+            await _serviceOnTaxService.UnlinkTaxFromServicesAsync(id, serviceIdList, cancellationToken);
             return Ok();
         }
     }

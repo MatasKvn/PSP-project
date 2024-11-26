@@ -6,7 +6,7 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Business.Services
 {
-    public class TaxService(IUnitOfWork _unitOfWork, IMapper _mapper) : ITaxService
+    public class TaxService(IUnitOfWork _unitOfWork, IProductOnTaxService _productOnTaxService, IServiceOnTaxService _serviceOnTaxService, IMapper _mapper) : ITaxService
     {
         public async Task<IEnumerable<TaxResponseDto>> GetAllTaxesAsync(CancellationToken cancellationToken)
         {
@@ -34,6 +34,9 @@ namespace POS_System.Business.Services
                 ?? throw new Exception("No such tax to delete!");
 
             tax.IsDeleted = true;
+            await _productOnTaxService.MarkActiveTaxLinksDeleted(id, cancellationToken);
+            await _serviceOnTaxService.MarkActiveTaxLinksDeleted(id, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -49,38 +52,24 @@ namespace POS_System.Business.Services
             newTax.IsDeleted = false;
             newTax.Version = DateTime.UtcNow;
 
-            await _unitOfWork.TaxRepository.CreateAsync(newTax);
+            await _unitOfWork.TaxRepository.CreateAsync(newTax, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
+            await _productOnTaxService.RelinkTaxToItem(id, newTax.Id, cancellationToken);
+            await _serviceOnTaxService.RelinkTaxToItem(id, newTax.Id, cancellationToken);
+
             var newTaxDto = _mapper.Map<TaxResponseDto>(newTax);
+            
             return newTaxDto;
         }
 
         public async Task<TaxResponseDto> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
+            var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new Exception("No such tax exists!");
+
             var taxDto = _mapper.Map<TaxResponseDto>(tax);
             return taxDto;
-        }
-
-        public async Task LinkTaxToProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UnlinkTaxFromProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task LinkTaxToServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UnlinkTaxFromServicesAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }
