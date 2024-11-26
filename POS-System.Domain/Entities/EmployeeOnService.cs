@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
-    //Problem with ApplicationUser<int>!!! Do we even need a many to many table here?
     [Table("EmployeeOnServices")]
     [PrimaryKey(nameof(EmployeeVersionId), nameof(ServiceVersionId), nameof(StartDate))]
     public record EmployeeOnService
