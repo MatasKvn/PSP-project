@@ -4,7 +4,7 @@ using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
 {
-    [Route("api/time~slot")]
+    [Route("api/time-slot")]
     [ApiController]
     public class TimeSlotController(ITimeSlotService _timeSlotService) : ControllerBase
     {
@@ -39,8 +39,8 @@ namespace POS_System.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTimeSlot(int id, CancellationToken cancellationToken)
         {
-            await _timeSlotService.DeleteTimeSlotAsync(id, cancellationToken);
-            return Ok();
+            var timeSlot = await _timeSlotService.DeleteTimeSlotAsync(id, cancellationToken);
+            return Ok(timeSlot);
         }
     }
 }

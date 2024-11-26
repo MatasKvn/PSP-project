@@ -19,13 +19,16 @@ namespace POS_System.Business.Services
             return responseTimeSlotDto;
         }
 
-        public async Task DeleteTimeSlotAsync(int id, CancellationToken cancellationToken)
+        public async Task<GetTimeSlotDto> DeleteTimeSlotAsync(int id, CancellationToken cancellationToken)
         {
             var timeSlot = await _unitOfWork.TimeSlotRepository.GetByIdAsync(id, cancellationToken);
 
             timeSlot.IsAvailable = false;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var responseTimeSlotDto = _mapper.Map<GetTimeSlotDto>(timeSlot);
+            return responseTimeSlotDto;
         }
 
         public async Task<GetTimeSlotDto?> GetTimeSlotByIdAsync(int id, CancellationToken cancellationToken)
