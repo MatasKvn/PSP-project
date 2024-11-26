@@ -7,12 +7,13 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Fields
-        public required DateTime Date { get; init; }
+        public required DateOnly Date { get; init; }
         public required int Value { get; init; }
+
         [MaxLength(8)]
-        public required string Code { get; init; }
+        public required string Code { get; set; }
     }
 }

@@ -9,11 +9,11 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Foreign keys
         [ForeignKey("Employee")]
-        public int EmployeeVersionId { get; init; }
+        public int EmployeeVersionId { get; set; }
 
         //Navigation properties
         public virtual ICollection<CartOnCartDiscount> CartOnCartDiscounts { get; set; }

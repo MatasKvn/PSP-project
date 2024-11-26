@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
 using POS_System.Common.Enums;
@@ -15,27 +15,12 @@ namespace POS_System.Data.Database
             SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
             SeedServiceOnTax(modelBuilder);
+            SeedGiftCards(modelBuilder);
             SeedCarts(modelBuilder);
-        }
+            SeedCartItem(modelBuilder);
+            SeedProductModification(modelBuilder);
+            SeedTimeSlots(modelBuilder);
 
-        public static void SeedEmployees(ModelBuilder modelBuilder) {
-            modelBuilder.Entity<ApplicationUser<int>>().HasData(
-                new ApplicationUser<int> { Id = 1, EmployeeId = 1, FirstName = "John", LastName = "Doe", UserName = "johndoe", NormalizedUserName = "johndoe", Email = "johndoe@example.com", NormalizedEmail = "johndoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
-                new ApplicationUser<int> { Id = 2, EmployeeId = 2, FirstName = "Jane", LastName = "Doe", UserName = "janedoe", NormalizedUserName = "janedoe", Email = "janedoe@example.com", NormalizedEmail = "janedoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
-                new ApplicationUser<int> { Id = 3, EmployeeId = 3, FirstName = "Adam", LastName = "Smith", UserName = "adamsmith", NormalizedUserName = "adamsmith", Email = "adamsmith@example.com", NormalizedEmail = "adamsmith@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
-                new ApplicationUser<int> { Id = 4, EmployeeId = 4, FirstName = "Bob", LastName = "Johnson", UserName = "bobjohnson", NormalizedUserName = "bobjohnson", Email = "bobjohnson@example.com", NormalizedEmail = "bobjohnson@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
-                new ApplicationUser<int> { Id = 5, EmployeeId = 1, FirstName = "Johnson", LastName = "Doe", UserName = "johnsondoe", NormalizedUserName = "johnsondoe", Email = "johndoe@example.com", NormalizedEmail = "johndoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 }
-            );
-        }
-
-        public static void SeedCarts(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Cart>().HasData(
-                new Cart { Id = 1, DateCreated = new DateTime(2024, 11, 21, 14, 42, 13), EmployeeVersionId = 1, Status = CartStatusEnum.PENDING },
-                new Cart { Id = 2, DateCreated = new DateTime(2022, 11, 1, 15, 0, 1), EmployeeVersionId = 1, Status = CartStatusEnum.IN_PROGRESS },
-                new Cart { Id = 3, DateCreated = new DateTime(2023, 5, 10, 10, 30, 0), EmployeeVersionId = 2, Status = CartStatusEnum.COMPLETED },
-                new Cart { Id = 4, DateCreated = new DateTime(2023, 6, 15, 11, 45, 0), EmployeeVersionId = 3, Status = CartStatusEnum.PENDING }
-            );
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
@@ -48,6 +33,17 @@ namespace POS_System.Data.Database
             );
         }
 
+        public static void SeedEmployees(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ApplicationUser<int>>().HasData(
+                new ApplicationUser<int> { Id = 1, EmployeeId = 1, FirstName = "John", LastName = "Doe", UserName = "johndoe", NormalizedUserName = "johndoe", Email = "johndoe@example.com", NormalizedEmail = "johndoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 2, EmployeeId = 2, FirstName = "Jane", LastName = "Doe", UserName = "janedoe", NormalizedUserName = "janedoe", Email = "janedoe@example.com", NormalizedEmail = "janedoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 3, EmployeeId = 3, FirstName = "Adam", LastName = "Smith", UserName = "adamsmith", NormalizedUserName = "adamsmith", Email = "adamsmith@example.com", NormalizedEmail = "adamsmith@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 4, EmployeeId = 4, FirstName = "Bob", LastName = "Johnson", UserName = "bobjohnson", NormalizedUserName = "bobjohnson", Email = "bobjohnson@example.com", NormalizedEmail = "bobjohnson@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 },
+                new ApplicationUser<int> { Id = 5, EmployeeId = 1, FirstName = "Johnson", LastName = "Doe", UserName = "johnsondoe", NormalizedUserName = "johnsondoe", Email = "johndoe@example.com", NormalizedEmail = "johndoe@example.com", EmailConfirmed = true, PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1", PhoneNumberConfirmed = true, TwoFactorEnabled = false, LockoutEnabled = false, AccessFailedCount = 0 }
+            );
+        }
+
         public static void SeedProduct(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasData(
@@ -55,6 +51,26 @@ namespace POS_System.Data.Database
                 new Product { Id = 2, ProductId = 2, Name = "Product2", Description = "P2 desc", Price = 199, Stock = 5, ImageURL = "", Version = new DateTime(2024, 10, 15, 15, 0, 0), IsDeleted = true },
                 new Product { Id = 3, ProductId = 1, Name = "Product1 v2", Description = "P1 v2 desc", Price = 1099, Stock = 15, ImageURL = "", Version = new DateTime(2024, 10, 5, 16, 0, 0), IsDeleted = true },
                 new Product { Id = 4, ProductId = 1, Name = "Product1 v3", Description = "P1 v2 desc", Price = 599, Stock = 7, ImageURL = "", Version = new DateTime(2024, 11, 1, 17, 0, 0), IsDeleted = false }
+            );
+        }
+        public static void SeedTimeSlots(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TimeSlot>().HasData(
+                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
+                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
+                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.Now, IsAvailable = false },
+                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.Now, IsAvailable = true }
+            );
+        }
+
+        public static void SeedProductModification(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductModification>().HasData(
+                new ProductModification { Id = 1, ProductVersionId = 1, ProductModificationId = 1, Name = "Extra cheese", Description = "decs1", Price = 99, Version = new DateTime(2024, 10, 1, 9, 0, 0), IsDeleted = true }, 
+                new ProductModification { Id = 2, ProductVersionId = 1, ProductModificationId = 1, Name = "Extra cheese v2", Description = "decs1", Price = 100, Version = new DateTime(2024, 11, 1, 9, 0, 0), IsDeleted = false },
+                new ProductModification { Id = 3, ProductVersionId = 1, ProductModificationId = 2, Name = "No cheese", Description = "decs1", Price = 0, Version = new DateTime(2024, 11, 2, 9, 0, 0), IsDeleted = true }, 
+                new ProductModification { Id = 4, ProductVersionId = 1, ProductModificationId = 2, Name = "No cheese v2", Description = "decs1", Price = 0, Version = new DateTime(2024, 11, 3, 9, 0, 0), IsDeleted = false },
+                new ProductModification { Id = 5, ProductVersionId = 2, ProductModificationId = 3, Name = "Extra fork", Description = "decs1", Price = 50, Version = new DateTime(2024, 11, 4, 9, 0, 0), IsDeleted = false }
             );
         }
 
@@ -71,20 +87,81 @@ namespace POS_System.Data.Database
         public static void SeedProductOnTax(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductOnTax>().HasData(
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1 },
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4 },
-                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4 },
-                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3 }
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
             );
         }
 
         public static void SeedServiceOnTax(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ServiceOnTax>().HasData(
-                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4 },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1 },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4 },
-                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3 }
+                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
+            );
+        }
+
+        public static void SeedCartItem(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CartItem>().HasData(
+                new CartItem { Id = 1, CartId = 1, ProductVersionId = 1, ServiceVersionId = null, Quantity = 2, IsProduct = true },
+                new CartItem { Id = 2, CartId = 1, ProductVersionId = null, ServiceVersionId = 1, Quantity = 1, IsProduct = false },
+                new CartItem { Id = 3, CartId = 2, ProductVersionId = 2, ServiceVersionId = null, Quantity = 4, IsProduct = true },
+                new CartItem { Id = 4, CartId = 2, ProductVersionId = 3, ServiceVersionId = null, Quantity = 10, IsProduct = true }
+            );
+        }
+
+        public static void SeedCarts(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Cart>().HasData(
+                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING },
+                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED },
+                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS },
+                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING }
+            );
+        }
+
+        public static void SeedGiftCards(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GiftCard>().HasData(
+                new GiftCard
+                {
+                    Id = 1,
+                    Date = new DateOnly(2024, 1, 1),
+                    Value = 100,
+                    Code = "CARD100"
+                },
+                new GiftCard
+                {
+                    Id = 2,
+                    Date = new DateOnly(2024, 2, 15),
+                    Value = 150,
+                    Code = "CARD150"
+                },
+                new GiftCard
+                {
+                    Id = 3,
+                    Date = new DateOnly(2024, 3, 20),
+                    Value = 200,
+                    Code = "CARD200"
+                },
+                new GiftCard
+                {
+                    Id = 4,
+                    Date = new DateOnly(2024, 4, 10),
+                    Value = 50,
+                    Code = "CARD050"
+                },
+                new GiftCard
+                {
+                    Id = 5,
+                    Date = new DateOnly(2024, 5, 5),
+                    Value = 250,
+                    Code = "CARD250"
+                }
             );
         }
     }
