@@ -9,6 +9,6 @@ namespace POS_System.Business.Services.Interfaces
         public Task<IEnumerable<GetProductDto?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken);
         public Task<GetProductDto> CreateProductAsync(CreateProductDto? productDto, CancellationToken cancellationToken);
         public Task<GetProductDto> UpdateProductByProductIdAsync(int productId, CreateProductDto? productDto, CancellationToken cancellationToken);
-        public Task DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken);
+        public Task<GetProductDto> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken);
     }
 }

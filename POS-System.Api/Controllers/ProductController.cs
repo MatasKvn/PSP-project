@@ -46,8 +46,8 @@ namespace POS_System.Api.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> DeleteProductById(int productId, CancellationToken cancellationToken)
         {
-            await _productService.DeleteProductByProductIdAsync(productId, cancellationToken);
-            return Ok();
+            var product = await _productService.DeleteProductByProductIdAsync(productId, cancellationToken);
+            return Ok(product);
         }
     }
 }

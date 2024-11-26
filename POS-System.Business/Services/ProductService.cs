@@ -85,7 +85,7 @@ namespace POS_System.Business.Services
             return responseProductDto;
         }
 
-        public async Task DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<GetProductDto> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
@@ -94,6 +94,9 @@ namespace POS_System.Business.Services
 
             product.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var responseProductDto = _mapper.Map<GetProductDto>(product);
+            return responseProductDto;
         }
     }
 }
