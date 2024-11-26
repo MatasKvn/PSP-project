@@ -13,9 +13,9 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Tax, TaxDto>();
-            CreateMap<TaxDto, Tax>();
-
+            // Cart
+            CreateMap<Cart, CartResponse>();
+            CreateMap<CartResponse, Cart>();
             CreateMap<GiftCardRequestDto, GiftCard>();
             CreateMap<GiftCard, GiftCardResponseDto>();
 

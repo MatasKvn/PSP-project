@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
+using POS_System.Common.Enums;
 
 namespace POS_System.Data.Database
 {
@@ -8,13 +9,13 @@ namespace POS_System.Data.Database
     {
         public static void SeedAll(ModelBuilder modelBuilder)
         {
+            SeedEmployees(modelBuilder);
             SeedTax(modelBuilder);
             SeedProduct(modelBuilder);
             SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
             SeedServiceOnTax(modelBuilder);
             SeedGiftCards(modelBuilder);
-            SeedEmployees(modelBuilder);
             SeedCarts(modelBuilder);
             SeedCartItem(modelBuilder);
             SeedProductModification(modelBuilder);
@@ -116,10 +117,10 @@ namespace POS_System.Data.Database
         public static void SeedCarts(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cart>().HasData(
-                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01) },
-                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01) },
-                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01) },
-                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01) }
+                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING },
+                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED },
+                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS },
+                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING }
             );
         }
 

@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductModificationService, ProductModificationService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();

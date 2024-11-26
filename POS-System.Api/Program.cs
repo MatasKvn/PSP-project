@@ -12,9 +12,6 @@ builder.Services.AddApiServices(builder.Configuration); // configuration may be 
 builder.Services.AddBusinessServices(builder.Configuration); // configuration may be removed if not used
 builder.Services.AddDataServices(builder.Configuration);
 builder.Services.AddControllers();
-
-//builder.WebHost.UseUrls("http://localhost:3000");
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
