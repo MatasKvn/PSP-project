@@ -12,6 +12,9 @@ namespace Microsoft.Extensions.DependencyInjection
             // Register Business layer services
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<IProductModificationService, ProductModificationService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
             services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
 
