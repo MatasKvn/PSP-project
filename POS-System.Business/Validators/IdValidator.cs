@@ -1,4 +1,4 @@
-﻿using POS_System.Domain.Exceptions;
+﻿using POS_System.Common.Exceptions;
 
 namespace POS_System.Business.Validators;
 

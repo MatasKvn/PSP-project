@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace POS_System.Data.Repositories;
 
-public class ProductModificationRepository(ApplicationDbContext<int> dbContext) : Repository<ProductModification>(dbContext), IProductModificationRepository
+public class ProductModificationRepository(ApplicationDbContext dbContext) : Repository<ProductModification>(dbContext), IProductModificationRepository
 {
     public async Task<int> GetMaxProductModificationIdAsync(CancellationToken cancellationToken)
     {

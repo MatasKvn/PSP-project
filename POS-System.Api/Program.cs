@@ -34,13 +34,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
+app.UseRouting();
+
 app.UseCors();
 
-app.UseRouting();
-app.MapControllers();
 app.UseAuthentication();
-//app.UseAuthorization(); //Throws error if uncommented, NEED FIX
+app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

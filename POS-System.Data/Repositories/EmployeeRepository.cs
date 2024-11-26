@@ -5,6 +5,6 @@ using POS_System.Data.Repositories.Interfaces;
 
 namespace POS_System.Data.Repositories;
 
-public class EmployeeRepository(ApplicationDbContext<int> dbContext) : Repository<ApplicationUser<int>>(dbContext), IEmployeeRepository
+public class EmployeeRepository(ApplicationDbContext dbContext) : Repository<ApplicationUser>(dbContext), IEmployeeRepository
 {
 }

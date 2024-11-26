@@ -4,7 +4,7 @@ using POS_System.Business.Dtos.GiftCard;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
-using POS_System.Domain.Exceptions;
+using POS_System.Common.Exceptions;
 using POS_System.Business.Dtos;
 
 namespace POS_System.Business.Services;

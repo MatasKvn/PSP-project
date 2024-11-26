@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
-namespace POS_System.Domain.Exceptions;
+namespace POS_System.Common.Exceptions;
 
 public class BadRequestException : BaseException
 {

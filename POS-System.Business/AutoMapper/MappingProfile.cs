@@ -1,6 +1,8 @@
 using AutoMapper;
 using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Request;
+using POS_System.Data.Identity;
 using POS_System.Business.Dtos.GiftCard;
 using POS_System.Business.Dtos.ProductModificationDtos;
 using POS_System.Business.Dtos.ProductDtos;
@@ -13,6 +15,8 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
+            CreateMap<UserRegisterRequest, ApplicationUser>()
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
             // Cart
             CreateMap<Cart, CartResponse>();
             CreateMap<CartResponse, Cart>();

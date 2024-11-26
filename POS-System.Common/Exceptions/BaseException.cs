@@ -1,6 +1,4 @@
-﻿using POS_System.Common;
-
-namespace POS_System.Domain.Exceptions;
+namespace POS_System.Common.Exceptions;
 
 public abstract class BaseException : Exception
 {

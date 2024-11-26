@@ -3,6 +3,6 @@ using POS_System.Data.Repositories.Base;
 
 namespace POS_System.Data.Repositories.Interfaces;
 
-public interface IEmployeeRepository : IRepository<ApplicationUser<int>>
+public interface IEmployeeRepository : IRepository<ApplicationUser>
 {
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace POS_System.Data.Repositories;
 
-public class TaxRepository(ApplicationDbContext<int> dbContext) : Repository<Tax>(dbContext), ITaxRepository
+public class TaxRepository(ApplicationDbContext dbContext) : Repository<Tax>(dbContext), ITaxRepository
 {
     public async Task<int> GetMaxTaxIdAsync(CancellationToken cancellationToken)
     {

@@ -5,7 +5,7 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories
 {
-    public class ServiceOnTaxRepository(ApplicationDbContext<int> dbContext) : Repository<ServiceOnTax>(dbContext), IServiceOnTaxRepository
+    public class ServiceOnTaxRepository(ApplicationDbContext dbContext) : Repository<ServiceOnTax>(dbContext), IServiceOnTaxRepository
     {
     }
 }

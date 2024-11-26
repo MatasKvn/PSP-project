@@ -5,6 +5,6 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
-public class GiftCardRepository(ApplicationDbContext<int> dbContext) : Repository<GiftCard>(dbContext), IGiftCardRepository
+public class GiftCardRepository(ApplicationDbContext dbContext) : Repository<GiftCard>(dbContext), IGiftCardRepository
 {
 }

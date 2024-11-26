@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Services.Interfaces;
 

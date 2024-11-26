@@ -1,4 +1,4 @@
-﻿namespace POS_System.Common;
+namespace POS_System.Common;
 
 public class ErrorDetails
 {
