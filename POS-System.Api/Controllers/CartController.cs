@@ -10,14 +10,14 @@ namespace POS_System.Api.Controllers
     {
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken, int pageNum = 0, int pageSize = 35)
         {
-            var result = await _cartService.GetAllAsync(cancellationToken);
+            var result = await _cartService.GetAllAsync(cancellationToken, pageNum, pageSize);
             return Ok(result);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetByID(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByID([FromRoute] int id, CancellationToken cancellationToken)
         {
             var cart = await _cartService.GetByIdAsync(id, cancellationToken);
             return Ok(cart);
@@ -31,7 +31,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken cancellationToken)
         {
             await _cartService.DeleteCartAsync(id, cancellationToken);
             return Ok();

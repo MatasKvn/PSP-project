@@ -5,7 +5,7 @@ namespace POS_System.Business.Services.Interfaces
 {
     public interface ICartService
     {
-        Task<IEnumerable<CartResponse>> GetAllAsync(CancellationToken cancellationToken);
+        Task<PagedResponse<CartResponse>> GetAllAsync(CancellationToken cancellationToken, int pageNum, int pageSize);
 
         Task<CartResponse> GetByIdAsync(int id, CancellationToken cancellationToken);
 

@@ -8,11 +8,11 @@ namespace POS_System.Business.Services.Interfaces
 {
     public class CartService(IUnitOfWork _unitOfWork, IMapper _mapper) : ICartService
     {
-        public async Task<IEnumerable<CartResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<PagedResponse<CartResponse>> GetAllAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
-            var carts = await _unitOfWork.CartRepository.GetAllAsync(cancellationToken);
+            var (carts, cartCount) = await _unitOfWork.CartRepository.GetAllWithIncludesAndPaginationAsync(pageSize, pageNum, cancellationToken);
             var mappedCarts = _mapper.Map<IEnumerable<CartResponse>>(carts);
-            return mappedCarts;
+            return new PagedResponse<CartResponse>(cartCount, pageSize, pageNum, mappedCarts);
         }
 
         public async Task<CartResponse> GetByIdAsync(int id, CancellationToken cancellationToken)
