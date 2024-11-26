@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
 using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.GiftCard;
 using POS_System.Business.Dtos.ProductModificationDtos;
 using POS_System.Business.Dtos.ProductDtos;
 using POS_System.Business.Dtos.TimeSlotDtos;
@@ -12,6 +13,12 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
+            CreateMap<Tax, TaxDto>();
+            CreateMap<TaxDto, Tax>();
+
+            CreateMap<GiftCardRequestDto, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponseDto>();
+
             // ProductModification
             CreateMap<ProductModification, GetProductModificationDto>();
             CreateMap<GetProductModificationDto, ProductModification>();
@@ -33,6 +40,10 @@ namespace POS_System.Business.AutoMapper
             // Tax
             CreateMap<Tax, TaxResponseDto>();
             CreateMap<TaxRequestDto, Tax>();
+            
+            //Gift card
+            CreateMap<GiftCardRequestDto, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponseDto>();
         }
     }
 }

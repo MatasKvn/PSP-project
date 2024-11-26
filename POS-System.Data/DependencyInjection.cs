@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
+
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
                 ?? configuration.GetConnectionString("LocalConnection");
 
