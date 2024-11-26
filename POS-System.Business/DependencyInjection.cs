@@ -15,6 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IProductModificationService, ProductModificationService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
+            services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
+            services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
 
             return services;
         }

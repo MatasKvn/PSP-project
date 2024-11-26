@@ -23,6 +23,12 @@ namespace POS_System.Data.Database
                 .UseIdentityColumn()
                 .HasIdentityOptions(startValue: 1, incrementBy: 1);
 
+            //Increment taxID by one on creation if not specified explicitly
+            modelBuilder.Entity<Tax>()
+                .Property(t => t.TaxId)
+                .UseIdentityColumn()
+                .HasIdentityOptions(startValue: 1, incrementBy: 1);
+
             //Manual links for ApplicationUser<int> (new Employee.cs)
             modelBuilder.Entity<ApplicationUser<int>>()
                 .HasMany<EmployeeOnService>()

@@ -8,14 +8,14 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public DateTime Id { get; init; }
+        public DateTime Id { get; set; }
 
         //Fields
         [MaxLength(70)]
-        public required string HolderName { get; init; }
+        public required string HolderName { get; set; }
         [MaxLength(4)]
-        public required string ExpireDate { get; init; }
+        public required string ExpireDate { get; set; }
         [MaxLength(4)]
-        public required string CardDigits { get; init; }
+        public required string CardDigits { get; set; }
     }
 }

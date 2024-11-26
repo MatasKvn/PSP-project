@@ -5,4 +5,5 @@ namespace POS_System.Data.Repositories.Interfaces;
 
 public interface ITaxRepository : IRepository<Tax>
 {
+    public Task<int> GetMaxTaxIdAsync(CancellationToken cancellationToken);
 }
