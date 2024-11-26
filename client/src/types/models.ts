@@ -1,7 +1,14 @@
 export type Cart = {
     id: number
     dateCreated: Date
-    isCompleted: boolean
+    status: CartStatusEnum
+    employeeVersionId: number
+}
+
+export enum CartStatusEnum {
+    PENDING,
+    IN_PROGRESS,
+    COMPLETED
 }
 
 export type CartDiscount = {

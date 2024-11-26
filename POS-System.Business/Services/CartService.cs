@@ -2,6 +2,7 @@ using AutoMapper;
 using POS_System.Business.Dtos;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
+using POS_System.Common.Enums;
 
 namespace POS_System.Business.Services.Interfaces
 {
@@ -18,7 +19,7 @@ namespace POS_System.Business.Services.Interfaces
         {
             var cart = await _unitOfWork.CartRepository.GetByIdAsync(id, cancellationToken);
             // TODO: add actual exception
-            if (cart == null)
+            if (cart is null)
             {
                 throw new Exception("Cart not found.");
             }
@@ -30,7 +31,7 @@ namespace POS_System.Business.Services.Interfaces
         {
             var cart = new Cart {
                 EmployeeVersionId = cartDto.EmployeeVersionId,
-                IsCompleted = false,
+                Status = CartStatusEnum.PENDING,
                 DateCreated = DateTime.Now
             };
 
@@ -44,13 +45,13 @@ namespace POS_System.Business.Services.Interfaces
         {
             var cart = await _unitOfWork.CartRepository.GetByIdAsync(id, cancellationToken);
             // TODO: add actual exception
-            if (cart == null)
+            if (cart is null)
             {
                 throw new Exception("Cart not found.");
             }
-            if (cart.IsCompleted)
+            if (cart.Status != CartStatusEnum.PENDING)
             {
-                throw new Exception("Cannot delete completed cart.");
+                throw new Exception("Cannot delete a non-pending cart.");
             }
             _unitOfWork.CartRepository.Delete(cart);
             await _unitOfWork.SaveChangesAsync();

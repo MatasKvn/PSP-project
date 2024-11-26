@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using POS_System.Common.Enums;
 
 namespace POS_System.Domain.Entities
 {
@@ -20,6 +21,6 @@ namespace POS_System.Domain.Entities
 
         //Fields
         public required DateTime DateCreated { get; init; }
-        public required bool IsCompleted { get; set; }
+        public required CartStatusEnum Status { get; set; }
     }
 }

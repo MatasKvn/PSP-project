@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
+using POS_System.Common.Enums;
 
 namespace POS_System.Data.Database
 {
@@ -30,10 +31,10 @@ namespace POS_System.Data.Database
         public static void SeedCarts(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cart>().HasData(
-                new Cart { Id = 1, DateCreated = new DateTime(2024, 11, 21, 14, 42, 13), EmployeeVersionId = 1, IsCompleted = false },
-                new Cart { Id = 2, DateCreated = new DateTime(2022, 11, 1, 15, 0, 1), EmployeeVersionId = 1, IsCompleted = true },
-                new Cart { Id = 3, DateCreated = new DateTime(2023, 5, 10, 10, 30, 0), EmployeeVersionId = 2, IsCompleted = true },
-                new Cart { Id = 4, DateCreated = new DateTime(2023, 6, 15, 11, 45, 0), EmployeeVersionId = 3, IsCompleted = false }
+                new Cart { Id = 1, DateCreated = new DateTime(2024, 11, 21, 14, 42, 13), EmployeeVersionId = 1, Status = CartStatusEnum.PENDING },
+                new Cart { Id = 2, DateCreated = new DateTime(2022, 11, 1, 15, 0, 1), EmployeeVersionId = 1, Status = CartStatusEnum.IN_PROGRESS },
+                new Cart { Id = 3, DateCreated = new DateTime(2023, 5, 10, 10, 30, 0), EmployeeVersionId = 2, Status = CartStatusEnum.COMPLETED },
+                new Cart { Id = 4, DateCreated = new DateTime(2023, 6, 15, 11, 45, 0), EmployeeVersionId = 3, Status = CartStatusEnum.PENDING }
             );
         }
 

@@ -1,6 +1,8 @@
+using POS_System.Common.Enums;
+
 namespace POS_System.Business.Dtos
 {
-    public class CartResponse
+    public record CartResponse
     {
         public int Id { get; set; }
 
@@ -8,6 +10,6 @@ namespace POS_System.Business.Dtos
 
         public DateTime DateCreated { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public required CartStatusEnum Status { get; set; }
     }
 }
