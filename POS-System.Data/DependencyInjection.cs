@@ -13,8 +13,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            //var connectionString = configuration.GetConnectionString("LocalConnection");
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                ?? configuration.GetConnectionString("LocalConnection");
+
             services.AddDbContext<ApplicationDbContext<int>>(options =>
                 options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -60,6 +61,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IProductOnTaxRepository, ProductOnTaxRepository>();
+            services.AddScoped<IServiceOnTaxRepository, ServiceOnTaxRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

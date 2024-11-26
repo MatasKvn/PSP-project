@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
@@ -8,14 +8,14 @@ namespace POS_System.Business.Services
 {
     public class TaxService(IUnitOfWork _unitOfWork, IMapper _mapper) : ITaxService
     {
-        public async Task<IEnumerable<TaxDto?>> GetAllTaxesAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TaxResponseDto?>> GetAllTaxesAsync(CancellationToken cancellationToken)
         {
             var taxes = await _unitOfWork.TaxRepository.GetAllByExpressionAsync(x => x.IsDeleted == false, cancellationToken);
-            var taxDtos = _mapper.Map<List<TaxDto>>(taxes);
+            var taxDtos = _mapper.Map<List<TaxResponseDto>>(taxes);
             return taxDtos;
         }
 
-        public async Task CreateTaxAsync(TaxDto? taxDto, CancellationToken cancellationToken)
+        public async Task CreateTaxAsync(TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
             var tax = _mapper.Map<Tax>(taxDto);
             await _unitOfWork.TaxRepository.CreateAsync(tax);
@@ -29,14 +29,14 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateTaxAsync(int id, TaxDto? taxDto, CancellationToken cancellationToken)
+        public async Task UpdateTaxAsync(int id, TaxRequestDto? taxDto, CancellationToken cancellationToken)
         {
             var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
             currentTax.IsDeleted = true;
 
             var newTax = new Tax
             {
-                TaxId = taxDto.TaxId,
+                TaxId = currentTax.TaxId,
                 Name = taxDto.Name,
                 Rate = taxDto.Rate,
                 IsPercentage = taxDto.IsPercentage,
@@ -48,33 +48,21 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<TaxDto?> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<TaxResponseDto?> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
         {
             var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken);
-            var taxDto = _mapper.Map<TaxDto>(tax);
+            var taxDto = _mapper.Map<TaxResponseDto>(tax);
             return taxDto;
         }
 
         public async Task LinkTaxToProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
         {
-            foreach (int productId in productIdList)
-            {
-                var productOnTax = new ProductOnTax
-                {
-                    TaxVersionId = taxId,
-                    ProductVersionId = productId,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = null
-                };
-            }
+            throw new NotImplementedException();
         }
 
         public async Task UnlinkTaxFromProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
         {
-            foreach (int productId in productIdList)
-            {
-            
-            }
+            throw new NotImplementedException();
         }
 
         public async Task LinkTaxToServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken)

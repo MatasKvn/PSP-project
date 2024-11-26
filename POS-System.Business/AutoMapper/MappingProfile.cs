@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Tax;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Business.AutoMapper
@@ -8,8 +8,8 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Tax, TaxDto>();
-            CreateMap<TaxDto, Tax>();
+            CreateMap<Tax, TaxResponseDto>();
+            CreateMap<TaxRequestDto, Tax>();
         }
     }
 }
