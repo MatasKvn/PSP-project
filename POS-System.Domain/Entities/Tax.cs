@@ -8,7 +8,7 @@ namespace POS_System.Domain.Entities
     {
         //Priamry key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Navigation properties
         public virtual ICollection<ProductOnTax> ProductOnTaxes { get; set; }
@@ -16,14 +16,14 @@ namespace POS_System.Domain.Entities
 
 
         //Fields
-        public int TaxId { get; init; }
+        public int TaxId { get; set; }
         [MaxLength(64)]
-        public required string Name { get; init; }
-        public required int Rate { get; init; }
-        public required bool IsPercentage { get; init; }
+        public required string Name { get; set; }
+        public required int Rate { get; set; }
+        public required bool IsPercentage { get; set; }
 
         //Versioning
-        public DateTime Version { get; init; }
-        public bool IsDeleted { get; init; }
+        public DateTime Version { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

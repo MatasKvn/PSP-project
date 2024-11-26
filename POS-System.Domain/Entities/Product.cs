@@ -8,7 +8,7 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Navigation properties
         public virtual ICollection<ProductOnTax> ProductOnTaxes { get; set; }
@@ -16,17 +16,17 @@ namespace POS_System.Domain.Entities
         public virtual ICollection<ProductModification> ProductModifications { get; set; }
 
         //Fields
-        public int ProductId { get; init; }
+        public int ProductId { get; set; }
         [MaxLength(40)]
-        public required string Name { get; init; }
-        public required string Description { get; init; }
-        public required int Price { get; init; }
-        public required string ImageURL { get; init; }
-        public required int Stock { get; init; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required int Price { get; set; }
+        public required string ImageURL { get; set; }
+        public required int Stock { get; set; }
 
         //Versioning
-        public DateTime Version { get; init; }
-        public bool IsDeleted { get; init; }
+        public DateTime Version { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }
