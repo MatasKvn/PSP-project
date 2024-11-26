@@ -10,11 +10,8 @@ namespace POS_System.Business.Services
     {
         public async Task<GetProductModificationDto> CreateProductModificationAsync(CreateProductModificationDto? productModifictaionDto, CancellationToken cancelationToken)
         {
-            var newProductModificationId = await _unitOfWork.ProductModificationRepository.GetMaxProductModificationIdAsync(cancelationToken) + 1;
-
             var productModification = _mapper.Map<ProductModification>(productModifictaionDto);
             
-            productModification.ProductModificationId = newProductModificationId;
             productModification.Version = DateTime.Now;
             productModification.IsDeleted = false;
 

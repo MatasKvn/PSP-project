@@ -42,11 +42,8 @@ namespace POS_System.Business.Services
 
         public async Task<GetProductDto> CreateProductAsync(CreateProductDto? productDto, CancellationToken cancellationToken)
         {
-            var newProductId = await _unitOfWork.ProductRepository.GetMaxProductIdAsync(cancellationToken) + 1;
-
             var product = _mapper.Map<Product>(productDto);
 
-            product.ProductId = newProductId;
             product.Version = DateTime.Now;
             product.IsDeleted = false;
 
