@@ -2,6 +2,7 @@
 using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.ProductModificationDtos;
 using POS_System.Business.Dtos.ProductDtos;
+using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Business.AutoMapper
@@ -24,6 +25,12 @@ namespace POS_System.Business.AutoMapper
             CreateMap<GetProductDto, Product>();
             CreateMap<Product, CreateProductDto>();
             CreateMap<CreateProductDto, Product>();
+
+            // TimeSlot
+            CreateMap<TimeSlot, GetTimeSlotDto>();
+            CreateMap<GetTimeSlotDto, TimeSlot>();
+            CreateMap<TimeSlot, CreateTimeSlotDto>();
+            CreateMap<CreateTimeSlotDto, TimeSlot>();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace POS_System.Data.Database
             SeedCarts(modelBuilder);
             SeedCartItem(modelBuilder);
             SeedProductModification(modelBuilder);
+            SeedTimeSlots(modelBuilder);
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
@@ -47,6 +48,15 @@ namespace POS_System.Data.Database
                 new Product { Id = 2, ProductId = 2, Name = "Product2", Description = "P2 desc", Price = 199, Stock = 5, ImageURL = "", Version = new DateTime(2024, 10, 15, 15, 0, 0), IsDeleted = true },
                 new Product { Id = 3, ProductId = 1, Name = "Product1 v2", Description = "P1 v2 desc", Price = 1099, Stock = 15, ImageURL = "", Version = new DateTime(2024, 10, 5, 16, 0, 0), IsDeleted = true },
                 new Product { Id = 4, ProductId = 1, Name = "Product1 v3", Description = "P1 v2 desc", Price = 599, Stock = 7, ImageURL = "", Version = new DateTime(2024, 11, 1, 17, 0, 0), IsDeleted = false }
+            );
+        }
+        public static void SeedTimeSlots(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TimeSlot>().HasData(
+                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
+                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
+                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.Now, IsAvailable = false },
+                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.Now, IsAvailable = true }
             );
         }
 
