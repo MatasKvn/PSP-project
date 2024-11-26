@@ -66,6 +66,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.AddPolicy("HistoricRead", policy => policy.RequireClaim("HistoricRead"));
             });
 
+            services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductModificationService, ProductModificationService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
+            services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
+            services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
+            services.AddScoped<IGiftCardService, GiftCardService>();
+
             return services;
         }
 

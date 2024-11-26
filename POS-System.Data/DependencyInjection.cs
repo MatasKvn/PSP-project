@@ -62,6 +62,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IProductOnTaxRepository, ProductOnTaxRepository>();
+            services.AddScoped<IServiceOnTaxRepository, ServiceOnTaxRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         

@@ -5,6 +5,7 @@ namespace POS_System.Data.Identity
 {
     public class ApplicationUser : IdentityUser<int>
     {
+        public required int EmployeeId { get; set; } 
         [MaxLength(30)]
         public required string FirstName { get; set; }
         [MaxLength(30)]

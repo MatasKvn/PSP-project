@@ -13,6 +13,22 @@ namespace POS_System.Data.Database
 
         public static void LinkApplicationUser(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ProductModification>()
+                .Property(t => t.ProductModificationId)
+                .UseIdentityColumn()
+                .HasIdentityOptions(startValue: 1, incrementBy: 1);
+
+            modelBuilder.Entity<Product>()
+                .Property(t => t.ProductId)
+                .UseIdentityColumn()
+                .HasIdentityOptions(startValue: 1, incrementBy: 1);
+
+            //Increment taxID by one on creation if not specified explicitly
+            modelBuilder.Entity<Tax>()
+                .Property(t => t.TaxId)
+                .UseIdentityColumn()
+                .HasIdentityOptions(startValue: 1, incrementBy: 1);
+
             //Manual links for ApplicationUser (new Employee.cs)
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany<EmployeeOnService>()

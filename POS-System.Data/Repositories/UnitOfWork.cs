@@ -17,7 +17,9 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         IServiceReservationRepository serviceReservationRepository,
                         ITaxRepository taxRepository,
                         ITimeSlotRepository timeSlotRepository,
-                        ITransactionRepository transactionRepository) : IUnitOfWork
+                        ITransactionRepository transactionRepository,
+                        IProductOnTaxRepository productOnTaxRepository,
+                        IServiceOnTaxRepository serviceOnTaxRepository) : IUnitOfWork
 {
     public ICardDetailsRepository CardDetailsRepository { get; } = cardDetailsRepository;
     public ICartDiscountRepository CartDiscountRepository { get; } = cartDiscountRepository;
@@ -33,6 +35,8 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public ITaxRepository TaxRepository { get; } = taxRepository;
     public ITimeSlotRepository TimeSlotRepository { get; } = timeSlotRepository;
     public ITransactionRepository TransactionRepository { get; } = transactionRepository;
+    public IProductOnTaxRepository ProductOnTaxRepository { get; } = productOnTaxRepository;
+    public IServiceOnTaxRepository ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

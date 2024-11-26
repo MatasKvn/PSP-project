@@ -40,6 +40,22 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
     }
 
+    public async Task<(IReadOnlyList<T> Results, int TotalCount)> GetAllWithPaginationAsync(
+    int pageSize, int pageNumber, CancellationToken cancellationToken = default)
+    {
+        var query = _dbSet.AsNoTracking();
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var results = await query
+            .OrderBy(x => EF.Property<object>(x, "Id"))
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (results, totalCount);
+    }
+
     public async Task<List<T>> GetAllByExpressionWithIncludesAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {

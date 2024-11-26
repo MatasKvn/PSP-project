@@ -5,4 +5,5 @@ namespace POS_System.Data.Repositories.Interfaces;
 
 public interface IProductRepository : IRepository<Product>
 {
+    public Task<int> GetMaxProductIdAsync(CancellationToken cancellationToken);
 }
