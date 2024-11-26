@@ -84,7 +84,7 @@ namespace POS_System.Business.Services
                         var existingLink = await _unitOfWork.ProductOnTaxRepository.GetByExpressionWithIncludesAsync(x => x.TaxVersionId == taxId && x.ProductVersionId == productId);
                         if (existingLink is not null)
                         {
-                            _unitOfWork.ProductOnTaxRepository.Delete(existingLink);
+                            existingLink.EndDate = DateTime.UtcNow;
                         }
                     }
                 }
