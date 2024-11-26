@@ -13,7 +13,7 @@ namespace POS_System.Business.AutoMapper
             CreateMap<Tax, TaxDto>();
             CreateMap<TaxDto, Tax>();
 
-            CreateMap<UserRequest, ApplicationUser>()
+            CreateMap<UserRegisterRequest, ApplicationUser>()
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
         }
     }
