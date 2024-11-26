@@ -8,23 +8,23 @@ namespace POS_System.Domain.Entities
     {
         //Primary key
         [Key]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         //Foreign keys
         [ForeignKey("CartItem")]
-        public int CartItemId { get; init; }
+        public int CartItemId { get; set; }
         [ForeignKey("Timeslot")]
-        public int TimeSlotId { get; init; }
+        public int TimeSlotId { get; set; }
 
         //Navigation properties
         public virtual CartItem CartItem { get; set; }
         public virtual TimeSlot TimeSlot { get; set; }
 
         //Fields
-        public required DateTime BookingTime { get; init; }
+        public required DateTime BookingTime { get; set; }
         [MaxLength(40)]
-        public required string CustomerName { get; init; }
+        public required string CustomerName { get; set; }
         [MaxLength(15)]
-        public required string CustomerPhone { get; init; }
+        public required string CustomerPhone { get; set; }
     }
 }

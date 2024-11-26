@@ -47,20 +47,20 @@ namespace POS_System.Data.Database
         public static void SeedProductOnTax(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductOnTax>().HasData(
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1 },
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4 },
-                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4 },
-                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3 }
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
             );
         }
 
         public static void SeedServiceOnTax(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ServiceOnTax>().HasData(
-                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4 },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1 },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4 },
-                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3 }
+                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
             );
         }
     }
