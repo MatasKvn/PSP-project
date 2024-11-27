@@ -1,0 +1,34 @@
+
+.navbar {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    flex: 1;
+
+    width: 15rem;
+    height: 100%;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+
+.nav_item {
+    padding: 1rem 3rem;
+    margin: 5px;
+    border-radius: 10px;
+
+    &_active {
+        padding: 1rem 3rem;
+        margin: 5px;
+        border-radius: 10px;
+        background-color: lightgrey;
+    }
+
+    &:hover {
+        padding: 1rem 3rem;
+        margin: 5px;
+        border-radius: 10px;
+        background-color: lightgrey;
+        cursor: pointer;
+    }
+}

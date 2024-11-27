@@ -10,6 +10,7 @@ appsettings.Development.json
 # Output
 obj/
 bin/
+node_modules
 
 # Migrations
 /.vs

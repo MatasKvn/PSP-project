@@ -1,0 +1,12 @@
+@use '@/assets/styles/variables' as *;
+
+.button {
+    border-color: $black;
+    padding: .3em;
+    border-width: 1px;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: $light-grey;
+    }
+}
