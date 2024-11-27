@@ -6,6 +6,7 @@ using POS_System.Data.Identity;
 using POS_System.Data.Repositories;
 using POS_System.Data.Repositories.Base;
 using POS_System.Data.Repositories.Interfaces;
+using POS_System.Domain.Entities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -13,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("LocalConnection") ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? configuration.GetConnectionString("LocalConnection");
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
@@ -62,8 +63,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<IProductOnTaxRepository, ProductOnTaxRepository>();
-            services.AddScoped<IServiceOnTaxRepository, ServiceOnTaxRepository>();
+            services.AddScoped<IGenericManyToManyRepository<Product, Tax, ProductOnTax>, GenericManyToManyRepository<Product, Tax, ProductOnTax>>();
+            services.AddScoped<IGenericManyToManyRepository<Service, Tax, ServiceOnTax>, GenericManyToManyRepository<Service, Tax, ServiceOnTax>>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         

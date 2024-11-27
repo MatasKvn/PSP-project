@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -467,23 +467,23 @@ namespace POS_System.Data.Migrations
                 name: "ProductOnTax",
                 columns: table => new
                 {
-                    ProductVersionId = table.Column<int>(type: "integer", nullable: false),
-                    TaxVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductOnTax", x => new { x.ProductVersionId, x.TaxVersionId, x.StartDate });
+                    table.PrimaryKey("PK_ProductOnTax", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_ProductOnTax_Products_ProductVersionId",
-                        column: x => x.ProductVersionId,
+                        name: "FK_ProductOnTax_Products_LeftEntityId",
+                        column: x => x.LeftEntityId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductOnTax_Taxes_TaxVersionId",
-                        column: x => x.TaxVersionId,
+                        name: "FK_ProductOnTax_Taxes_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "Taxes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -493,23 +493,23 @@ namespace POS_System.Data.Migrations
                 name: "ServiceOnTax",
                 columns: table => new
                 {
-                    ServiceVersionId = table.Column<int>(type: "integer", nullable: false),
-                    TaxVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceOnTax", x => new { x.ServiceVersionId, x.TaxVersionId, x.StartDate });
+                    table.PrimaryKey("PK_ServiceOnTax", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_ServiceOnTax_Services_ServiceVersionId",
-                        column: x => x.ServiceVersionId,
+                        name: "FK_ServiceOnTax_Services_LeftEntityId",
+                        column: x => x.LeftEntityId,
                         principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ServiceOnTax_Taxes_TaxVersionId",
-                        column: x => x.TaxVersionId,
+                        name: "FK_ServiceOnTax_Taxes_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "Taxes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -730,36 +730,14 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ProductOnTax",
-                columns: new[] { "ProductVersionId", "StartDate", "TaxVersionId", "EndDate" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(260), 1, null },
-                    { 1, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(329), 4, null },
-                    { 3, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(338), 3, null },
-                    { 4, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(334), 4, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ServiceOnTax",
-                columns: new[] { "ServiceVersionId", "StartDate", "TaxVersionId", "EndDate" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(449), 4, null },
-                    { 2, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(465), 3, null },
-                    { 4, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(457), 1, null },
-                    { 4, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(461), 4, null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "TimeSlots",
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(838) },
-                    { 2, 1, true, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(847) },
-                    { 3, 2, false, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(851) },
-                    { 4, 3, true, new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(855) }
+                    { 1, 1, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8918) },
+                    { 2, 1, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8987) },
+                    { 3, 2, false, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8991) },
+                    { 4, 3, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8995) }
                 });
 
             migrationBuilder.InsertData(
@@ -847,9 +825,9 @@ namespace POS_System.Data.Migrations
                 column: "ItemDiscountVersionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductOnTax_TaxVersionId",
+                name: "IX_ProductOnTax_RightEntityId",
                 table: "ProductOnTax",
-                column: "TaxVersionId");
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceOnItemDiscounts_ItemDiscountVersionId",
@@ -857,9 +835,9 @@ namespace POS_System.Data.Migrations
                 column: "ItemDiscountVersionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceOnTax_TaxVersionId",
+                name: "IX_ServiceOnTax_RightEntityId",
                 table: "ServiceOnTax",
-                column: "TaxVersionId");
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceReservations_CartItemId",

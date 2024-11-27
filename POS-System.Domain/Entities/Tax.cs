@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using POS_System.Domain.Entities.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Taxes")]
-    public record Tax
+    public record Tax : ILinkable
     {
         //Priamry key
         [Key]

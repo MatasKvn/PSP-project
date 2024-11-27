@@ -12,8 +12,8 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241126201556_InitMigration")]
-    partial class InitMigration
+    [Migration("20241127093025_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -948,10 +948,10 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnTax", b =>
                 {
-                    b.Property<int>("ProductVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TaxVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -960,37 +960,11 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ProductVersionId", "TaxVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("TaxVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ProductOnTax");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductVersionId = 1,
-                            TaxVersionId = 1,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(260)
-                        },
-                        new
-                        {
-                            ProductVersionId = 1,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(329)
-                        },
-                        new
-                        {
-                            ProductVersionId = 4,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(334)
-                        },
-                        new
-                        {
-                            ProductVersionId = 3,
-                            TaxVersionId = 3,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(338)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Service", b =>
@@ -1107,10 +1081,10 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnTax", b =>
                 {
-                    b.Property<int>("ServiceVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TaxVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -1119,37 +1093,11 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ServiceVersionId", "TaxVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("TaxVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ServiceOnTax");
-
-                    b.HasData(
-                        new
-                        {
-                            ServiceVersionId = 1,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(449)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 4,
-                            TaxVersionId = 1,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(457)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 4,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(461)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 2,
-                            TaxVersionId = 3,
-                            StartDate = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(465)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceReservation", b =>
@@ -1298,28 +1246,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(838)
+                            StartTime = new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8918)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(847)
+                            StartTime = new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8987)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(851)
+                            StartTime = new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8991)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 11, 26, 22, 15, 55, 207, DateTimeKind.Local).AddTicks(855)
+                            StartTime = new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8995)
                         });
                 });
 
@@ -1521,21 +1469,21 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnTax", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.Product", "Product")
+                    b.HasOne("POS_System.Domain.Entities.Product", "LeftEntity")
                         .WithMany("ProductOnTaxes")
-                        .HasForeignKey("ProductVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Tax", "Tax")
+                    b.HasOne("POS_System.Domain.Entities.Tax", "RightEntity")
                         .WithMany("ProductOnTaxes")
-                        .HasForeignKey("TaxVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Tax");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnItemDiscount", b =>
@@ -1559,21 +1507,21 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnTax", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.Service", "Service")
+                    b.HasOne("POS_System.Domain.Entities.Service", "LeftEntity")
                         .WithMany("ServiceOnTaxes")
-                        .HasForeignKey("ServiceVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Tax", "Tax")
+                    b.HasOne("POS_System.Domain.Entities.Tax", "RightEntity")
                         .WithMany("ServiceOnTaxes")
-                        .HasForeignKey("TaxVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Service");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Tax");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceReservation", b =>

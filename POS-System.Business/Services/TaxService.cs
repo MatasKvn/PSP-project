@@ -3,10 +3,11 @@ using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
+using POS_System.Domain.Entities.Generic;
 
 namespace POS_System.Business.Services
 {
-    public class TaxService(IUnitOfWork _unitOfWork, IProductOnTaxService _productOnTaxService, IServiceOnTaxService _serviceOnTaxService, IMapper _mapper) : ITaxService
+    public class TaxService(IUnitOfWork _unitOfWork, IManyToManyService<Product, Tax, ProductOnTax> _productOnTaxService, IManyToManyService<Service, Tax, ServiceOnTax> _serviceOnTaxService,  IMapper _mapper) : ITaxService
     {
         public async Task<IEnumerable<TaxResponseDto>> GetAllTaxesAsync(CancellationToken cancellationToken)
         {
@@ -34,8 +35,8 @@ namespace POS_System.Business.Services
                 ?? throw new Exception("No such tax to delete!");
 
             tax.IsDeleted = true;
-            await _productOnTaxService.MarkActiveTaxLinksDeleted(id, cancellationToken);
-            await _serviceOnTaxService.MarkActiveTaxLinksDeleted(id, cancellationToken);
+            await _productOnTaxService.MarkActiveLinksDeletedAsync(_unitOfWork.ProductOnTaxRepository, id, false, cancellationToken);
+            await _serviceOnTaxService.MarkActiveLinksDeletedAsync(_unitOfWork.ServiceOnTaxRepository, id, false, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync();
         }
@@ -55,11 +56,11 @@ namespace POS_System.Business.Services
             await _unitOfWork.TaxRepository.CreateAsync(newTax, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            await _productOnTaxService.RelinkTaxToItem(id, newTax.Id, cancellationToken);
-            await _serviceOnTaxService.RelinkTaxToItem(id, newTax.Id, cancellationToken);
-
             var newTaxDto = _mapper.Map<TaxResponseDto>(newTax);
-            
+
+            await _productOnTaxService.RelinkItemToItem(_unitOfWork.ProductOnTaxRepository, id, newTax.Id, false, cancellationToken);
+            await _serviceOnTaxService.RelinkItemToItem(_unitOfWork.ServiceOnTaxRepository, id, newTax.Id, false, cancellationToken);
+
             return newTaxDto;
         }
 
@@ -70,6 +71,26 @@ namespace POS_System.Business.Services
 
             var taxDto = _mapper.Map<TaxResponseDto>(tax);
             return taxDto;
+        }
+
+        public async Task LinkTaxToProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
+        {
+            await _productOnTaxService.LinkItemToItemsAsync(_unitOfWork.ProductRepository, _unitOfWork.TaxRepository, _unitOfWork.ProductOnTaxRepository, taxId, productIdList, false, cancellationToken);
+        }
+
+        public async Task UnlinkTaxFromProductsAsync(int taxId, int[] productIdList, CancellationToken cancellationToken)
+        {
+            await _productOnTaxService.UnlinkItemFromItemsAsync(_unitOfWork.ProductRepository, _unitOfWork.TaxRepository, _unitOfWork.ProductOnTaxRepository, taxId, productIdList, false, cancellationToken);
+        }
+
+        public async Task LinkTaxToServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken)
+        {
+            await _serviceOnTaxService.LinkItemToItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, taxId, serviceIdList, false, cancellationToken);
+        }
+
+        public async Task UnlinkTaxFromServicesAsync(int taxId, int[] serviceIdList, CancellationToken cancellationToken)
+        {
+            await _serviceOnTaxService.UnlinkItemFromItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, taxId, serviceIdList, false, cancellationToken);
         }
     }
 }
