@@ -13,27 +13,23 @@ namespace POS_System.Business.Services
     {
         public async Task MarkActiveLinksDeletedAsync(IRepository<TManyToMany> linkRepository, int id, bool markingLeft, CancellationToken cancellationToken)
         {
-            IEnumerable<TManyToMany> itemLinks;
-
-            if (markingLeft)
-                itemLinks = await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == id && x.EndDate == null, cancellationToken);
-            itemLinks = await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == id && x.EndDate == null, cancellationToken);
+            IEnumerable<TManyToMany> itemLinks = markingLeft ?
+                await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == id && x.EndDate == null, cancellationToken)
+                : await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == id && x.EndDate == null, cancellationToken);
 
             foreach (var itemLink in itemLinks)
             {
                 itemLink.EndDate = DateTime.UtcNow;
             }
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task RelinkItemToItem(IRepository<TManyToMany> linkRepository, int oldItemId, int newItemId, bool relinkingLeft, CancellationToken cancellationToken)
         {
-            IEnumerable<TManyToMany> itemLinks;
-
-            if (relinkingLeft)
-                itemLinks = await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == oldItemId && x.EndDate == null, cancellationToken);
-            itemLinks = await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == oldItemId && x.EndDate == null, cancellationToken);
+            IEnumerable<TManyToMany> itemLinks = relinkingLeft ?
+                await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == oldItemId && x.EndDate == null, cancellationToken)
+                : await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == oldItemId && x.EndDate == null, cancellationToken);
 
             foreach (var itemLink in itemLinks)
             {
@@ -63,35 +59,29 @@ namespace POS_System.Business.Services
                 await linkRepository.CreateAsync(newItemLink, cancellationToken);
             }
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task LinkItemToItemsAsync(IRepository<TLeft> leftRepository, IRepository<TRight> rightRepository, IRepository<TManyToMany> linksRepository,
             int itemId, int[] linkingItemsIdList, bool linkableItemIsLeft, CancellationToken cancellationToken)
         {
-            ILinkable? linkableItem;
-
-            if (linkableItemIsLeft)
-                linkableItem = await leftRepository.GetByIdAsync(itemId, cancellationToken);
-            linkableItem = await rightRepository.GetByIdAsync(itemId, cancellationToken);
+            ILinkable? linkableItem = linkableItemIsLeft ?
+                await leftRepository.GetByIdAsync(itemId, cancellationToken)
+                : await rightRepository.GetByIdAsync(itemId, cancellationToken);
 
             if (linkableItem is not null && linkableItem.IsDeleted == false)
             {
                 foreach (var linkItemId in linkingItemsIdList)
                 {
-                    ILinkable? linkingItem;
-
-                    if (linkableItemIsLeft)
-                        linkingItem = await rightRepository.GetByIdAsync(linkItemId, cancellationToken);
-                    linkingItem = await leftRepository.GetByIdAsync(linkItemId, cancellationToken);
+                    ILinkable? linkingItem = linkableItemIsLeft ?
+                        await rightRepository.GetByIdAsync(linkItemId, cancellationToken)
+                        : await leftRepository.GetByIdAsync(linkItemId, cancellationToken);
 
                     if (linkingItem is not null && linkingItem.IsDeleted == false)
                     {
-                        TManyToMany? existingLink;
-
-                        if (linkableItemIsLeft)
-                            existingLink = await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == itemId && x.RightEntityId == linkItemId && x.EndDate == null);
-                        existingLink = await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == linkItemId && x.RightEntityId == itemId && x.EndDate == null);
+                        TManyToMany? existingLink = linkableItemIsLeft ?
+                            await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == itemId && x.RightEntityId == linkItemId && x.EndDate == null)
+                            : await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == linkItemId && x.RightEntityId == itemId && x.EndDate == null);
 
                         if (existingLink is null)
                         {
@@ -127,29 +117,23 @@ namespace POS_System.Business.Services
         public async Task UnlinkItemFromItemsAsync(IRepository<TLeft> leftRepository, IRepository<TRight> rightRepository, IRepository<TManyToMany> linksRepository,
             int itemId, int[] linkingItemsIdList, bool linkableItemIsLeft, CancellationToken cancellationToken)
         {
-            ILinkable? linkableItem;
-
-            if (linkableItemIsLeft)
-                linkableItem = await leftRepository.GetByIdAsync(itemId, cancellationToken);
-            linkableItem = await rightRepository.GetByIdAsync(itemId, cancellationToken);
+            ILinkable? linkableItem = linkableItemIsLeft ?
+                await leftRepository.GetByIdAsync(itemId, cancellationToken)
+                : await rightRepository.GetByIdAsync(itemId, cancellationToken);
 
             if (linkableItem is not null && linkableItem.IsDeleted == false)
             {
                 foreach (var linkItemId in linkingItemsIdList)
                 {
-                    ILinkable? linkingItem;
-
-                    if (linkableItemIsLeft)
-                        linkingItem = await rightRepository.GetByIdAsync(linkItemId, cancellationToken);
-                    linkingItem = await leftRepository.GetByIdAsync(linkItemId, cancellationToken);
+                    ILinkable? linkingItem = linkableItemIsLeft ?
+                        await rightRepository.GetByIdAsync(linkItemId, cancellationToken)
+                        : await leftRepository.GetByIdAsync(linkItemId, cancellationToken);
 
                     if (linkingItem is not null && linkingItem.IsDeleted == false)
                     {
-                        TManyToMany? existingLink;
-
-                        if (linkableItemIsLeft)
-                            existingLink = await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == itemId && x.RightEntityId == linkItemId && x.EndDate == null);
-                        existingLink = await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == linkItemId && x.RightEntityId == itemId && x.EndDate == null);
+                        TManyToMany? existingLink = linkableItemIsLeft ?
+                            await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == itemId && x.RightEntityId == linkItemId && x.EndDate == null)
+                            : await linksRepository.GetByExpressionWithIncludesAsync(x => x.LeftEntityId == linkItemId && x.RightEntityId == itemId && x.EndDate == null);
 
                         if (existingLink is not null)
                         {
