@@ -3,6 +3,8 @@ using POS_System.Business.Dtos;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
 using POS_System.Common.Enums;
+using POS_System.Business.Dtos.Response;
+using POS_System.Business.Dtos.Request;
 
 namespace POS_System.Business.Services.Interfaces
 {
