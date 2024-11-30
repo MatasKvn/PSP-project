@@ -1,0 +1,27 @@
+
+.form_wrapper {
+    display: flex;
+}
+
+.form_label {
+    margin: 0.5em auto;
+    width: 100%;
+    text-align: center;
+}
+
+.form {
+    display: inline-block;
+    margin: auto;
+}
+
+.input_fields_container {
+    margin: 1em auto;
+
+    div {
+        margin: 1em auto;
+    }
+}
+
+.login_button {
+    width: 100%;
+}
