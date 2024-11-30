@@ -6,12 +6,14 @@ import React, { useState } from 'react'
 
 import styles from './LoginPage.module.scss'
 import AuthApi from '@/api/auth.api'
-import { setCookie } from '@/utils/cookie'
 import { useRouter } from 'next/navigation'
+import { routes } from '@/constants/route'
+import { useCookies } from 'next-client-cookies'
 
 const LoginPage = () => {
     const [errorMsg, setErrorMsg] = useState<string>('')
     const router = useRouter()
+    const cookies = useCookies()
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
@@ -24,12 +26,9 @@ const LoginPage = () => {
             setErrorMsg(response.error)
             return
         }
-        const { id, userName, role, jwtToken } = response.result!
-        setCookie('jwtToken', jwtToken)
-        setCookie('employeeId', id.toString())
-        setCookie('userName', userName)
-        setCookie('role', role)
-        router.push('/dashboard/carts/0')
+        const { jwtToken } = response.result!
+        cookies.set('jwtToken', jwtToken, { secure: true })
+        router.push(routes.carts)
     }
 
     return (

@@ -1,6 +1,7 @@
 'use client'
 
 import Button from "@/components/shared/Button"
+import { routes } from '@/constants/route'
 import { useRouter } from "next/navigation"
 
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
     return (
         <div>
             <h1>POS Client</h1>
-            <Button onClick={() => router.push('/dashboard/carts/0')}>Begin</Button>
+            <Button onClick={() => router.push(routes.carts)}>Begin</Button>
         </div>
     )
 }

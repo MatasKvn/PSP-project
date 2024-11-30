@@ -11,6 +11,7 @@
 	"dependencies": {
 		"jose": "^5.9.6",
 		"next": "15.0.2",
+		"next-client-cookies": "^2.0.0",
 		"react": "19.0.0-rc-02c0e824-20241028",
 		"react-dom": "19.0.0-rc-02c0e824-20241028",
 		"sass": "^1.81.0"

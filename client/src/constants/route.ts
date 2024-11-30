@@ -3,7 +3,7 @@ export const publicRoutes = [
     '/login'
 ]
 
-export const Routes = {
+export const routes = {
     login: '/login',
     carts: '/dashboard/carts/0',
     cart: (cartId: number) => `/dashboard/cart/${cartId}`

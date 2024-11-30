@@ -8,6 +8,7 @@ import Table from '@/components/shared/Table'
 import { useCarts } from '@/hooks/carts.hook'
 import { Cart, CartStatusEnum, getCartStatusEnumString } from '@/types/models'
 import { useRouter } from 'next/navigation'
+import { routes } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -53,7 +54,7 @@ const CartsPage = ({ pageNumber }: Props) => {
         ...cart,
         status: getCartStatusEnumString(cart.status),
         Delete: <Button onClick={() => handleCartDelete(cart)}>Delete</Button>,
-        Open: <Button onClick={() => router.push(`/dashboard/cart/${cart.id}`)}>Open</Button>
+        Open: <Button onClick={() => router.push(routes.cart(cart.id))}>Open</Button>
     })) || []
     const columns = Object.keys(dummyCartRow).map((key) => ({ name: key, key }))
 

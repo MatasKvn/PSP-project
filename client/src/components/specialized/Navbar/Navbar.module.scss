@@ -37,3 +37,16 @@
         cursor: pointer;
     }
 }
+
+
+.logout_button_wrapper {
+    display: flex;
+    flex: 1;
+    align-items: end;
+    padding: 1em;
+    width: 100%;
+
+    button {
+        width: 100%;
+    }
+}
