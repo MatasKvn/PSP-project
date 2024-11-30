@@ -9,7 +9,7 @@ const Navbar = () => {
 
     return (
         <nav className={styles.navbar}>
-            <h1>POS-System</h1>
+            <h4 className={styles.label}>POS-System</h4>
             <ul>
                 {navItems.map((navItem) => (
                     <a key={navItem.name} href={navItem.href}>

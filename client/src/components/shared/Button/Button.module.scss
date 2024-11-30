@@ -1,9 +1,9 @@
 @use '@/assets/styles/variables' as *;
 
 .button {
-    border-color: $black;
+    border-color: $light-grey;
     padding: .3em;
-    border-width: 1px;
+    border-width: 2px;
     border-radius: 5px;
 
     &:hover {

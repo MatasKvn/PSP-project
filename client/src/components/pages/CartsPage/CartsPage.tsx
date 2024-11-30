@@ -62,7 +62,7 @@ const CartsPage = ({ pageNumber }: Props) => {
             <h1>Carts Page</h1>
             <div style={{ margin: '2em auto' }}>
                 <Button onClick={() => handleCartCreate(employeeId)}>
-                    Create New Cart
+                    <h5>Create New Cart</h5>
                 </Button>
             </div>
             {isLoading ? (
