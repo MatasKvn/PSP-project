@@ -4,7 +4,7 @@ import styles from './Button.module.scss'
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode
-    className: string
+    className?: string
 }
 
 const Button = (props: Props) => {
