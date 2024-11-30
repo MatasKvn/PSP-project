@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS_System.Business.Dtos.TimeSlotDtos;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -23,14 +23,14 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTimeSlot(CreateTimeSlotDto? timeSlotDto, CancellationToken cancelationToken)
+        public async Task<IActionResult> CreateTimeSlot(TimeSlotRequest? timeSlotDto, CancellationToken cancelationToken)
         {
             var timeSlot = await _timeSlotService.CreateTimeSlotAsync(timeSlotDto, cancelationToken);
             return Ok(timeSlot);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTimeSlot(int id, CreateTimeSlotDto? timeSlotDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateTimeSlot(int id, TimeSlotRequest? timeSlotDto, CancellationToken cancellationToken)
         {
             var timeSlot = await _timeSlotService.UpdateTimeSlotAsync(id, timeSlotDto, cancellationToken);
             return Ok(timeSlot);

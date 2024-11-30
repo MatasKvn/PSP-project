@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using POS_System.Business.Dtos.Tax;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -16,7 +16,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTax([FromBody] TaxRequestDto taxDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateTax([FromBody] TaxRequest taxDto, CancellationToken cancellationToken)
         {
             var createdTax = await _taxService.CreateTaxAsync(taxDto, cancellationToken);
             return Ok(createdTax);
@@ -37,7 +37,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTaxById(int id, [FromBody] TaxRequestDto taxDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateTaxById(int id, [FromBody] TaxRequest taxDto, CancellationToken cancellationToken)
         {
             var updatedTax = await _taxService.UpdateTaxAsync(id, taxDto, cancellationToken);
             return Ok(updatedTax);

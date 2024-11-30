@@ -1,6 +1,6 @@
-﻿namespace POS_System.Business.Dtos.ProductModificationDtos
+﻿namespace POS_System.Business.Dtos.Request
 {
-    public record CreateProductModificationDto
+    public record ProductModificationRequest
     {
         public int ProductVersionId { get; set; }
         public required string Name { get; set; }

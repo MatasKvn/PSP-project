@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS_System.Business.Dtos.ProductModificationDtos;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -30,14 +30,14 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProductModification([FromBody] CreateProductModificationDto? productModificationDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateProductModification([FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
             var productModification = await _productModificationService.CreateProductModificationAsync(productModificationDto, cancellationToken);
             return Ok(productModification);
         }
 
         [HttpPut("{productModificationId}")]
-        public async Task<IActionResult> UpdateProductModification(int productModificationId, [FromBody] CreateProductModificationDto? productModificationDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProductModification(int productModificationId, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
             var productModification = await _productModificationService.UpdateProductModificationAsync(productModificationId, productModificationDto, cancellationToken);
             return Ok(productModification);

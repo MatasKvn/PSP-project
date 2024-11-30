@@ -1,13 +1,9 @@
 using AutoMapper;
-using POS_System.Business.Dtos.Tax;
 using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Data.Identity;
-using POS_System.Business.Dtos.GiftCard;
-using POS_System.Business.Dtos.ProductModificationDtos;
-using POS_System.Business.Dtos.ProductDtos;
-using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.AutoMapper
 {
@@ -20,34 +16,34 @@ namespace POS_System.Business.AutoMapper
             // Cart
             CreateMap<Cart, CartResponse>();
             CreateMap<CartResponse, Cart>();
-            CreateMap<GiftCardRequestDto, GiftCard>();
-            CreateMap<GiftCard, GiftCardResponseDto>();
+            CreateMap<GiftCardRequest, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponse>();
 
             // ProductModification
-            CreateMap<ProductModification, GetProductModificationDto>();
-            CreateMap<GetProductModificationDto, ProductModification>();
-            CreateMap<ProductModification, CreateProductModificationDto>();
-            CreateMap<CreateProductModificationDto, ProductModification>();
+            CreateMap<ProductModification, ProductModificationResponse>();
+            CreateMap<ProductModificationResponse, ProductModification>();
+            CreateMap<ProductModification, ProductModificationRequest>();
+            CreateMap<ProductModificationRequest, ProductModification>();
 
             // Product
-            CreateMap<Product, GetProductDto>();
-            CreateMap<GetProductDto, Product>();
-            CreateMap<Product, CreateProductDto>();
-            CreateMap<CreateProductDto, Product>();
+            CreateMap<Product, ProductResponse>();
+            CreateMap<ProductResponse, Product>();
+            CreateMap<Product, ProductRequest>();
+            CreateMap<ProductRequest, Product>();
 
             // TimeSlot
-            CreateMap<TimeSlot, GetTimeSlotDto>();
-            CreateMap<GetTimeSlotDto, TimeSlot>();
-            CreateMap<TimeSlot, CreateTimeSlotDto>();
-            CreateMap<CreateTimeSlotDto, TimeSlot>();
+            CreateMap<TimeSlot, TimeSlotResponse>();
+            CreateMap<TimeSlotResponse, TimeSlot>();
+            CreateMap<TimeSlot, TimeSlotRequest>();
+            CreateMap<TimeSlotRequest, TimeSlot>();
 
             // Tax
-            CreateMap<Tax, TaxResponseDto>();
-            CreateMap<TaxRequestDto, Tax>();
+            CreateMap<Tax, TaxResponse>();
+            CreateMap<TaxRequest, Tax>();
             
             //Gift card
-            CreateMap<GiftCardRequestDto, GiftCard>();
-            CreateMap<GiftCard, GiftCardResponseDto>();
+            CreateMap<GiftCardRequest, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponse>();
         }
     }
 }

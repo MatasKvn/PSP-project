@@ -1,6 +1,6 @@
-﻿namespace POS_System.Business.Dtos.ProductModificationDtos
+﻿namespace POS_System.Business.Dtos.Response
 {
-    public record GetProductModificationDto
+    public record ProductModificationResponse
     {
         public int Id { get; set; }
         public int ProductVersionId { get; set; }
