@@ -2,18 +2,20 @@ import React from 'react'
 
 import styles from './Button.module.scss'
 
-type Props = {
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode
-} & React.ButtonHTMLAttributes<HTMLButtonElement>
+    className: string
+}
 
 const Button = (props: Props) => {
     const {
         children,
+        className,
         ...rest
     } = props
 
     return (
-        <button className={styles.button} {...rest}>{children}</button>
+        <button className={[styles.button, className].join(' ')} {...rest}>{children}</button>
     )
 }
 

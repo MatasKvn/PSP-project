@@ -4,7 +4,7 @@
 }
 
 .form_label {
-    margin: 0.5em auto;
+    margin-top: 0.5em ;
     width: 100%;
     text-align: center;
 }
@@ -15,7 +15,7 @@
 }
 
 .input_fields_container {
-    margin: 1em auto;
+    margin: 1.5em auto;
 
     div {
         margin: 1em auto;
@@ -24,4 +24,8 @@
 
 .login_button {
     width: 100%;
+}
+
+.error_text {
+    color: red;
 }
