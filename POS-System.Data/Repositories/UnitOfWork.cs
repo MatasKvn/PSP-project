@@ -3,7 +3,6 @@ using POS_System.Data.Database;
 using POS_System.Data.Repositories.Base;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
-using POS_System.Domain.Entities.Generic;
 
 namespace POS_System.Data.Repositories;
 
@@ -22,6 +21,7 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         ITaxRepository taxRepository,
                         ITimeSlotRepository timeSlotRepository,
                         ITransactionRepository transactionRepository,
+                        IBusinessDetailRepository businessDetailRepository,
                         IGenericManyToManyRepository<Product, Tax, ProductOnTax> productOnTaxRepository,
                         IGenericManyToManyRepository<Service, Tax, ServiceOnTax> serviceOnTaxRepository) : IUnitOfWork
 {
@@ -39,6 +39,7 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public ITaxRepository TaxRepository { get; } = taxRepository;
     public ITimeSlotRepository TimeSlotRepository { get; } = timeSlotRepository;
     public ITransactionRepository TransactionRepository { get; } = transactionRepository;
+    public IBusinessDetailRepository BusinessDetailRepository { get; } = businessDetailRepository;
     public IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; } = productOnTaxRepository;
     public IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
 

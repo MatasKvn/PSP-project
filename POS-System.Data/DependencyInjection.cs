@@ -63,8 +63,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IBusinessDetailRepository, BusinessDetailRepository>();
             services.AddScoped<IGenericManyToManyRepository<Product, Tax, ProductOnTax>, GenericManyToManyRepository<Product, Tax, ProductOnTax>>();
             services.AddScoped<IGenericManyToManyRepository<Service, Tax, ServiceOnTax>, GenericManyToManyRepository<Service, Tax, ServiceOnTax>>();
+            services.AddScoped<IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>, GenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>>();
+            services.AddScoped<IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>,
+                GenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>>();
+            services.AddScoped<IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>,
+                GenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>>();
+            services.AddScoped<IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>,
+                GenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         

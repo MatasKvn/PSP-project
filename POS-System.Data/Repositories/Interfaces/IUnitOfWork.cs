@@ -19,6 +19,7 @@ public interface IUnitOfWork
     ITaxRepository TaxRepository { get; }
     ITimeSlotRepository TimeSlotRepository { get; }
     ITransactionRepository TransactionRepository { get; }
+    IBusinessDetailRepository BusinessDetailRepository { get; }
     IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; }
     IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

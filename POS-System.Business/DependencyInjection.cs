@@ -45,7 +45,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<ITokenGenerator, TokenGenerator>();
 
-            services.AddScoped<ITaxService, TaxService>();
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthorization(options => 
@@ -73,6 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
+            services.AddScoped<IBusinessDetailService, BusinessDetailService>();
 
             return services;
         }

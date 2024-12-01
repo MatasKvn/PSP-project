@@ -15,5 +15,6 @@ namespace POS_System.Business.Services.Interfaces
             int itemId, int[] linkingItemsIdList, bool linkableItemIsLeft, CancellationToken cancellationToken);
         public Task UnlinkItemFromItemsAsync(IRepository<TLeft> leftRepository, IRepository<TRight> rightRepository, IRepository<TManyToMany> linksRepository,
             int itemId, int[] linkingItemsIdList, bool linkableItemIsLeft, CancellationToken cancellationToken);
+        public Task<IEnumerable<int>> GetLinkIdsAsync(IRepository<TManyToMany> linkRepository, int id, bool forLeft, DateTime? queryDate, CancellationToken cancellationToken);
     }
 }
