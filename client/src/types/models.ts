@@ -53,6 +53,7 @@ export type Product = {
     price: number
     dateModified: Date
     imageUrl: string
+    stock: number
 }
 
 export type ServiceReservation = {
