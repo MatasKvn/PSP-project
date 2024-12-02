@@ -3,7 +3,7 @@ import React from 'react'
 
 import styles from './ItemCard.module.scss'
 
-type Props = {
+type PropsShared = {
     id: number
     imageUrl: string
     label: string
@@ -11,16 +11,20 @@ type Props = {
     price: number
     isSelected: boolean
     onClick: (id: number) => void
-} & (ProductSpecificProps | ServiceSpecificProps)
+}
 
 type ProductSpecificProps = {
     type: 'product'
     stock: number
-}
+} & PropsShared
 
 type ServiceSpecificProps = {
     type: 'service'
-}
+} & PropsShared
+
+type Props = ProductSpecificProps | ServiceSpecificProps
+
+const isProduct = (props: Props): props is ProductSpecificProps => props.type === 'product'
 
 const ItemCard = (props: Props) => {
     const {
@@ -29,7 +33,6 @@ const ItemCard = (props: Props) => {
         label,
         description,
         price,
-        stock,
         isSelected,
         onClick
     } = props
@@ -51,8 +54,8 @@ const ItemCard = (props: Props) => {
             <h6>{label}</h6>
             <p className={styles.description}>{description}</p>
             <p>{`Price: ${priceDisplay}`}</p>
-            {stock &&
-                <p className={stock > 0 ? styles.stock : styles.stock_empty}>{`In stock: ${stock}`}</p>
+            {isProduct(props) &&
+                <p className={props.stock > 0 ? styles.stock : styles.stock_empty}>{`In stock: ${props.stock}`}</p>
             }
         </button>
     )
