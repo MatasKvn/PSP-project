@@ -6,10 +6,10 @@ import { navItems } from '@/constants/navbar'
 import Button from '@/components/shared/Button'
 import { routes } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
-import { CookiesProvider } from 'next-client-cookies/server'
 
 const Navbar = () => {
     const location = usePathname()
+    const locationNoNumbers = location.split('/').filter((item) => Number.isNaN(parseInt(item))).join('/')
     const router = useRouter()
     const cookies = useCookies()
 
@@ -24,7 +24,7 @@ const Navbar = () => {
             <ul>
                 {navItems.map((navItem) => (
                     <a key={navItem.name} href={navItem.href}>
-                        <li className={navItem.href === location ? styles.nav_item_active : styles.nav_item}>
+                        <li className={locationNoNumbers === navItem.url ? styles.nav_item_active : styles.nav_item}>
                                 {navItem.name}
                         </li>
                     </a>
