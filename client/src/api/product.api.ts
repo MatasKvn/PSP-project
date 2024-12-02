@@ -91,7 +91,7 @@ export default class ProductApi {
                 totalCount: 0,
                 pageSize: 0,
                 pageNum: 0,
-                results: products
+                results: products.map((product) => ({ ...product }))
             }
         })
     }
@@ -119,6 +119,7 @@ export default class ProductApi {
             dateModified: new Date(),
             id: Math.max(...products.map(p => p.id)) + 1
         }
+        products.push(productToCreate)
         return Promise.resolve({ result: productToCreate })
     }
 
@@ -143,6 +144,8 @@ export default class ProductApi {
         //     body: JSON.stringify(product)
         // })
         const productToUpdate = products.find((product) => product.id === productId)
+        console.log(products)
+        if (!productToUpdate) return Promise.resolve({ error: 'Product not found' })
         if (productToUpdate) {
             productToUpdate.dateModified = new Date()
             if (product.name) productToUpdate.name = product.name
@@ -152,7 +155,7 @@ export default class ProductApi {
             if (product.stock) productToUpdate.stock = product.stock
             if (product.imageUrl) productToUpdate.imageUrl = product.imageUrl
         }
-        return Promise.resolve({ result: productToUpdate })
+        return Promise.resolve({ result: { ...productToUpdate } })
     }
 }
 

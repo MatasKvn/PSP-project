@@ -16,10 +16,12 @@ type Props = {
     pageNumber: number
 }
 
+const compareProducts = (product1: Product, product2: Product) => product1.name.localeCompare(product2.name)
+
 const ProductsPage = (props: Props) => {
     const { pageNumber } = props
 
-    const { products, setProducts, isLoading, isError } = useProducts(pageNumber)
+    const { products, setProducts, isLoading, isError } = useProducts(pageNumber, compareProducts)
     const [selectedProduct, selectProduct] = useState<Product | undefined>(undefined)
 
 
@@ -79,7 +81,7 @@ const ProductsPage = (props: Props) => {
             return
         }
         console.log(response.result)
-        const newProducts = [...products, response.result!]
+        const newProducts = [...products, response.result!].sort(compareProducts)
         setProducts(newProducts)
     }
 
@@ -91,6 +93,7 @@ const ProductsPage = (props: Props) => {
             return
         }
         const newProducts = products.filter((product) => product.id !== selectedProduct?.id)
+            .sort(compareProducts)
         setProducts(newProducts)
         selectProduct(undefined)
     }
@@ -219,7 +222,7 @@ const ProductsPage = (props: Props) => {
         const newProducts = [
             ...products.filter((product) => product.id !== selectedProduct?.id),
             response.result!
-        ]
+        ].sort(compareProducts)
         setProducts(newProducts)
     }
 
