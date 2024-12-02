@@ -148,6 +148,8 @@ export default class ProductApi {
             if (product.name) productToUpdate.name = product.name
             if (product.description) productToUpdate.description = product.description
             if (product.price) productToUpdate.price = product.price
+            if (product.description) productToUpdate.description = product.description
+            if (product.stock) productToUpdate.stock = product.stock
             if (product.imageUrl) productToUpdate.imageUrl = product.imageUrl
         }
         return Promise.resolve({ result: productToUpdate })
