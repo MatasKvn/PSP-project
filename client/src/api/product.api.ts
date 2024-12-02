@@ -116,9 +116,9 @@ export default class ProductApi {
         // })
         const productToCreate: Product = {
             ...product,
+            dateModified: new Date(),
             id: Math.max(...products.map(p => p.id)) + 1
         }
-        products.push(productToCreate)
         return Promise.resolve({ result: productToCreate })
     }
 
@@ -154,5 +154,5 @@ export default class ProductApi {
     }
 }
 
-type CreateProductDto = Omit<Product, 'id'>
+type CreateProductDto = Omit<Product, 'id' | 'dateModified'>
 type EditProductDto = Partial<Omit<Product, 'id' | 'dateModified'>>

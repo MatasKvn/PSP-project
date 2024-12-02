@@ -10,6 +10,7 @@ import React, { useRef, useState } from 'react'
 import styles from './ProductsPage.module.scss'
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
+import Input from '@/components/shared/Input'
 
 type Props = {
     pageNumber: number
@@ -18,9 +19,13 @@ type Props = {
 const ProductsPage = (props: Props) => {
     const { pageNumber } = props
 
-    const sideDrawerRef = useRef<SideDrawerRef | null>(null)
     const { products, setProducts, isLoading, isError } = useProducts(pageNumber)
     const [selectedProduct, selectProduct] = useState<Product | undefined>(undefined)
+
+
+    const sideDrawerRef = useRef<SideDrawerRef | null>(null)
+    type SideDrawerFormType = 'create' | 'edit'
+    const [sideDrawerFormType, setSideDrawerFormType] = useState<SideDrawerFormType>('create')
 
 
     const productCards = () => {
@@ -52,10 +57,33 @@ const ProductsPage = (props: Props) => {
         ))
     }
 
-    const handleProductCreate = () => {
+    const handleProductCreate = async (event: React.FormEvent) => {
+        event.preventDefault()
+        const {
+            productName,
+            productDescription,
+            productPrice,
+            productStock,
+            productImageUrl,
+        } = event.target as HTMLFormElement
+        const response = await ProductApi.createProduct({
+            name: productName.value,
+            description: productDescription.value,
+            price: productPrice.value,
+            stock: productStock.value,
+            imageUrl: productImageUrl.value,
+        })
+        if (response.error) {
+            console.log(response.error)
+            return
+        }
+        console.log(response.result)
+        const newProducts = [...products, response.result!]
+        setProducts(newProducts)
+        // selectProduct(response.result)
     }
 
-    const handleProductEdit = () => {
+    const handleProductEdit = (event: React.FormEvent) => {
 
     }
 
@@ -71,17 +99,76 @@ const ProductsPage = (props: Props) => {
         selectProduct(undefined)
     }
 
+    const createProductForm = () => {
+        return (
+            <form
+                onSubmit={handleProductCreate}
+                style={{ display: 'inline-block' }}
+            >
+                <div>
+                    <label>Product Name</label><br />
+                    <Input
+                        placeholder='Enter product name:'
+                        type="text"
+                        name="productName"
+                    />
+                </div>
+                <div>
+                    <label>Product Description</label><br />
+                    <Input
+                        placeholder='Enter product description:'
+                        type="text"
+                        name="productDescription"
+                    />
+                </div>
+                <div>
+                    <label>Product Price</label><br />
+                    <Input
+                        placeholder='Enter product price:'
+                        type="number"
+                        name="productPrice"
+                    />
+                </div>
+                <div>
+                    <label>Product Stock</label><br />
+                    <Input
+                        placeholder='Enter product stock:'
+                        type="number"
+                        name="productStock"
+                    />
+                </div>
+                <div>
+                    <label>Product Image URL</label><br />
+                    <Input
+                        placeholder='Enter product image url:'
+                        type="text"
+                        name="productImageUrl"
+                    />
+                </div>
+                <Button type='submit'>Create</Button>
+            </form>
+        )
+    }
+
     return (
         <div>
             <h1>Products Page</h1>
             <p>Page Number: {pageNumber}</p>
             <div className={styles.toolbar}>
                 <Button
-                    onClick={() => sideDrawerRef.current?.open()}
+                    onClick={() => {
+                        setSideDrawerFormType('create')
+                        sideDrawerRef.current?.open()
+                    }}
                 >
                     Create Product
                 </Button>
-                <Button>
+                <Button
+                    onClick={() => {
+                        setSideDrawerFormType('edit')
+                        sideDrawerRef.current?.open()
+                    }}
+                >
                     Edit Product
                 </Button>
                 <Button
@@ -95,7 +182,13 @@ const ProductsPage = (props: Props) => {
                 {productCards()}
             </div>
             <SideDrawer ref={sideDrawerRef}>
-                <div>Form</div>
+                {
+                    sideDrawerFormType === 'create'
+                        ?
+                            createProductForm()
+                        :
+                            <div>edit</div>
+                }
             </SideDrawer>
         </div>
     )
