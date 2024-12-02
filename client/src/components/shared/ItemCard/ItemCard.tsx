@@ -9,9 +9,17 @@ type Props = {
     label: string
     description: string
     price: number
-    stock?: number
     isSelected: boolean
     onClick: (id: number) => void
+} & (ProductSpecificProps | ServiceSpecificProps)
+
+type ProductSpecificProps = {
+    type: 'product'
+    stock: number
+}
+
+type ServiceSpecificProps = {
+    type: 'service'
 }
 
 const ItemCard = (props: Props) => {
@@ -41,9 +49,11 @@ const ItemCard = (props: Props) => {
                 height={100}
             />
             <h6>{label}</h6>
-            <span>{description}</span>
-            <p>{priceDisplay}</p>
-            {stock && <p>{stock}</p>}
+            <p className={styles.description}>{description}</p>
+            <p>{`Price: ${priceDisplay}`}</p>
+            {stock &&
+                <p className={stock > 0 ? styles.stock : styles.stock_empty}>{`In stock: ${stock}`}</p>
+            }
         </button>
     )
 }

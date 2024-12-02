@@ -20,7 +20,7 @@ let products: Product[] = [
         description: 'Apple is a fruit',
         price: 20,
         dateModified: new Date(),
-        imageUrl: '',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png',
         stock: 12
     },
     {

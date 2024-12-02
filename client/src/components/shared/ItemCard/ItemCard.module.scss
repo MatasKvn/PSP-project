@@ -1,6 +1,9 @@
 @use '@/assets/styles/variables' as *;
 
 .image {
+    width: 100;
+    // max-height: 50;
+    aspect-ratio: 1 / 1;
     margin: auto;
 }
 
@@ -35,11 +38,22 @@
     word-break: break-all;
 }
 
-.container > p, .container > span {
+.container > p {
     text-align: left;
     display: inherit;
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.description {
+    margin: 0.3em;
+}
+
+.stock {
+    color: green;
+    &_empty {
+        color: red;
+    }
 }

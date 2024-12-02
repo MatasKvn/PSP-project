@@ -39,6 +39,7 @@ const ProductsPage = (props: Props) => {
         return products.map((product) => (
             <ItemCard
                 key={product.id}
+                type="product"
                 id={product.id}
                 label={product.name}
                 description={product.description}
@@ -215,7 +216,6 @@ const ProductsPage = (props: Props) => {
             console.log(response.error)
             return
         }
-        console.log(response.result)
         const newProducts = [
             ...products.filter((product) => product.id !== selectedProduct?.id),
             response.result!
@@ -226,7 +226,6 @@ const ProductsPage = (props: Props) => {
     return (
         <div>
             <h1>Products Page</h1>
-            <p>Page Number: {pageNumber}</p>
             <div className={styles.toolbar}>
                 <Button
                     onClick={() => {
