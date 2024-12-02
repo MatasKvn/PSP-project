@@ -1,0 +1,16 @@
+
+.toolbar {
+    padding: 1em;
+    > button {
+        margin-right: 1em;
+    }
+}
+
+.card_container {
+    padding: 0.5em;
+
+    > * {
+        margin: 0.5em;
+        display: inline-block;
+    }
+}

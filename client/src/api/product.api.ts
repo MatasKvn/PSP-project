@@ -22,6 +22,60 @@ let products: Product[] = [
         dateModified: new Date(),
         imageUrl: '',
         stock: 12
+    },
+    {
+        id: 3,
+        name: 'Orange',
+        description: 'Orange is a fruit',
+        price: 30,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 13
+    },
+    {
+        id: 4,
+        name: 'Grape',
+        description: 'Grape is a fruit',
+        price: 40,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 14
+    },
+    {
+        id: 5,
+        name: 'Strawberry',
+        description: 'Strawberry is a fruit',
+        price: 50,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 15
+    },
+    {
+        id: 6,
+        name: 'Pineapple',
+        description: 'Pineapple is a fruit',
+        price: 60,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 16
+    },
+    {
+        id: 7,
+        name: 'Watermelon',
+        description: 'Watermelon is a fruit',
+        price: 70,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 17
+    },
+    {
+        id: 8,
+        name: 'Mango',
+        description: 'Mango is a fruit',
+        price: 80,
+        dateModified: new Date(),
+        imageUrl: '',
+        stock: 18
     }
 ]
 
