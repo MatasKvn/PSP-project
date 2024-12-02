@@ -144,7 +144,6 @@ export default class ProductApi {
         //     body: JSON.stringify(product)
         // })
         const productToUpdate = products.find((product) => product.id === productId)
-        console.log(products)
         if (!productToUpdate) return Promise.resolve({ error: 'Product not found' })
         if (productToUpdate) {
             productToUpdate.dateModified = new Date()

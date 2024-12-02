@@ -69,7 +69,6 @@ const ProductsPage = (props: Props) => {
             productStock,
             productImageUrl,
         } = event.target as HTMLFormElement
-        return
         const response = await ProductApi.createProduct({
             name: productName.value,
             description: productDescription.value,
