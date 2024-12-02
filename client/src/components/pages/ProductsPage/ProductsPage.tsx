@@ -5,9 +5,11 @@ import Button from '@/components/shared/Button'
 import ItemCard from '@/components/shared/ItemCard'
 import { useProducts } from '@/hooks/products.hook'
 import { Product } from '@/types/models'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import styles from './ProductsPage.module.scss'
+import SideDrawer from '@/components/shared/SideDrawer'
+import { SideDrawerRef } from '@/components/shared/SideDrawer'
 
 type Props = {
     pageNumber: number
@@ -16,6 +18,7 @@ type Props = {
 const ProductsPage = (props: Props) => {
     const { pageNumber } = props
 
+    const sideDrawerRef = useRef<SideDrawerRef | null>(null)
     const { products, setProducts, isLoading, isError } = useProducts(pageNumber)
     const [selectedProduct, selectProduct] = useState<Product | undefined>(undefined)
 
@@ -73,7 +76,9 @@ const ProductsPage = (props: Props) => {
             <h1>Products Page</h1>
             <p>Page Number: {pageNumber}</p>
             <div className={styles.toolbar}>
-                <Button>
+                <Button
+                    onClick={() => sideDrawerRef.current?.open()}
+                >
                     Create Product
                 </Button>
                 <Button>
@@ -89,6 +94,9 @@ const ProductsPage = (props: Props) => {
                 {products.length <= 0 && <div>No products</div>}
                 {productCards()}
             </div>
+            <SideDrawer ref={sideDrawerRef}>
+                <div>Form</div>
+            </SideDrawer>
         </div>
     )
 }
