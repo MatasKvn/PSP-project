@@ -23,7 +23,7 @@ namespace POS_System.Business.Services
 
             if (products is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var productDtos = _mapper.Map<List<ProductResponse>>(products);
@@ -40,7 +40,7 @@ namespace POS_System.Business.Services
 
             if (product is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var productDto = _mapper.Map<ProductResponse>(product);
@@ -57,7 +57,7 @@ namespace POS_System.Business.Services
 
             if (products is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var productDtos = _mapper.Map<List<ProductResponse>>(products);
@@ -69,7 +69,7 @@ namespace POS_System.Business.Services
         {
             if (productDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var product = _mapper.Map<Product>(productDto);
@@ -88,7 +88,7 @@ namespace POS_System.Business.Services
         {
             if (productDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var currentProduct = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
@@ -98,7 +98,7 @@ namespace POS_System.Business.Services
 
             if (currentProduct is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             currentProduct.IsDeleted = true;
@@ -131,7 +131,7 @@ namespace POS_System.Business.Services
 
             if (product is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             product.IsDeleted = true;

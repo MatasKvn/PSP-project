@@ -16,7 +16,7 @@ namespace POS_System.Business.Services
         {
             if (productModificationDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var productModification = _mapper.Map<ProductModification>(productModificationDto);
@@ -40,7 +40,7 @@ namespace POS_System.Business.Services
 
             if (productModification is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             productModification.IsDeleted = true;
@@ -61,7 +61,7 @@ namespace POS_System.Business.Services
 
             if (productModifications is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var prodModDtos = _mapper.Map<List<ProductModificationResponse>>(productModifications);
@@ -78,7 +78,7 @@ namespace POS_System.Business.Services
 
             if (productModification is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var prodModDto = _mapper.Map<ProductModificationResponse>(productModification);
@@ -94,7 +94,7 @@ namespace POS_System.Business.Services
 
             if (productModifications is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var prodModDtos = _mapper.Map<List<ProductModificationResponse>>(productModifications);
@@ -105,7 +105,7 @@ namespace POS_System.Business.Services
         {
             if (productModificationDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var currentProdMod = await _unitOfWork.ProductModificationRepository.GetByExpressionWithIncludesAsync(
@@ -115,7 +115,7 @@ namespace POS_System.Business.Services
 
             if (currentProdMod is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             currentProdMod.IsDeleted = true;

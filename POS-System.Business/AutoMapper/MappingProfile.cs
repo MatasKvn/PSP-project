@@ -44,6 +44,12 @@ namespace POS_System.Business.AutoMapper
             //Gift card
             CreateMap<GiftCardRequest, GiftCard>();
             CreateMap<GiftCard, GiftCardResponse>();
+
+            // ServiceReservation
+            CreateMap<ServiceReservation, ServiceReservationResponse>();
+            CreateMap<ServiceReservation, ServiceReservationRequest>();
+            CreateMap<ServiceReservationResponse, ServiceReservation>();
+            CreateMap<ServiceReservationRequest, ServiceReservation>();
         }
     }
 }

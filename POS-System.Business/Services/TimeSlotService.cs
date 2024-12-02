@@ -16,7 +16,7 @@ namespace POS_System.Business.Services
         {
             if (timeSlotDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var timeSlot = _mapper.Map<TimeSlot>(timeSlotDto);
@@ -34,7 +34,7 @@ namespace POS_System.Business.Services
 
             if (timeSlot is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             timeSlot.IsAvailable = false;
@@ -51,7 +51,7 @@ namespace POS_System.Business.Services
 
             if (timeSlot is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var timeSlotDto = _mapper.Map<TimeSlotResponse>(timeSlot);
@@ -70,7 +70,7 @@ namespace POS_System.Business.Services
 
             if (timeSlots is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             var timeSlotDtos = _mapper.Map<List<TimeSlotResponse>>(timeSlots);
@@ -82,14 +82,14 @@ namespace POS_System.Business.Services
         {
             if (timeSlotDto is null)
             {
-                throw new BadRequestException(ApplicationMesssages.BAD_REQUEST_MESSAGE);
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
             var timeSlot = await _unitOfWork.TimeSlotRepository.GetByIdAsync(id, cancellationToken);
 
             if (timeSlot is null)
             {
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
             }
 
             timeSlot.EmployeeVersionId = timeSlotDto.EmployeeVersionId;

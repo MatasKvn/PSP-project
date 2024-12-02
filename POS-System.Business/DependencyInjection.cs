@@ -74,6 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
             services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
+            services.AddScoped<IServiceReservationService, ServiceReservationService>();
 
             return services;
         }
