@@ -1,6 +1,6 @@
 namespace POS_System.Common.Constants
 {
-    public class ApplicationMesssages
+    public class ApplicationMessages
     {
         public const string ACCOUNT_LOCKED_OUT = "Your account is locked due to too many failed login attempts. Try again after 5 minutes.";
         public const string INVALID_SIGN_IN_CREDS = "Invalid sign in credentials. Wrong username or password.";
