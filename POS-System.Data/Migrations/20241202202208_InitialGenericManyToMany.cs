@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialGenericManyToMany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -389,23 +389,23 @@ namespace POS_System.Data.Migrations
                 name: "ProductOnItemDiscounts",
                 columns: table => new
                 {
-                    ProductVersionId = table.Column<int>(type: "integer", nullable: false),
-                    ItemDiscountVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductOnItemDiscounts", x => new { x.ProductVersionId, x.ItemDiscountVersionId, x.StartDate });
+                    table.PrimaryKey("PK_ProductOnItemDiscounts", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_ProductOnItemDiscounts_ItemDiscounts_ItemDiscountVersionId",
-                        column: x => x.ItemDiscountVersionId,
+                        name: "FK_ProductOnItemDiscounts_ItemDiscounts_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "ItemDiscounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductOnItemDiscounts_Products_ProductVersionId",
-                        column: x => x.ProductVersionId,
+                        name: "FK_ProductOnItemDiscounts_Products_LeftEntityId",
+                        column: x => x.LeftEntityId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -441,23 +441,23 @@ namespace POS_System.Data.Migrations
                 name: "ServiceOnItemDiscounts",
                 columns: table => new
                 {
-                    ServiceVersionId = table.Column<int>(type: "integer", nullable: false),
-                    ItemDiscountVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceOnItemDiscounts", x => new { x.ServiceVersionId, x.ItemDiscountVersionId, x.StartDate });
+                    table.PrimaryKey("PK_ServiceOnItemDiscounts", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_ServiceOnItemDiscounts_ItemDiscounts_ItemDiscountVersionId",
-                        column: x => x.ItemDiscountVersionId,
+                        name: "FK_ServiceOnItemDiscounts_ItemDiscounts_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "ItemDiscounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ServiceOnItemDiscounts_Services_ServiceVersionId",
-                        column: x => x.ServiceVersionId,
+                        name: "FK_ServiceOnItemDiscounts_Services_LeftEntityId",
+                        column: x => x.LeftEntityId,
                         principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -542,23 +542,23 @@ namespace POS_System.Data.Migrations
                 name: "CartOnCartDiscounts",
                 columns: table => new
                 {
-                    CartVersionId = table.Column<int>(type: "integer", nullable: false),
-                    CartDiscountVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartOnCartDiscounts", x => new { x.CartVersionId, x.CartDiscountVersionId, x.StartDate });
+                    table.PrimaryKey("PK_CartOnCartDiscounts", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_CartOnCartDiscounts_CartDiscounts_CartDiscountVersionId",
-                        column: x => x.CartDiscountVersionId,
+                        name: "FK_CartOnCartDiscounts_CartDiscounts_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "CartDiscounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartOnCartDiscounts_Carts_CartVersionId",
-                        column: x => x.CartVersionId,
+                        name: "FK_CartOnCartDiscounts_Carts_LeftEntityId",
+                        column: x => x.LeftEntityId,
                         principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -568,23 +568,23 @@ namespace POS_System.Data.Migrations
                 name: "ProductModificationOnCartItems",
                 columns: table => new
                 {
-                    CartItemId = table.Column<int>(type: "integer", nullable: false),
-                    ProductModificationVersionId = table.Column<int>(type: "integer", nullable: false),
+                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductModificationOnCartItems", x => new { x.CartItemId, x.ProductModificationVersionId, x.StartDate });
+                    table.PrimaryKey("PK_ProductModificationOnCartItems", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
                     table.ForeignKey(
-                        name: "FK_ProductModificationOnCartItems_CartItems_CartItemId",
-                        column: x => x.CartItemId,
+                        name: "FK_ProductModificationOnCartItems_CartItems_RightEntityId",
+                        column: x => x.RightEntityId,
                         principalTable: "CartItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductModificationOnCartItems_ProductModifications_Product~",
-                        column: x => x.ProductModificationVersionId,
+                        name: "FK_ProductModificationOnCartItems_ProductModifications_LeftEnt~",
+                        column: x => x.LeftEntityId,
                         principalTable: "ProductModifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -734,10 +734,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8918) },
-                    { 2, 1, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8987) },
-                    { 3, 2, false, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8991) },
-                    { 4, 3, true, new DateTime(2024, 11, 27, 11, 30, 25, 300, DateTimeKind.Local).AddTicks(8995) }
+                    { 1, 1, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(3998) },
+                    { 2, 1, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4164) },
+                    { 3, 2, false, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4168) },
+                    { 4, 3, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4170) }
                 });
 
             migrationBuilder.InsertData(
@@ -794,9 +794,9 @@ namespace POS_System.Data.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartOnCartDiscounts_CartDiscountVersionId",
+                name: "IX_CartOnCartDiscounts_RightEntityId",
                 table: "CartOnCartDiscounts",
-                column: "CartDiscountVersionId");
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_EmployeeVersionId",
@@ -809,10 +809,15 @@ namespace POS_System.Data.Migrations
                 column: "ServiceVersionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductModificationOnCartItems_ProductModificationVersionId",
+                name: "IX_ProductModificationOnCartItems_LeftEntityId",
                 table: "ProductModificationOnCartItems",
-                column: "ProductModificationVersionId",
+                column: "LeftEntityId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductModificationOnCartItems_RightEntityId",
+                table: "ProductModificationOnCartItems",
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductModifications_ProductVersionId",
@@ -820,9 +825,9 @@ namespace POS_System.Data.Migrations
                 column: "ProductVersionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductOnItemDiscounts_ItemDiscountVersionId",
+                name: "IX_ProductOnItemDiscounts_RightEntityId",
                 table: "ProductOnItemDiscounts",
-                column: "ItemDiscountVersionId");
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductOnTax_RightEntityId",
@@ -830,9 +835,9 @@ namespace POS_System.Data.Migrations
                 column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceOnItemDiscounts_ItemDiscountVersionId",
+                name: "IX_ServiceOnItemDiscounts_RightEntityId",
                 table: "ServiceOnItemDiscounts",
-                column: "ItemDiscountVersionId");
+                column: "RightEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceOnTax_RightEntityId",
