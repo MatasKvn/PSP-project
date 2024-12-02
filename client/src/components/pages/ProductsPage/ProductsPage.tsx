@@ -10,7 +10,7 @@ import React, { useRef, useState } from 'react'
 import styles from './ProductsPage.module.scss'
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
-import Input from '@/components/shared/Input'
+import DynamicForm from '@/components/shared/DynamicForm'
 
 type Props = {
     pageNumber: number
@@ -60,28 +60,101 @@ const ProductsPage = (props: Props) => {
         ))
     }
 
-    const handleProductCreate = async (event: React.FormEvent) => {
-        event.preventDefault()
+    const createProductForm = () => {
+        return (
+            <DynamicForm
+                inputs={{
+                    productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
+                    productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
+                    productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
+                    productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
+                    productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
+                }}
+                onSubmit={(formPayload) => {
+                    handleProductCreate(formPayload)
+                }}
+            >
+                <DynamicForm.Button>Submit</DynamicForm.Button>
+            </DynamicForm>
+        )
+    }
+
+    const handleProductCreate = async (formPayload: { [key: string]: string }) => {
         const {
             productName,
             productDescription,
             productPrice,
             productStock,
             productImageUrl,
-        } = event.target as HTMLFormElement
-        const response = await ProductApi.createProduct({
-            name: productName.value,
-            description: productDescription.value,
-            price: productPrice.value,
-            stock: productStock.value,
-            imageUrl: productImageUrl.value,
-        })
-        if (response.error) {
-            console.log(response.error)
-            return
+        } = formPayload
+        try {
+            const response = await ProductApi.createProduct({
+                name: productName,
+                description: productDescription,
+                price: Number.parseInt(productPrice),
+                stock: Number.parseInt(productStock),
+                imageUrl: productImageUrl,
+            })
+            if (response.error) {
+                console.log(response.error)
+                return
+            }
+            const newProducts = [...products, response.result!].sort(compareProducts)
+            setProducts(newProducts)
+            sideDrawerRef.current?.close()
+        } catch (e: any) {
+            console.log(e.message)
         }
-        const newProducts = [...products, response.result!].sort(compareProducts)
-        setProducts(newProducts)
+    }
+
+    const editProductForm = () => {
+        return (
+            <DynamicForm
+                inputs={{
+                    productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
+                    productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
+                    productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
+                    productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
+                    productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
+                }}
+                onSubmit={(formPayload) => {
+                    handleProductEdit(formPayload)
+                }}
+            >
+                <DynamicForm.Button>Submit</DynamicForm.Button>
+            </DynamicForm>
+        )
+    }
+    const handleProductEdit = async (formPayload: { [key: string]: string }) => {
+        if (!selectedProduct) return
+        const {
+            productName,
+            productDescription,
+            productPrice,
+            productStock,
+            productImageUrl,
+        } = formPayload
+        try {
+            const response = await ProductApi.updateProductById(selectedProduct.id, {
+                name: productName || undefined,
+                description: productDescription || undefined,
+                price: Number.parseInt(productPrice) || undefined,
+                stock: Number.parseInt(productStock) || undefined,
+                imageUrl: productImageUrl || undefined,
+            })
+            if (response.error) {
+                console.log(response.error)
+                return
+            }
+            const newProducts = [
+                ...products.filter((product) => product.id !== selectedProduct?.id),
+                response.result!
+            ].sort(compareProducts)
+            setProducts(newProducts)
+            sideDrawerRef.current?.close()
+        } catch (e: any) {
+            console.log(e.message)
+        }
     }
 
     const handleProductDelete = async (product: Product | undefined) => {
@@ -95,134 +168,6 @@ const ProductsPage = (props: Props) => {
             .sort(compareProducts)
         setProducts(newProducts)
         selectProduct(undefined)
-    }
-
-    const createProductForm = () => {
-        return (
-            <form
-                onSubmit={handleProductCreate}
-                style={{ display: 'inline-block' }}
-            >
-                <div>
-                    <label>Product Name</label><br />
-                    <Input
-                        placeholder='Enter product name:'
-                        type="text"
-                        name="productName"
-                    />
-                </div>
-                <div>
-                    <label>Product Description</label><br />
-                    <Input
-                        placeholder='Enter product description:'
-                        type="text"
-                        name="productDescription"
-                    />
-                </div>
-                <div>
-                    <label>Product Price</label><br />
-                    <Input
-                        placeholder='Enter product price:'
-                        type="number"
-                        name="productPrice"
-                    />
-                </div>
-                <div>
-                    <label>Product Stock</label><br />
-                    <Input
-                        placeholder='Enter product stock:'
-                        type="number"
-                        name="productStock"
-                    />
-                </div>
-                <div>
-                    <label>Product Image URL</label><br />
-                    <Input
-                        placeholder='Enter product image url:'
-                        type="text"
-                        name="productImageUrl"
-                    />
-                </div>
-                <Button type='submit'>Create</Button>
-            </form>
-        )
-    }
-    const editProductForm = () => {
-        return (
-            <form
-                onSubmit={handleProductEdit}
-                style={{ display: 'inline-block' }}
-            >
-                <div>
-                    <label>Product Name</label><br />
-                    <Input
-                        placeholder='Enter product name:'
-                        type="text"
-                        name="productName"
-                    />
-                </div>
-                <div>
-                    <label>Product Description</label><br />
-                    <Input
-                        placeholder='Enter product description:'
-                        type="text"
-                        name="productDescription"
-                    />
-                </div>
-                <div>
-                    <label>Product Price</label><br />
-                    <Input
-                        placeholder='Enter product price:'
-                        type="number"
-                        name="productPrice"
-                    />
-                </div>
-                <div>
-                    <label>Product Stock</label><br />
-                    <Input
-                        placeholder='Enter product stock:'
-                        type="number"
-                        name="productStock"
-                    />
-                </div>
-                <div>
-                    <label>Product Image URL</label><br />
-                    <Input
-                        placeholder='Enter product image url:'
-                        type="text"
-                        name="productImageUrl"
-                    />
-                </div>
-                <Button type='submit'>Edit</Button>
-            </form>
-        )
-    }
-    const handleProductEdit = async (event: React.FormEvent) => {
-        event.preventDefault()
-        if (!selectedProduct) return
-        const {
-            productName,
-            productDescription,
-            productPrice,
-            productStock,
-            productImageUrl,
-        } = event.target as HTMLFormElement
-        const response = await ProductApi.updateProductById(selectedProduct.id, {
-            name: productName.value || undefined,
-            description: productDescription.value || undefined,
-            price: productPrice.value || undefined,
-            stock: productStock.value || undefined,
-            imageUrl: productImageUrl.value || undefined,
-        })
-        if (response.error) {
-            console.log(response.error)
-            return
-        }
-        const newProducts = [
-            ...products.filter((product) => product.id !== selectedProduct?.id),
-            response.result!
-        ].sort(compareProducts)
-        setProducts(newProducts)
     }
 
     return (
@@ -239,7 +184,7 @@ const ProductsPage = (props: Props) => {
                 </Button>
                 <Button
                     onClick={() => {
-                        if(!selectedProduct) return
+                        if (!selectedProduct) return
                         setSideDrawerFormType('edit')
                         sideDrawerRef.current?.open()
                     }}
@@ -260,9 +205,9 @@ const ProductsPage = (props: Props) => {
                 {
                     sideDrawerFormType === 'create'
                         ?
-                            createProductForm()
+                        createProductForm()
                         :
-                            editProductForm()
+                        editProductForm()
                 }
             </SideDrawer>
         </div>

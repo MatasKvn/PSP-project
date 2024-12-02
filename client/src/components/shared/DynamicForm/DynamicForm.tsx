@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import Input from '../Input'
 import Button, { ButtonProps } from '../Button'
@@ -47,7 +49,7 @@ const DynamicForm = (props: Props) => {
     )
 }
 
-const SubmitButton = (props: ButtonProps) => (<Button {...props} type="submit">Submit</Button>)
+const SubmitButton = (props: ButtonProps) => (<Button {...props} type="submit">{props.children}</Button>)
 
 DynamicForm.Button = SubmitButton
 
