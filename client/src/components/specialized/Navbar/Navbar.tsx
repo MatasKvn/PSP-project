@@ -6,6 +6,7 @@ import { navItems } from '@/constants/navbar'
 import Button from '@/components/shared/Button'
 import { routes } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
+import { CookiesProvider } from 'next-client-cookies/server'
 
 const Navbar = () => {
     const location = usePathname()
