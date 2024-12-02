@@ -3,7 +3,7 @@ import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import { Product } from '@/types/models'
 import { useEffect, useState } from 'react'
 
-export const useProducts = (pageNumber: number) => {
+export const useProducts = (pageNumber: number, compareFn?: (a: Product, b: Product) => number) => {
     const [products, setProducts] = useState<Product[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isError, setIsError] = useState<boolean>(false)
@@ -13,6 +13,7 @@ export const useProducts = (pageNumber: number) => {
             const response = await ProductApi.getAllProducts(pageNumber)
             if (response.result) {
                 const products = PagedResponseMapper.fromPageResponse(response.result!)
+                if (compareFn) products.sort(compareFn)
                 setProducts(products)
                 setIsLoading(false)
                 return
