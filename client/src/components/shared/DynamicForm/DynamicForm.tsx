@@ -4,19 +4,24 @@ import React from 'react'
 import Input from '../Input'
 import Button, { ButtonProps } from '../Button'
 
-type DynamicFormInputsType = {
+export type DynamicFormInputs = {
     [key: string]: {
-        label: string,
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>
+        label: string
+        placeholder: React.InputHTMLAttributes<HTMLInputElement>['placeholder']
+        type: React.InputHTMLAttributes<HTMLInputElement>['type']
+    }
+}
+export type FormPayload = {
+    [U in keyof DynamicFormInputs]: string
 }
 
-type Props = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
-    inputs: DynamicFormInputsType
-    onSubmit: (formPayload: { [key: string]: string }) => void
+type Props<T extends DynamicFormInputs> = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
+    inputs: T
+    onSubmit: (formPayload: FormPayload) => void
     children: React.ReactNode
 }
 
-const DynamicForm = (props: Props) => {
+const DynamicForm = <T extends DynamicFormInputs,>(props: Props<T>) => {
     const { inputs, onSubmit, children } = props
 
     const inputsKeyValuePairs = Object.entries(inputs)
@@ -27,13 +32,7 @@ const DynamicForm = (props: Props) => {
         const formData = new FormData(event.target as HTMLFormElement)
         const object = Object.fromEntries(formData)
 
-        const payloadObject = Object.entries(object)
-            .reduce((acc, [key, value]) => ({
-                ...acc,
-                [key as string]: value as string
-            }), {} as { [key: string]: string })
-
-        onSubmit(payloadObject)
+        onSubmit(object as FormPayload)
     }
 
     return (

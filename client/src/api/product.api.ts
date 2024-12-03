@@ -114,8 +114,11 @@ export default class ProductApi {
         //     headers: defaultHeaders,
         //     body: JSON.stringify(product)
         // })
-        if (Object.entries(product).some(([key, value]) => key === 'imageUrl' ? false : !value)) {
-            throw new Error('Cannot create Product with missing properties')
+        if (!product.name ||
+            !product.price ||
+            !product.stock
+        ) {
+            return { error: 'Missing required fields' }
         }
         const productToCreate: Product = {
             ...product,

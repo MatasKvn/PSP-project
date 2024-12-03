@@ -10,7 +10,7 @@ import React, { useRef, useState } from 'react'
 import styles from './ProductsPage.module.scss'
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
-import DynamicForm from '@/components/shared/DynamicForm'
+import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
 
 type Props = {
     pageNumber: number
@@ -70,16 +70,13 @@ const ProductsPage = (props: Props) => {
                     productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
                     productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
                 }}
-                onSubmit={(formPayload) => {
-                    handleProductCreate(formPayload)
-                }}
+                onSubmit={handleProductCreate}
             >
                 <DynamicForm.Button>Submit</DynamicForm.Button>
             </DynamicForm>
         )
     }
-
-    const handleProductCreate = async (formPayload: { [key: string]: string }) => {
+    const handleProductCreate = async (formPayload: DynamicFormPayload) => {
         const {
             productName,
             productDescription,
@@ -87,24 +84,20 @@ const ProductsPage = (props: Props) => {
             productStock,
             productImageUrl,
         } = formPayload
-        try {
-            const response = await ProductApi.createProduct({
-                name: productName,
-                description: productDescription,
-                price: Number.parseInt(productPrice),
-                stock: Number.parseInt(productStock),
-                imageUrl: productImageUrl,
-            })
-            if (response.error) {
-                console.log(response.error)
-                return
-            }
-            const newProducts = [...products, response.result!].sort(compareProducts)
-            setProducts(newProducts)
-            sideDrawerRef.current?.close()
-        } catch (e: any) {
-            console.log(e.message)
+        const response = await ProductApi.createProduct({
+            name: productName,
+            description: productDescription,
+            price: Number.parseInt(productPrice),
+            stock: Number.parseInt(productStock),
+            imageUrl: productImageUrl,
+        })
+        if (response.error) {
+            console.log(response.error)
+            return
         }
+        const newProducts = [...products, response.result!].sort(compareProducts)
+        setProducts(newProducts)
+        sideDrawerRef.current?.close()
     }
 
     const editProductForm = () => {
@@ -125,7 +118,7 @@ const ProductsPage = (props: Props) => {
             </DynamicForm>
         )
     }
-    const handleProductEdit = async (formPayload: { [key: string]: string }) => {
+    const handleProductEdit = async (formPayload: DynamicFormPayload) => {
         if (!selectedProduct) return
         const {
             productName,
@@ -134,27 +127,23 @@ const ProductsPage = (props: Props) => {
             productStock,
             productImageUrl,
         } = formPayload
-        try {
-            const response = await ProductApi.updateProductById(selectedProduct.id, {
-                name: productName || undefined,
-                description: productDescription || undefined,
-                price: Number.parseInt(productPrice) || undefined,
-                stock: Number.parseInt(productStock) || undefined,
-                imageUrl: productImageUrl || undefined,
-            })
-            if (response.error) {
-                console.log(response.error)
-                return
-            }
-            const newProducts = [
-                ...products.filter((product) => product.id !== selectedProduct?.id),
-                response.result!
-            ].sort(compareProducts)
-            setProducts(newProducts)
-            sideDrawerRef.current?.close()
-        } catch (e: any) {
-            console.log(e.message)
+        const response = await ProductApi.updateProductById(selectedProduct.id, {
+            name: productName || undefined,
+            description: productDescription || undefined,
+            price: Number.parseInt(productPrice) || undefined,
+            stock: Number.parseInt(productStock) || undefined,
+            imageUrl: productImageUrl || undefined,
+        })
+        if (response.error) {
+            console.log(response.error)
+            return
         }
+        const newProducts = [
+            ...products.filter((product) => product.id !== selectedProduct?.id),
+            response.result!
+        ].sort(compareProducts)
+        setProducts(newProducts)
+        sideDrawerRef.current?.close()
     }
 
     const handleProductDelete = async (product: Product | undefined) => {
