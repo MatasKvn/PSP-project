@@ -1,5 +1,4 @@
 using AutoMapper;
-using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
@@ -13,6 +12,7 @@ namespace POS_System.Business.AutoMapper
         {
             CreateMap<UserRegisterRequest, ApplicationUser>()
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
+
             // Cart
             CreateMap<Cart, CartResponse>();
             CreateMap<CartResponse, Cart>();
@@ -30,6 +30,10 @@ namespace POS_System.Business.AutoMapper
             CreateMap<ProductResponse, Product>();
             CreateMap<Product, ProductRequest>();
             CreateMap<ProductRequest, Product>();
+
+            // Employees
+            CreateMap<ApplicationUser, EmployeeResponse>();
+            CreateMap<EmployeeRequest, ApplicationUser>();
 
             // TimeSlot
             CreateMap<TimeSlot, TimeSlotResponse>();
@@ -50,6 +54,10 @@ namespace POS_System.Business.AutoMapper
             CreateMap<ServiceReservation, ServiceReservationRequest>();
             CreateMap<ServiceReservationResponse, ServiceReservation>();
             CreateMap<ServiceReservationRequest, ServiceReservation>();
+
+            //Business details
+            CreateMap<BusinessDetailsRequest, BusinessDetails>();
+            CreateMap<BusinessDetails, BusinessDetailsResponse>();
         }
     }
 }

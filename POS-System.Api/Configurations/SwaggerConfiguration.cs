@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace POS_System.Api.Configuration;
+namespace POS_System.Api.Configurations;
 
 public static class SwaggerConfiguration
 {

@@ -1,4 +1,3 @@
-using POS_System.Api.Configuration;
 using POS_System.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);

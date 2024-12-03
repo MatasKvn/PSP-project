@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using POS_System.Data.Identity;
 using POS_System.Domain.Entities;
@@ -31,6 +30,7 @@ namespace POS_System.Data.Database
         public DbSet<Tax> Taxes { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<ApplicationUser> Employees { get; set; }
 
         //Functions
         protected override void OnModelCreating(ModelBuilder modelBuilder)
