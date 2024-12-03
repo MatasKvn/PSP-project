@@ -52,7 +52,7 @@ export default class ProductModificationApi {
     static async createProductModification(productId: number, dto: CreateProductModificationDto): Promise<FetchResponse<ProductModification>> {
         const maxId = Math.max(...productModifications.map(pm => pm.id))
         if (!dto.name) return Promise.resolve({ error: 'Name is required' } )
-        if (!dto.price) return Promise.resolve({ error: 'Price is required' } )
+        if (Number.isNaN(dto.price)) return Promise.resolve({ error: 'Price is required' } )
 
         const productModification = {
             id: maxId + 1,
@@ -68,7 +68,7 @@ export default class ProductModificationApi {
         return Promise.resolve({ result: productModification })
     }
 
-    static async editProductModification(id: number, dto: EditProductModificationDto): Promise<FetchResponse<ProductModification>> {
+    static async updateProductModification(id: number, dto: EditProductModificationDto): Promise<FetchResponse<ProductModification>> {
         const productModification = productModifications.find(pm => pm.id === id)
 
         if (!productModification) return Promise.resolve({ error: 'Product modification not found' } )

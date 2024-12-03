@@ -5,12 +5,13 @@ import Button from '@/components/shared/Button'
 import ItemCard from '@/components/shared/ItemCard'
 import { useProducts } from '@/hooks/products.hook'
 import { Product } from '@/types/models'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 
 import styles from './ProductsPage.module.scss'
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
+import ProductModificationsView from '@/components/specialized/ProductModificationsView'
 
 type Props = {
     pageNumber: number
@@ -26,8 +27,8 @@ const ProductsPage = (props: Props) => {
 
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
-    type SideDrawerFormType = 'create' | 'edit'
-    const [sideDrawerFormType, setSideDrawerFormType] = useState<SideDrawerFormType>('create')
+    type SideDrawerContentType = 'create' | 'edit' | 'productModifications'
+    const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('create')
 
 
     const productCards = () => {
@@ -159,13 +160,26 @@ const ProductsPage = (props: Props) => {
         selectProduct(undefined)
     }
 
+    const [productModificationsNotification, notifyProductModificationRefetch_] = useState(false)
+    const refetchModifications = () => { notifyProductModificationRefetch_(!productModificationsNotification)}
+    const productModificationsView = useMemo(() => (
+        <ProductModificationsView product={selectedProduct} />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ), [productModificationsNotification])
+
+    const sideDrawerContent = () => {
+        if (sideDrawerContentType === 'create') return createProductForm()
+        if (sideDrawerContentType === 'edit') return editProductForm()
+        if (sideDrawerContentType === 'productModifications') return productModificationsView
+    }
+
     return (
         <div className={styles.page}>
             <h1>Products Page</h1>
             <div className={styles.toolbar}>
                 <Button
                     onClick={() => {
-                        setSideDrawerFormType('create')
+                        setSideDrawerContentType('create')
                         sideDrawerRef.current?.open()
                     }}
                 >
@@ -174,7 +188,7 @@ const ProductsPage = (props: Props) => {
                 <Button
                     onClick={() => {
                         if (!selectedProduct) return
-                        setSideDrawerFormType('edit')
+                        setSideDrawerContentType('edit')
                         sideDrawerRef.current?.open()
                     }}
                 >
@@ -185,19 +199,23 @@ const ProductsPage = (props: Props) => {
                 >
                     Delete Product
                 </Button>
+                <Button
+                    onClick={() => {
+                        if (!selectedProduct) return
+                        refetchModifications()
+                        setSideDrawerContentType('productModifications')
+                        sideDrawerRef.current?.open()
+                    }}
+                >
+                    Manage Modifications
+                </Button>
             </div>
             <div className={styles.card_container}>
                 {products.length <= 0 && <div>No products</div>}
                 {productCards()}
             </div>
             <SideDrawer ref={sideDrawerRef}>
-                {
-                    sideDrawerFormType === 'create'
-                        ?
-                        createProductForm()
-                        :
-                        editProductForm()
-                }
+                {sideDrawerContent()}
             </SideDrawer>
         </div>
     )

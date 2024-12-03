@@ -1,0 +1,10 @@
+@use '@/assets/styles/variables' as *;
+
+.modification {
+    box-shadow: $default-box-shadow;
+}
+
+.modification_selected {
+    background-color: $hover-color-2;
+    outline: $box-shadow-dims $hover-color-2
+}
