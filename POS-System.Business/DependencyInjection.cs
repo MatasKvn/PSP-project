@@ -7,6 +7,8 @@ using POS_System.Business.Dtos;
 using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Business.Utils;
+using POS_System.Data.Repositories;
+using POS_System.Data.Repositories.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -72,6 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
+            services.AddScoped<IEmployeeeService, EmployeeService>();
             services.AddScoped<IBusinessDetailService, BusinessDetailService>();
 
             return services;

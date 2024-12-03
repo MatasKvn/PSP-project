@@ -1,6 +1,5 @@
 using AutoMapper;
 using POS_System.Business.Dtos.Tax;
-using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Data.Identity;
 using POS_System.Business.Dtos.GiftCard;
@@ -8,6 +7,7 @@ using POS_System.Business.Dtos.ProductModificationDtos;
 using POS_System.Business.Dtos.ProductDtos;
 using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
+using POS_System.Business.Dtos.Response;
 using POS_System.Business.Dtos.BusinessDetails;
 
 namespace POS_System.Business.AutoMapper
@@ -36,6 +36,10 @@ namespace POS_System.Business.AutoMapper
             CreateMap<GetProductDto, Product>();
             CreateMap<Product, CreateProductDto>();
             CreateMap<CreateProductDto, Product>();
+
+            // Employees
+            CreateMap<ApplicationUser, EmployeeResponse>();
+            CreateMap<EmployeeRequest, ApplicationUser>();
 
             // TimeSlot
             CreateMap<TimeSlot, GetTimeSlotDto>();

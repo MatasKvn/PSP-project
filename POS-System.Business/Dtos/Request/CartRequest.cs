@@ -1,4 +1,4 @@
-namespace POS_System.Business.Dtos
+namespace POS_System.Business.Dtos.Request
 {
     public record CartRequest
     {
