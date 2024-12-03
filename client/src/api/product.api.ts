@@ -139,7 +139,7 @@ export default class ProductApi {
         if (!productToDelete) return Promise.resolve({ error: 'Product not found' })
         const filteredProducts = products.filter((product) => product.id !== productId)
         products = filteredProducts
-        return Promise.resolve({ })
+        return Promise.resolve({ result: productToDelete })
     }
 
     static async updateProductById(productId: number, product: EditProductDto): Promise<FetchResponse<Product>> {
