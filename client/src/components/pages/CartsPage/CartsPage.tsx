@@ -9,6 +9,7 @@ import { useCarts } from '@/hooks/carts.hook'
 import { Cart, CartStatusEnum, getCartStatusEnumString } from '@/types/models'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/constants/route'
+import { getEmployeeId } from '@/utils/employeeId'
 
 type Props = {
     pageNumber: number
@@ -18,7 +19,7 @@ const CartsPage = ({ pageNumber }: Props) => {
     const { carts, setCarts, isLoading } = useCarts(pageNumber)
     const router = useRouter()
 
-    const employeeId = 1 // TODO: get from authentication
+    const employeeId = getEmployeeId()
 
     const handleCartCreate = async (employeeId: number) => {
         const response = await CartApi.createCart({employeeVersionId: employeeId})

@@ -1,6 +1,13 @@
 
 .card_container {
-    height: 50vh;
+    height: 40vh;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.toolbar {
+    padding: 1em;
+    > button {
+        margin-right: 1em;
+    }
 }

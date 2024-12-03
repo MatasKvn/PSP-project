@@ -4,6 +4,8 @@ import React from 'react'
 import Input from '../Input'
 import Button, { ButtonProps } from '../Button'
 
+import styles from './DynamivForm.module.scss'
+
 export type DynamicFormInputs = {
     [key: string]: {
         label: string
@@ -29,21 +31,26 @@ const DynamicForm = <T extends DynamicFormInputs,>(props: Props<T>) => {
     const submit = (event: React.FormEvent) => {
         event.preventDefault()
 
-        const formData = new FormData(event.target as HTMLFormElement)
+        const form = event.target as HTMLFormElement
+
+        const formData = new FormData(form)
         const object = Object.fromEntries(formData)
 
         onSubmit(object as FormPayload)
+        form.reset()
     }
 
     return (
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className={styles.form}>
             {inputsKeyValuePairs.map(([key, { label, ...inputProps }]) => (
-                <div key={key}>
+                <div key={key} id='form-section'>
                     <label>{label}</label><br />
                     <Input {...inputProps} name={key}/>
                 </div>
             ))}
-            {children}
+            <div id="form-section">
+                {children}
+            </div>
         </form>
     )
 }

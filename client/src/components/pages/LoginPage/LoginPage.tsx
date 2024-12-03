@@ -9,6 +9,7 @@ import AuthApi from '@/api/auth.api'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
+import { setEmployeeId } from '@/utils/employeeId'
 
 const LoginPage = () => {
     const [errorMsg, setErrorMsg] = useState<string>('')
@@ -26,8 +27,9 @@ const LoginPage = () => {
             setErrorMsg(response.error)
             return
         }
-        const { jwtToken } = response.result!
-        cookies.set('jwtToken', jwtToken, { secure: true })
+        const { jwtToken, id } = response.result!
+        cookies.set('jwtToken', jwtToken, { secure: true, sameSite: 'strict' })
+        setEmployeeId(id)
         router.push(routes.carts)
     }
 

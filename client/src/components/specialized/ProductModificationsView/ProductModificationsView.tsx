@@ -37,43 +37,44 @@ const ProductModificationsView = (props: Props) => {
             description: 'Description',
             price: 0
         })
-        if(response.error) {
+        if(!response.result) {
             console.log(response.error)
             return
         }
         const { result } = response
-        const newProductModifications = [...productModifications, result!]
+        const newProductModifications = [...productModifications, result]
         setProductModifications(newProductModifications)
     }
 
-    const handleEdit = async (payload: DynamicFormPayload) => {
+    const handleUpdate = async (payload: DynamicFormPayload) => {
         if (!selectedProductModification) return
         const {
             name,
             description,
-            price
+            price: pmPrice
         } = payload
+        const price = parseInt(pmPrice)
         const response = await ProductModificationApi.updateProductModification(selectedProductModification.id, {
-            name,
-            description,
-            price: Number.parseInt(price)
+            name: name || selectedProductModification.name,
+            description: description || selectedProductModification.description,
+            price: isNaN(price) ? selectedProductModification.price : price
         })
-        if (response.error) {
+        if (!response.result) {
             console.log(response.error)
             return
         }
         const newProductModifications = [
             ...productModifications.filter((pm) => pm.id !== selectedProductModification.id),
-            response.result!
+            response.result
         ]
         setProductModifications(newProductModifications)
-        setSelectedProductModification(response.result!)
+        setSelectedProductModification(response.result)
     }
 
     const handleDelete = async () => {
         if (!selectedProductModification) return
         const response = await ProductModificationApi.deleteProductModification(selectedProductModification.id)
-        if(response.error) {
+        if(!response.result) {
             console.log(response.error)
             return
         }
@@ -93,23 +94,34 @@ const ProductModificationsView = (props: Props) => {
                             key={productModification.id}
                             isSelected={selectedProductModification?.id === productModification.id}
                             productModification={productModification}
-                            onClick={() => setSelectedProductModification(productModification)}
+                            onClick={() => {
+                                if (selectedProductModification?.id === productModification.id) {
+                                    setSelectedProductModification(undefined)
+                                    return
+                                }
+                                setSelectedProductModification(productModification)
+                            }}
                         />
                     ))
                 }
             </div>
-            <Button onClick={handleCreate}>Create New</Button>
+            <div className={styles.toolbar}>
+                <Button onClick={handleCreate}>Create New</Button>
+                <Button onClick={() => handleDelete()}>Delete</Button>
+                <br />
+                <br />
+                <h4>Modify</h4>
+            </div>
             <DynamicForm
                 inputs={{
                     name: { label: 'Name', placeholder: 'Enter name:', type: 'text' },
                     description: { label: 'Description', placeholder: 'Enter description:', type: 'text' },
                     price: { label: 'Price', placeholder: 'Enter price:', type: 'number' },
                 }}
-                onSubmit={handleEdit}
+                onSubmit={handleUpdate}
             >
                 <DynamicForm.Button>Submit</DynamicForm.Button>
             </DynamicForm>
-            <Button onClick={() => handleDelete()}>Delete</Button>
         </div>
     )
 }

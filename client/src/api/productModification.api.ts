@@ -69,13 +69,15 @@ export default class ProductModificationApi {
     }
 
     static async updateProductModification(id: number, dto: EditProductModificationDto): Promise<FetchResponse<ProductModification>> {
-        const productModification = productModifications.find(pm => pm.id === id)
+        let productModification = productModifications.find(pm => pm.id === id)
 
         if (!productModification) return Promise.resolve({ error: 'Product modification not found' } )
 
-        productModification.name = dto.name || productModification.name
-        productModification.description = dto.description || productModification.description
-        productModification.price = dto.price || productModification.price
+        productModification = {
+            ...productModification,
+            ...dto,
+            dateModified: new Date()
+        }
 
         return Promise.resolve({ result: productModification })
     }

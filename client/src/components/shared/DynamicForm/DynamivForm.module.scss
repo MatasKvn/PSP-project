@@ -1,0 +1,13 @@
+@use '@/assets/styles/variables' as *;
+
+.wrapper {
+
+}
+
+.form {
+    display: inline-block;
+
+    [id="form-section"] {
+        margin: 0.5em 1em;
+    }
+}

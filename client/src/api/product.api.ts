@@ -149,17 +149,15 @@ export default class ProductApi {
         //     headers: defaultHeaders,
         //     body: JSON.stringify(product)
         // })
-        const productToUpdate = products.find((product) => product.id === productId)
+        let productToUpdate = products.find((product) => product.id === productId)
         if (!productToUpdate) return Promise.resolve({ error: 'Product not found' })
-        if (productToUpdate) {
-            productToUpdate.dateModified = new Date()
-            if (product.name) productToUpdate.name = product.name
-            if (product.description) productToUpdate.description = product.description
-            if (product.price) productToUpdate.price = product.price
-            if (product.description) productToUpdate.description = product.description
-            if (product.stock) productToUpdate.stock = product.stock
-            if (product.imageUrl) productToUpdate.imageUrl = product.imageUrl
+
+        productToUpdate = {
+            ...productToUpdate,
+            ...product,
+            dateModified: new Date()
         }
+
         return Promise.resolve({ result: { ...productToUpdate } })
     }
 }

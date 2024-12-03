@@ -63,18 +63,21 @@ const ProductsPage = (props: Props) => {
 
     const createProductForm = () => {
         return (
-            <DynamicForm
-                inputs={{
-                    productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
-                    productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
-                    productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
-                    productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
-                    productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
-                }}
-                onSubmit={handleProductCreate}
-            >
-                <DynamicForm.Button>Submit</DynamicForm.Button>
-            </DynamicForm>
+            <>
+                <h4>Create Product</h4>
+                <DynamicForm
+                    inputs={{
+                        productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
+                        productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
+                        productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
+                        productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
+                        productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
+                    }}
+                    onSubmit={handleProductCreate}
+                >
+                    <DynamicForm.Button>Submit</DynamicForm.Button>
+                </DynamicForm>
+            </>
         )
     }
     const handleProductCreate = async (formPayload: DynamicFormPayload) => {
@@ -92,34 +95,37 @@ const ProductsPage = (props: Props) => {
             stock: Number.parseInt(productStock),
             imageUrl: productImageUrl,
         })
-        if (response.error) {
+        if (!response.result) {
             console.log(response.error)
             return
         }
-        const newProducts = [...products, response.result!].sort(compareProducts)
+        const newProducts = [...products, response.result].sort(compareProducts)
         setProducts(newProducts)
         sideDrawerRef.current?.close()
     }
 
     const editProductForm = () => {
         return (
-            <DynamicForm
-                inputs={{
-                    productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
-                    productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
-                    productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
-                    productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
-                    productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
-                }}
-                onSubmit={(formPayload) => {
-                    handleProductEdit(formPayload)
-                }}
-            >
-                <DynamicForm.Button>Submit</DynamicForm.Button>
-            </DynamicForm>
+            <>
+                <h4>Edit Product</h4>
+                <DynamicForm
+                    inputs={{
+                        productName: { label: 'Product Name', placeholder: 'Enter product name:', type: 'text' },
+                        productDescription: { label: 'Product Description', placeholder: 'Enter product description:', type: 'text' },
+                        productPrice: { label: 'Product Price', placeholder: 'Enter product price:', type: 'number' },
+                        productStock: { label: 'Product Stock', placeholder: 'Enter product stock:', type: 'number' },
+                        productImageUrl: { label: 'Product Image URL', placeholder: 'Enter product image url:', type: 'text' },
+                    }}
+                    onSubmit={(formPayload) => {
+                        handleProductUpdate(formPayload)
+                    }}
+                >
+                    <DynamicForm.Button>Submit</DynamicForm.Button>
+                </DynamicForm>
+            </>
         )
     }
-    const handleProductEdit = async (formPayload: DynamicFormPayload) => {
+    const handleProductUpdate = async (formPayload: DynamicFormPayload) => {
         if (!selectedProduct) return
         const {
             productName,
@@ -128,20 +134,22 @@ const ProductsPage = (props: Props) => {
             productStock,
             productImageUrl,
         } = formPayload
+        const price = Number.parseInt(productPrice)
+        const stock = Number.parseInt(productStock)
         const response = await ProductApi.updateProductById(selectedProduct.id, {
-            name: productName || undefined,
-            description: productDescription || undefined,
-            price: Number.parseInt(productPrice) || undefined,
-            stock: Number.parseInt(productStock) || undefined,
-            imageUrl: productImageUrl || undefined,
+            name: productName || selectedProduct.name,
+            description: productDescription || selectedProduct.description,
+            price: isNaN(price) ? selectedProduct.price : price,
+            stock: isNaN(stock) ? selectedProduct.stock : stock,
+            imageUrl: productImageUrl || selectedProduct.imageUrl,
         })
-        if (response.error) {
+        if (!response.result) {
             console.log(response.error)
             return
         }
         const newProducts = [
             ...products.filter((product) => product.id !== selectedProduct?.id),
-            response.result!
+            response.result
         ].sort(compareProducts)
         setProducts(newProducts)
         sideDrawerRef.current?.close()
@@ -150,7 +158,7 @@ const ProductsPage = (props: Props) => {
     const handleProductDelete = async (product: Product | undefined) => {
         if (!product) return
         const response = await ProductApi.deleteProductById(product.id)
-        if (response.error) {
+        if (!response.result) {
             console.log(response.error)
             return
         }

@@ -13,13 +13,14 @@
     > p {
         text-align: left;
         line-height: 1.2em;
-        height: 2.5em;
         display: inherit;
         width: 80%;
         overflow: hidden;
         text-overflow: ellipsis;
+        height: 1.2em;
     }
     > p[id='description'] {
+        height: 3.5em;
         overflow-y: scroll;
     }
 
