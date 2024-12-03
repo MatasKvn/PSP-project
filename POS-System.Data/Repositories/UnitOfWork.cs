@@ -1,5 +1,8 @@
-﻿using POS_System.Data.Database;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using POS_System.Data.Database;
+using POS_System.Data.Repositories.Base;
 using POS_System.Data.Repositories.Interfaces;
+using POS_System.Domain.Entities;
 
 namespace POS_System.Data.Repositories;
 
@@ -18,8 +21,9 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         ITaxRepository taxRepository,
                         ITimeSlotRepository timeSlotRepository,
                         ITransactionRepository transactionRepository,
-                        IProductOnTaxRepository productOnTaxRepository,
-                        IServiceOnTaxRepository serviceOnTaxRepository) : IUnitOfWork
+                        IBusinessDetailRepository businessDetailRepository,
+                        IGenericManyToManyRepository<Product, Tax, ProductOnTax> productOnTaxRepository,
+                        IGenericManyToManyRepository<Service, Tax, ServiceOnTax> serviceOnTaxRepository) : IUnitOfWork
 {
     public ICardDetailsRepository CardDetailsRepository { get; } = cardDetailsRepository;
     public ICartDiscountRepository CartDiscountRepository { get; } = cartDiscountRepository;
@@ -35,8 +39,9 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public ITaxRepository TaxRepository { get; } = taxRepository;
     public ITimeSlotRepository TimeSlotRepository { get; } = timeSlotRepository;
     public ITransactionRepository TransactionRepository { get; } = transactionRepository;
-    public IProductOnTaxRepository ProductOnTaxRepository { get; } = productOnTaxRepository;
-    public IServiceOnTaxRepository ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
+    public IBusinessDetailRepository BusinessDetailRepository { get; } = businessDetailRepository;
+    public IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; } = productOnTaxRepository;
+    public IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
