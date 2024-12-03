@@ -1,0 +1,51 @@
+@use '@/assets/styles/variables' as *;
+
+.drawer {
+    position: absolute;
+    min-height: 100%;
+    height: 100vh;
+    right: 0;
+    top: 0;
+    background-color: $white;
+    box-shadow: 0px 4px 4px $grey;
+    z-index: 2;
+    transition: width 0.5s ease, opacity 0.5s ease;
+
+    overflow: hidden;
+}
+
+.drawer_open {
+    width: 50ch;
+    opacity: 1;
+}
+
+.drawer_closed {
+    width: 0;
+    opacity: 0;
+}
+
+.background {
+    position: absolute;
+    min-height: 100%;
+    height: 100vh;
+    right: 0;
+    top: 0;
+    background-color: $white;
+    box-shadow: 0px 4px 4px $grey;
+    z-index: 1;
+    background-color: $black;
+    transition: opacity 0.5s ease-in, width 0.0s ease-in 0.5s;
+
+    overflow: hidden;
+}
+
+.background_open {
+    min-width: 100vw;
+    width: 100%;
+    opacity: 0.5;
+}
+
+.background_closed {
+    width: 0;
+    opacity: 0.0;
+}

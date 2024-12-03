@@ -1,0 +1,31 @@
+
+.form_wrapper {
+    display: flex;
+}
+
+.form_label {
+    margin-top: 0.5em ;
+    width: 100%;
+    text-align: center;
+}
+
+.form {
+    display: inline-block;
+    margin: auto;
+}
+
+.input_fields_container {
+    margin: 1.5em auto;
+
+    div {
+        margin: 1em auto;
+    }
+}
+
+.login_button {
+    width: 100%;
+}
+
+.error_text {
+    color: red;
+}

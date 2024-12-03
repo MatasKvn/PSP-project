@@ -1,0 +1,14 @@
+@use '@/assets/styles/variables' as *;
+
+.input {
+    padding: 0.5em;
+    border-radius: 5px;
+
+    border-width: 2px;
+    border-color: $light-grey;
+
+    &:hover, &:focus {
+        outline: none;
+        border-color: $grey;
+    }
+}

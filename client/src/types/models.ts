@@ -11,6 +11,17 @@ export enum CartStatusEnum {
     COMPLETED
 }
 
+export const getCartStatusEnumString = (status: CartStatusEnum): string => {
+    switch (status) {
+        case CartStatusEnum.PENDING:
+            return 'Pending'
+        case CartStatusEnum.IN_PROGRESS:
+            return 'In Progress'
+        case CartStatusEnum.COMPLETED:
+            return 'Completed'
+    }
+}
+
 export type CartDiscount = {
     id: number
     value: number
@@ -33,9 +44,7 @@ export type CartItem = {
     id: number
     quantity: number
     notes: string
-    product?: Product
-    serviceReservation?: ServiceReservation
-}
+} & { product: Product, productModifications: ProductModification[] } | { serviceReservation?: ServiceReservation }
 
 export type Product = {
     id: number
@@ -44,6 +53,7 @@ export type Product = {
     price: number
     dateModified: Date
     imageUrl: string
+    stock: number
 }
 
 export type ServiceReservation = {

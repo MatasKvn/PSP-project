@@ -1,0 +1,41 @@
+@use '@/assets/styles/variables' as *;
+
+.container {
+    margin: 1em;
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: 10px;
+    box-shadow: $default-box-shadow;
+    overflow: hidden;
+    width: 20ch;
+
+    border: 2px solid $light-grey;
+    > p {
+        text-align: left;
+        line-height: 1.2em;
+        display: inherit;
+        width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 1.2em;
+    }
+    > p[id='description'] {
+        height: 3.5em;
+        overflow-y: scroll;
+    }
+
+}
+
+.container:hover {
+    border: $hover-color-2 2px solid;
+    box-shadow: $box-shadow-dims $hover-color-2;
+}
+
+.container_selected {
+    border: $color-selected 5px solid;
+    box-shadow: $box-shadow-dims $color-selected;
+}
+.container_selected:hover {
+    border: $color-selected 5px solid;
+    box-shadow: $box-shadow-dims $color-selected;
+}

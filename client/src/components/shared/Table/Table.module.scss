@@ -1,0 +1,12 @@
+@use '@/assets/styles/variables' as *;
+
+.table {
+    width: 100%;
+}
+
+.table_wrapper {
+    padding: 2em;
+    box-shadow: $grey 0px .5px 4px;
+    border-radius: 10px;
+    display: flex;
+}
