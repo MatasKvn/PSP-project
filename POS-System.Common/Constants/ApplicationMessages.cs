@@ -13,5 +13,7 @@ namespace POS_System.Common.Constants
         public const string SUCCESSFUL_ACTION = "Action performed successfully.";
         public const string NOT_FOUND_ERROR = "Resource not found.";
         public const string BAD_REQUEST_MESSAGE = "Provided data is incorrect.";
+
+        public const string TAX_NOT_FOUND = "No tax with such id was found!";
     }
 }

@@ -8,6 +8,7 @@ using POS_System.Business.Dtos.ProductDtos;
 using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
 using POS_System.Business.Dtos.Response;
+using POS_System.Business.Dtos.BusinessDetails;
 
 namespace POS_System.Business.AutoMapper
 {
@@ -17,6 +18,7 @@ namespace POS_System.Business.AutoMapper
         {
             CreateMap<UserRegisterRequest, ApplicationUser>()
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
+
             // Cart
             CreateMap<Cart, CartResponse>();
             CreateMap<CartResponse, Cart>();
@@ -52,6 +54,10 @@ namespace POS_System.Business.AutoMapper
             //Gift card
             CreateMap<GiftCardRequestDto, GiftCard>();
             CreateMap<GiftCard, GiftCardResponseDto>();
+
+            //Business details
+            CreateMap<BusinessDetailsRequestDto, BusinessDetails>();
+            CreateMap<BusinessDetails, BusinessDetailsResponseDto>();
         }
     }
 }
