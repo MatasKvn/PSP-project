@@ -8,7 +8,7 @@ import { Product, ProductModification } from '@/types/models'
 import React, { useState } from 'react'
 import ProductModificationCard from '../ProductModificationCard/ProductModificationCard'
 
-import styles from './ProductModificationsView.module.scss'
+import styles from './ProductModificationView.module.scss'
 
 type Props = {
     product: Product | undefined
@@ -85,7 +85,7 @@ const ProductModificationsView = (props: Props) => {
     return (
         <div>
             <h3>{`${productName} Modifications`}</h3>
-            <div>
+            <div className={styles.card_container}>
                 {
                     isLoading || isError ? <div>Loading...</div> :
                     productModifications.map((productModification) => (

@@ -23,14 +23,14 @@ const ProductModificationCard = (props: Props) => {
     return (
         <button
             className={[
-                styles.modification,
-                isSelected && styles.modification_selected
+                styles.container,
+                isSelected && styles.container_selected
             ].join(' ')}
             onClick={() => onClick(productModification)}
         >
             <h6>{name}</h6>
-            <p>{description}</p>
-            <p>{price}</p>
+            <p id='description'>{description}</p>
+            <p id='price'>{`${(price / 100).toFixed(2)} €`}</p>
         </button>
     )
 }
