@@ -36,7 +36,7 @@ namespace POS_System.Business.Services
             var employee = await unitOfWork.EmployeeRepository.GetByIdAsync(employeeId, cancellationToken);
 
             if (employee is null || employee.IsDeleted)
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             return mapper.Map<EmployeeResponse>(employee);
         }
@@ -46,7 +46,7 @@ namespace POS_System.Business.Services
             var employee = await unitOfWork.EmployeeRepository.GetByIdAsync(employeeId, cancellationToken);
             
             if (employee is null || employee.IsDeleted)
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             var updatedEmployee = mapper.Map(employeeRequest, employee);
             var response = await userManager.UpdateAsync(updatedEmployee);
@@ -65,7 +65,7 @@ namespace POS_System.Business.Services
             var employee = await unitOfWork.EmployeeRepository.GetByIdAsync(employeeId, cancellationToken);
             
             if (employee is null || employee.IsDeleted)
-                throw new NotFoundException(ApplicationMesssages.NOT_FOUND_ERROR);
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             employee.IsDeleted = true;
             employee.EndDate = DateOnly.FromDateTime(DateTime.UtcNow);

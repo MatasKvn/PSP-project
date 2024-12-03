@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS_System.Business.Dtos.BusinessDetails;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -16,14 +16,14 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBusinessDetails([FromBody] BusinessDetailsRequestDto businessDetailsDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateBusinessDetails([FromBody] BusinessDetailsRequest businessDetailsDto, CancellationToken cancellationToken)
         {
             var businessDetailsResponseDto = await _businessDetailService.CreateOrUpdateBusinessDetailsAsync(businessDetailsDto, cancellationToken);
             return Ok(businessDetailsResponseDto);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBusinessDetails([FromBody] BusinessDetailsRequestDto businessDetailsDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateBusinessDetails([FromBody] BusinessDetailsRequest businessDetailsDto, CancellationToken cancellationToken)
         {
             var businessDetailsResponseDto = await _businessDetailService.CreateOrUpdateBusinessDetailsAsync(businessDetailsDto, cancellationToken);
             return Ok(businessDetailsResponseDto);

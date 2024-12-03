@@ -1,6 +1,6 @@
-﻿namespace POS_System.Business.Dtos.BusinessDetails
+﻿namespace POS_System.Business.Dtos.Response
 {
-    public record BusinessDetailsResponseDto
+    public record BusinessDetailsResponse
     {
         public required string BusinessName { get; set; }
         public required string BusinessEmail { get; set; }

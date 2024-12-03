@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialGenericManyToMany : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -734,10 +734,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(3998) },
-                    { 2, 1, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4164) },
-                    { 3, 2, false, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4168) },
-                    { 4, 3, true, new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4170) }
+                    { 1, 1, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4052) },
+                    { 2, 1, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4100) },
+                    { 3, 2, false, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4102) },
+                    { 4, 3, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4104) }
                 });
 
             migrationBuilder.InsertData(

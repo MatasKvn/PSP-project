@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using POS_System.Business.Dtos.BusinessDetails;
+using POS_System.Business.Dtos.Request;
 
 namespace POS_System.Business.Validators.BusinessDetails
 {
-    public class BusinessDetailsRequestDtoValidator : AbstractValidator<BusinessDetailsRequestDto>
+    public class BusinessDetailsRequestDtoValidator : AbstractValidator<BusinessDetailsRequest>
     {
         public BusinessDetailsRequestDtoValidator()
         {

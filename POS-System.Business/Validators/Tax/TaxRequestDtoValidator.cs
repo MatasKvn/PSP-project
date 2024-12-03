@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using POS_System.Business.Dtos.Tax;
+using POS_System.Business.Dtos.Request;
 
 namespace POS_System.Business.Validators.Tax
 {
-    public class TaxRequestDtoValidator : AbstractValidator<TaxRequestDto>
+    public class TaxRequestDtoValidator : AbstractValidator<TaxRequest>
     {
         public TaxRequestDtoValidator()
         {

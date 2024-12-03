@@ -44,15 +44,15 @@ namespace POS_System.Business.Services
             var user = await userManager.FindByNameAsync(credentials.UserName);
 
             if (user is null || user!.IsDeleted || user.EndDate.HasValue)
-                throw new UnauthorizedException(ApplicationMesssages.INVALID_SIGN_IN_CREDS);
+                throw new UnauthorizedException(ApplicationMessages.INVALID_SIGN_IN_CREDS);
 
             var result = await signInManager.CheckPasswordSignInAsync(user, credentials.Password, false);
 
             if (result.IsLockedOut)
-                throw new TooManyRequestsException(ApplicationMesssages.ACCOUNT_LOCKED_OUT);
+                throw new TooManyRequestsException(ApplicationMessages.ACCOUNT_LOCKED_OUT);
 
             if (!result.Succeeded)
-                throw new UnauthorizedException(ApplicationMesssages.INVALID_SIGN_IN_CREDS);
+                throw new UnauthorizedException(ApplicationMessages.INVALID_SIGN_IN_CREDS);
 
             var roleName = (await userManager.GetRolesAsync(user)).First();
             var role = await roleManager.FindByNameAsync(roleName);
@@ -69,24 +69,24 @@ namespace POS_System.Business.Services
             if (user is not null)
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                var message = new Message(forgotPasswordRequest.Email, ApplicationMesssages.PASSWORD_RESET_MAIL_TITLE, $"Your reset token: {token}");
+                var message = new Message(forgotPasswordRequest.Email, ApplicationMessages.PASSWORD_RESET_MAIL_TITLE, $"Your reset token: {token}");
                 await emailSender.SendAsync(message);
             }
 
-            return new PasswordRecoveryResponse(ApplicationMesssages.EMAIL_SENT_INFO);
+            return new PasswordRecoveryResponse(ApplicationMessages.EMAIL_SENT_INFO);
         }
 
         public async Task<PasswordRecoveryResponse> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
         {
             var user = await userManager.FindByEmailAsync(resetPasswordRequest.Email)
-                ?? throw new BadRequestException(ApplicationMesssages.INVALID_PASS_RECOVERY_CREDS);
+                ?? throw new BadRequestException(ApplicationMessages.INVALID_PASS_RECOVERY_CREDS);
 
             var response = await userManager.ResetPasswordAsync(user, resetPasswordRequest.ResetCode, resetPasswordRequest.NewPassword);
 
             if (!response.Succeeded)
                 throw new BadRequestException(JsonConvert.SerializeObject(response.Errors));
 
-            return new PasswordRecoveryResponse(ApplicationMesssages.SUCCESSFUL_ACTION);
+            return new PasswordRecoveryResponse(ApplicationMessages.SUCCESSFUL_ACTION);
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace POS_System.Business.Dtos.GiftCard;
+﻿namespace POS_System.Business.Dtos.Request;
 
-public record class GiftCardResponseDto
+public record class GiftCardRequest
 {
-    public int Id { get; init; }
     public DateOnly Date { get; init; }
     public int Value { get; init; }
     public required string Code { get; init; }

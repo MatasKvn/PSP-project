@@ -1,8 +1,7 @@
-﻿namespace POS_System.Business.Dtos.Tax
+﻿namespace POS_System.Business.Dtos.Request
 {
-    public class TaxRequestDto
+    public class TaxRequest
     {
-        //Fields
         public required string Name { get; set; }
         public required int Rate { get; set; }
         public required bool IsPercentage { get; set; }

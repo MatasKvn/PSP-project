@@ -12,8 +12,8 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241202202208_InitialGenericManyToMany")]
-    partial class InitialGenericManyToMany
+    [Migration("20241203194956_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1248,28 +1248,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(3998)
+                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4052)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4164)
+                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4100)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4168)
+                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4102)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 2, 22, 22, 8, 288, DateTimeKind.Local).AddTicks(4170)
+                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4104)
                         });
                 });
 

@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using POS_System.Business.Dtos.GiftCard;
+using POS_System.Business.Dtos.Request;
 
 namespace POS_System.Business.Validators.GiftCard
 {
-    public class GiftCardRequestDtoValidator : AbstractValidator<GiftCardRequestDto>
+    public class GiftCardRequestDtoValidator : AbstractValidator<GiftCardRequest>
     {
         public GiftCardRequestDtoValidator()
         {

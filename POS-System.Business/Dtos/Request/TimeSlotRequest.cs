@@ -1,8 +1,7 @@
-﻿namespace POS_System.Business.Dtos.TimeSlotDtos
+﻿namespace POS_System.Business.Dtos.Request
 {
-    public record GetTimeSlotDto
+    public record TimeSlotRequest
     {
-        public int Id { get; set; }
         public int EmployeeVersionId { get; set; }
         public required DateTime StartTime { get; set; }
         public required bool IsAvailable { get; set; }

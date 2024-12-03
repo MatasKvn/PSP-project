@@ -1,6 +1,6 @@
 namespace POS_System.Common.Constants
 {
-    public class ApplicationMesssages
+    public class ApplicationMessages
     {
         public const string ACCOUNT_LOCKED_OUT = "Your account is locked due to too many failed login attempts. Try again after 5 minutes.";
         public const string INVALID_SIGN_IN_CREDS = "Invalid sign in credentials. Wrong username or password.";
@@ -13,7 +13,6 @@ namespace POS_System.Common.Constants
         public const string SUCCESSFUL_ACTION = "Action performed successfully.";
         public const string NOT_FOUND_ERROR = "Resource not found.";
         public const string BAD_REQUEST_MESSAGE = "Provided data is incorrect.";
-
         public const string TAX_NOT_FOUND = "No tax with such id was found!";
     }
 }

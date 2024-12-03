@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
-using POS_System.Business.Dtos.ProductDtos;
+using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Request;
+using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
+using POS_System.Common.Constants;
+using POS_System.Common.Exceptions;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
 
@@ -8,40 +12,66 @@ namespace POS_System.Business.Services
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
     {
-        public async Task<IEnumerable<GetProductDto?>> GetAllProductsAsync(CancellationToken cancellationToken)
+        public async Task<PagedResponse<ProductResponse?>> GetProductsAsync(int pageSize, int pageNumber, bool? onlyActive, CancellationToken cancellationToken)
         {
-            var products = await _unitOfWork.ProductRepository.GetAllByExpressionAsync(x => !x.IsDeleted, cancellationToken);
-            var productDtos = _mapper.Map<List<GetProductDto>>(products);
+            var (products, totalCount) = await _unitOfWork.ProductRepository.GetByExpressionWithPaginationAsync(
+                onlyActive is null ? null : x => x.IsDeleted != onlyActive,
+                pageSize,
+                pageNumber,
+                cancellationToken
+            );
 
-            return productDtos;
+            if (products is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
+
+            var productDtos = _mapper.Map<List<ProductResponse>>(products);
+
+            return new PagedResponse<ProductResponse?>(totalCount, pageSize, pageNumber, productDtos);
         }
 
-        public async Task<GetProductDto?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
                 cancellationToken
             );
 
-            var productDto = _mapper.Map<GetProductDto>(product);
+            if (product is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
+
+            var productDto = _mapper.Map<ProductResponse>(product);
 
             return productDto;
         }
 
-        public async Task<IEnumerable<GetProductDto?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductResponse?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var products = await _unitOfWork.ProductRepository.GetAllByExpressionWithIncludesAsync(
                 x => x.ProductId == productId,
                 cancellationToken
             );
 
-            var productDtos = _mapper.Map<List<GetProductDto>>(products);
+            if (products is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
+
+            var productDtos = _mapper.Map<List<ProductResponse>>(products);
 
             return productDtos;
         }
 
-        public async Task<GetProductDto> CreateProductAsync(CreateProductDto? productDto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> CreateProductAsync(ProductRequest? productDto, CancellationToken cancellationToken)
         {
+            if (productDto is null)
+            {
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+            }
+
             var product = _mapper.Map<Product>(productDto);
 
             product.Version = DateTime.Now;
@@ -50,16 +80,26 @@ namespace POS_System.Business.Services
             await _unitOfWork.ProductRepository.CreateAsync(product, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(product);
+            var responseProductDto = _mapper.Map<ProductResponse>(product);
             return responseProductDto;
         }
 
-        public async Task<GetProductDto> UpdateProductByProductIdAsync(int productId, CreateProductDto? productDto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> UpdateProductByProductIdAsync(int productId, ProductRequest? productDto, CancellationToken cancellationToken)
         {
+            if (productDto is null)
+            {
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+            }
+
             var currentProduct = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
                 cancellationToken
             );
+
+            if (currentProduct is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
 
             currentProduct.IsDeleted = true;
 
@@ -78,21 +118,26 @@ namespace POS_System.Business.Services
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(newProduct);
+            var responseProductDto = _mapper.Map<ProductResponse>(newProduct);
             return responseProductDto;
         }
 
-        public async Task<GetProductDto> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
                 cancellationToken
             );
 
+            if (product is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
+
             product.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(product);
+            var responseProductDto = _mapper.Map<ProductResponse>(product);
             return responseProductDto;
         }
     }
