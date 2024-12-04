@@ -64,6 +64,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.AddPolicy("TaxRead", policy => policy.RequireClaim("TaxRead"));
                 options.AddPolicy("HistoricWrite", policy => policy.RequireClaim("HistoricWrite"));
                 options.AddPolicy("HistoricRead", policy => policy.RequireClaim("HistoricRead"));
+                options.AddPolicy("GiftCardWrite", policy => policy.RequireClaim("GiftCardWrite"));
+                options.AddPolicy("GiftCardRead", policy => policy.RequireClaim("GiftCardRead"));
             });
 
             services.AddScoped<ITaxService, TaxService>();
@@ -74,6 +76,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
             services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
+            services.AddScoped<ICartItemService, CartItemService>();
+            services.AddScoped<IServiceOfService, ServiceOfSevice>();
+
 
             return services;
         }

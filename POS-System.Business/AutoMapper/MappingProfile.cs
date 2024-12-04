@@ -8,6 +8,7 @@ using POS_System.Business.Dtos.ProductModificationDtos;
 using POS_System.Business.Dtos.ProductDtos;
 using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.AutoMapper
 {
@@ -48,6 +49,15 @@ namespace POS_System.Business.AutoMapper
             //Gift card
             CreateMap<GiftCardRequestDto, GiftCard>();
             CreateMap<GiftCard, GiftCardResponseDto>();
+
+            //Service
+            CreateMap<ServiceRequestDto, Service>();
+            CreateMap<ServiceUpdateRequestDto, Service>();
+            CreateMap<Service, ServiceResponseDto>();
+
+            //Cart item
+            CreateMap<CartItemRequestDto, CartItem>();
+            CreateMap<CartItem, CartItemResponseDto>();
         }
     }
 }

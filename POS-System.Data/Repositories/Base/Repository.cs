@@ -20,6 +20,14 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.FindAsync([id], cancellationToken);
     }
 
+    public async Task<T?> GetByExpressionAsync(Expression<Func<T, bool>> predicate,
+     CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(predicate)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<T?> GetByExpressionWithIncludesAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
@@ -65,6 +73,22 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<List<T>> GetAllByExpressionAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+    }
+
+    public async Task<(List<T> Results, int TotalCount)> GetAllByExpressionWithPaginationAsync(
+    Expression<Func<T, bool>> predicate,
+    int pageSize,
+    int pageNumber,
+    CancellationToken cancellationToken = default)
+    {
+        var query = _dbSet.Where(predicate);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var results = await query
+            .OrderBy(x => EF.Property<object>(x, "Id"))
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+        return (results, totalCount);
     }
 
     public async Task<(List<T> Results, int TotalCount)> GetAllWithIncludesAndPaginationAsync(int pageSize, int pageNumber,

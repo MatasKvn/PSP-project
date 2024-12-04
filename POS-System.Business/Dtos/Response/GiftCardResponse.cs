@@ -1,6 +1,6 @@
-﻿namespace POS_System.Business.Dtos.GiftCard;
+﻿namespace POS_System.Business.Dtos.Response;
 
-public record class GiftCardResponseDto
+public record class GiftCardResponse
 {
     public int Id { get; init; }
     public DateOnly Date { get; init; }

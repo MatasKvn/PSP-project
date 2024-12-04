@@ -1,6 +1,6 @@
 using POS_System.Common.Enums;
 
-namespace POS_System.Business.Dtos
+namespace POS_System.Business.Dtos.Response
 {
     public record CartResponse
     {

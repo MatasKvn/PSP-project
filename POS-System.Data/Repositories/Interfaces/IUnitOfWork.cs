@@ -5,6 +5,7 @@ public interface IUnitOfWork
     ICardDetailsRepository CardDetailsRepository { get; }
     ICartDiscountRepository CartDiscountRepository { get; }
     ICartRepository CartRepository { get; }
+    ICartItemRepository CartItemRepository { get; }
     IEmployeeRepository EmployeeRepository { get; }
     IGiftCardDetailsRepository GiftCardDetailsRepository { get; }
     IGiftCardRepository GiftCardRepository { get; }

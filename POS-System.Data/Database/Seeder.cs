@@ -77,10 +77,10 @@ namespace POS_System.Data.Database
         public static void SeedService(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Service>().HasData(
-                new Service { Id = 1, ServiceId = 1, Name = "Service1", Description = "S1 desc", Price = 2599, Duration = 45, ImageURL = "", Version = new DateTime(2024, 10, 16, 19, 0, 0), IsDeleted = false },
-                new Service { Id = 2, ServiceId = 2, Name = "Service2", Description = "S2 desc", Price = 4599, Duration = 25, ImageURL = "", Version = new DateTime(2024, 10, 18, 12, 0, 0), IsDeleted = true },
-                new Service { Id = 3, ServiceId = 3, Name = "Service3", Description = "S3 desc", Price = 1699, Duration = 10, ImageURL = "", Version = new DateTime(2024, 10, 19, 15, 0, 0), IsDeleted = true },
-                new Service { Id = 4, ServiceId = 2, Name = "Service2 v2", Description = "S2 v2 desc", Price = 4099, Duration = 40, ImageURL = "", Version = new DateTime(2024, 11, 1, 15, 30, 0), IsDeleted = false }
+                new Service { Id = 1, Name = "Service1", Description = "S1 desc", Price = 2599, Duration = 45, ImageURL = "", Version = new DateTime(2024, 10, 16, 19, 0, 0), IsDeleted = false },
+                new Service { Id = 2, Name = "Service2", Description = "S2 desc", Price = 4599, Duration = 25, ImageURL = "", Version = new DateTime(2024, 10, 18, 12, 0, 0), IsDeleted = true },
+                new Service { Id = 3, Name = "Service3", Description = "S3 desc", Price = 1699, Duration = 10, ImageURL = "", Version = new DateTime(2024, 10, 19, 15, 0, 0), IsDeleted = true },
+                new Service { Id = 4, Name = "Service2 v2", Description = "S2 v2 desc", Price = 4099, Duration = 40, ImageURL = "", Version = new DateTime(2024, 11, 1, 15, 30, 30), IsDeleted = false }
             );
         }
 
