@@ -31,12 +31,9 @@ namespace POS_System.Business.Services
             return new PagedResponse<ProductResponse?>(totalCount, pageSize, pageNumber, productDtos);
         }
 
-        public async Task<ProductResponse?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse?> GetProductByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
-                x => x.ProductId == productId && !x.IsDeleted,
-                cancellationToken
-            );
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, cancellationToken);
 
             if (product is null)
             {
@@ -84,17 +81,14 @@ namespace POS_System.Business.Services
             return responseProductDto;
         }
 
-        public async Task<ProductResponse> UpdateProductByProductIdAsync(int productId, ProductRequest? productDto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> UpdateProductByIdAsync(int id, ProductRequest? productDto, CancellationToken cancellationToken)
         {
             if (productDto is null)
             {
                 throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
-            var currentProduct = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
-                x => x.ProductId == productId && !x.IsDeleted,
-                cancellationToken
-            );
+            var currentProduct = await _unitOfWork.ProductRepository.GetByIdAsync(id, cancellationToken);
 
             if (currentProduct is null)
             {
@@ -103,17 +97,10 @@ namespace POS_System.Business.Services
 
             currentProduct.IsDeleted = true;
 
-            var newProduct = new Product
-            {
-                ProductId = productId,
-                Name = productDto.Name,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                ImageURL = productDto.ImageURL,
-                Stock = productDto.Stock,
-                Version = DateTime.Now,
-                IsDeleted = false
-            };
+            var newProduct = _mapper.Map<Product>(productDto);
+            newProduct.ProductId = currentProduct.ProductId;
+            newProduct.Version = DateTime.Now;
+            newProduct.IsDeleted = false;
 
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -122,10 +109,10 @@ namespace POS_System.Business.Services
             return responseProductDto;
         }
 
-        public async Task<ProductResponse> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse> DeleteProductByIdAsync(int id, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
-                x => x.ProductId == productId && !x.IsDeleted,
+                x => x.Id == id && !x.IsDeleted,
                 cancellationToken
             );
 
