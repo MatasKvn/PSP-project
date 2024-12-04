@@ -6,6 +6,7 @@ import { navItems } from '@/constants/navbar'
 import Button from '@/components/shared/Button'
 import { GetPageUrl } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
+import { removeEmployeeId } from '@/utils/employeeId'
 
 const Navbar = () => {
     const location = usePathname()
@@ -15,6 +16,7 @@ const Navbar = () => {
 
     const handleLogOut = () => {
         cookies.remove('jwtToken', { secure: true })
+        removeEmployeeId()
         router.push(GetPageUrl.login)
     }
 

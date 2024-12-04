@@ -19,10 +19,8 @@ const CartsPage = ({ pageNumber }: Props) => {
     const { carts, setCarts, isLoading, isError } = useCarts(pageNumber)
     const router = useRouter()
 
-    const employeeId = getEmployeeId()
-
-    const handleCartCreate = async (employeeId: number) => {
-        const response = await CartApi.createCart({employeeVersionId: employeeId})
+    const handleCartCreate = async () => {
+        const response = await CartApi.createCart({employeeVersionId: getEmployeeId()})
         if (response.error) {
             console.log('An error occured when creating cart: ', response.error)
             return
@@ -63,7 +61,7 @@ const CartsPage = ({ pageNumber }: Props) => {
         <>
             <h1>Carts Page</h1>
             <div style={{ margin: '2em auto' }}>
-                <Button onClick={() => handleCartCreate(employeeId)}>
+                <Button onClick={() => handleCartCreate()}>
                     <h5>Create New Cart</h5>
                 </Button>
             </div>
