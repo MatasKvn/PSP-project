@@ -30,15 +30,15 @@ public class GiftCardController(IGiftCardService giftCardService) : ControllerBa
 
     [HttpPost]
     [Authorize(Policy = "GiftCardWrite")]
-    public async Task<IActionResult> CreateGiftCard([FromBody] GiftCardRequestDto giftCardRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateGiftCard([FromBody] GiftCardRequest GiftCardRequest, CancellationToken cancellationToken)
     {
-        var newGiftCard = await giftCardService.CreateGiftCardAsync(giftCardRequestDto, cancellationToken);
+        var newGiftCard = await giftCardService.CreateGiftCardAsync(GiftCardRequest, cancellationToken);
         return Ok(newGiftCard);
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Policy = "GiftCardWrite")]
-    public async Task<IActionResult> UpdateGiftCard([FromRoute] int id, [FromBody] GiftCardRequestDto giftCardUpdateRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateGiftCard([FromRoute] int id, [FromBody] GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken)
     {
         var updatedGiftCard = await giftCardService.UpdateGiftCardAsync(id, giftCardUpdateRequestDto, cancellationToken);
 

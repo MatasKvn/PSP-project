@@ -119,4 +119,23 @@ public class Repository<T> : IRepository<T> where T : class
 
         return query;
     }
+
+    public async Task<(IReadOnlyList<T> Results, int TotalCount)> GetByExpressionWithPaginationAsync(Expression<Func<T, bool>>? predicate, int pageSize, int pageNumber,
+    CancellationToken cancellationToken = default)
+    {
+        var query = _dbSet.AsNoTracking();
+
+        if (predicate is not null)
+            query = query.Where(predicate);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var results = await query
+            .OrderBy(x => EF.Property<object>(x, "Id"))
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (results, totalCount);
+    }
 }

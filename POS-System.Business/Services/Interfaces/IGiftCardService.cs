@@ -6,7 +6,7 @@ namespace POS_System.Business.Services.Interfaces
 {
     public interface IGiftCardService
     {
-        Task<GiftCardResponse> CreateGiftCardAsync(GiftCardRequest giftCardRequestDto, CancellationToken cancellationToken);
+        Task<GiftCardResponse> CreateGiftCardAsync(GiftCardRequest GiftCardRequest, CancellationToken cancellationToken);
         Task<PagedResponse<GiftCardResponse>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize);
         Task<GiftCardResponse?> GetGiftCardByIdAsync(int id, CancellationToken cancellationToken);
         Task<GiftCardResponse> UpdateGiftCardAsync(int id, GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken);
