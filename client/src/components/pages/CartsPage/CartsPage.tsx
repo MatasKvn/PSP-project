@@ -16,7 +16,7 @@ type Props = {
 }
 
 const CartsPage = ({ pageNumber }: Props) => {
-    const { carts, setCarts, isLoading } = useCarts(pageNumber)
+    const { carts, setCarts, isLoading, isError } = useCarts(pageNumber)
     const router = useRouter()
 
     const employeeId = getEmployeeId()
@@ -67,16 +67,12 @@ const CartsPage = ({ pageNumber }: Props) => {
                     <h5>Create New Cart</h5>
                 </Button>
             </div>
-            {isLoading ? (
-                <div>...Loading</div>
-            ) :
-                (
-                    <Table
-                        columns={columns}
-                        rows={rows}
-                    />
-                )
-            }
+                <Table
+                    columns={columns}
+                    rows={rows}
+                    isLoading={isLoading}
+                    errorMsg={isError ? 'An error occurred' : ''}
+                />
         </>
     )
 }

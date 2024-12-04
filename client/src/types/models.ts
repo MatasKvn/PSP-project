@@ -40,11 +40,30 @@ export type ItemDiscount = {
     endDate: Date
 }
 
-export type CartItem = {
+export type CartItem = ProductCartItem | ServiceCartItem
+
+export type ProductCartItem = {
+    type: 'product'
     id: number
+    cartId: number
     quantity: number
-    notes: string
-} & { product: Product, productModifications: ProductModification[] } | { serviceReservation?: ServiceReservation }
+    productId: number
+    product?: Product,
+    productModifications?: ProductModification[]
+}
+
+export type ServiceCartItem = {
+    type: 'service'
+    id: number
+    cartId: number
+    quantity: number
+    serviceId: number
+    service?: Service
+    serviceReservationId: number
+    serviceReservation?: ServiceReservation
+    timeSlotId: number
+    timeSlot?: TimeSlot
+}
 
 export type Product = {
     id: number
@@ -58,13 +77,17 @@ export type Product = {
 
 export type ServiceReservation = {
     id: number
-    timeSlot: TimeSlot
-    customerName: string
+    cartItemId: number
+    timeSlotId: number
+    timeSlot?: TimeSlot
+    bookingTime: Date
     customerPhone: string
+    customerName: string
 }
 
 export type TimeSlot = {
     id: number
+    employeeId: number
     startTime: Date
     isAvailable: boolean
 }
@@ -99,6 +122,7 @@ export type Tax = {
 
 export type ProductModification = {
     id: number
+    productId: number
     name: string
     description: string
     price: number
