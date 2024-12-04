@@ -9,7 +9,7 @@ namespace POS_System.Api.Controllers
     [ApiController]
     public class ProductModificationController(IProductModificationService _productModificationService) : ControllerBase
     {
-        [Authorize("ItemRead")]
+        //[Authorize("ItemRead")]
         [HttpGet]
         public async Task<IActionResult> GetAllProductModifications([FromQuery] bool? onlyActive, CancellationToken cancellationToken, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
@@ -17,15 +17,15 @@ namespace POS_System.Api.Controllers
             return Ok(productModifications);
         }
 
-        [Authorize("ItemRead")]
-        [HttpGet("{productModificationId}")]
-        public async Task<IActionResult> GetProductModificationByProductModificationId(int productModificationId, CancellationToken cancellationToken)
+        //[Authorize("ItemRead")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductModificationById(int id, CancellationToken cancellationToken)
         {
-            var productModifications = await _productModificationService.GetProductModificationByProductModificationIdAsync(productModificationId, cancellationToken);
+            var productModifications = await _productModificationService.GetProductModificationByIdAsync(id, cancellationToken);
             return Ok(productModifications);
         }
 
-        [Authorize("ItemRead")]
+        //[Authorize("ItemRead")]
         [HttpGet("{productModificationtId}/versions/")]
         public async Task<IActionResult> GetProductModificationVersionsByProductModificationId(int productModificationtId, CancellationToken cancellationToken)
         {
@@ -33,7 +33,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModifications);
         }
 
-        [Authorize("ItemWrite")]
+        //[Authorize("ItemWrite")]
         [HttpPost]
         public async Task<IActionResult> CreateProductModification([FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
@@ -41,19 +41,19 @@ namespace POS_System.Api.Controllers
             return Ok(productModification);
         }
 
-        [Authorize("ItemWrite")]
-        [HttpPut("{productModificationId}")]
-        public async Task<IActionResult> UpdateProductModification(int productModificationId, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
+        //[Authorize("ItemWrite")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProductModification(int id, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
-            var productModification = await _productModificationService.UpdateProductModificationAsync(productModificationId, productModificationDto, cancellationToken);
+            var productModification = await _productModificationService.UpdateProductModificationByIdAsync(id, productModificationDto, cancellationToken);
             return Ok(productModification);
         }
 
-        [Authorize("ItemWrite")]
-        [HttpDelete("{productModificationId}")]
-        public async Task<IActionResult> DeleteProductModification(int productModificationId, CancellationToken cancellationToken)
+        //[Authorize("ItemWrite")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductModification(int id, CancellationToken cancellationToken)
         {
-            var productModification = await _productModificationService.DeleteProductModificationAsync(productModificationId, cancellationToken);
+            var productModification = await _productModificationService.DeleteProductModificationByIdAsync(id, cancellationToken);
             return Ok(productModification);
         }
     }
