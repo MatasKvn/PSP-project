@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { verifyJwtToken } from './utils/jwtToken'
-import { publicRoutes, routes } from './constants/route'
+import { publicRoutes, GetPageUrl } from './constants/route'
 
 const isPublicRoute = (path: string) => !!publicRoutes.find((publicPath) => path.startsWith(publicPath))
 
@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isPublicRoute(currentRoute)) {
-        return NextResponse.redirect(new URL(routes.carts, request.url))
+        return NextResponse.redirect(new URL(GetPageUrl.carts(0), request.url))
     }
 
     return NextResponse.next()

@@ -3,9 +3,9 @@ export const publicRoutes = [
     '/login'
 ]
 
-export const routes = {
+export const GetPageUrl = {
     login: '/login',
-    carts: '/dashboard/carts/0',
-    cart: (cartId: number) => `/dashboard/cart/${cartId}`,
-    products: '/dashboard/products/0'
+    carts: (pageNumber: number) => `/dashboard/carts/${pageNumber}`,
+    cart: (cartId: number, pageNumber: number) => `/dashboard/cart/${cartId}?pageNumber=${pageNumber}`,
+    products: (pageNumber: number) => `/dashboard/products/${pageNumber}`
 } as const

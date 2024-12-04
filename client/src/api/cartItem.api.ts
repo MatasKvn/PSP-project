@@ -93,6 +93,7 @@ type CreateCartItemDto = {
     type: 'product'
     quantity: number
     productVersionId: number
+    variationIds: number[]
 } | {
     type: 'service'
     quantity: number

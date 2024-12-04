@@ -1,9 +1,7 @@
 import { FetchResponse, PagedResponse } from '@/types/fetch'
-import { Product, ProductModification, ProductModification, ProductModification, ProductModification } from './../types/models'
+import { Product, ProductModification } from './../types/models'
 
-type ProductModificationFetch = ProductModification
-
-const productModifications: ProductModificationFetch[] = [
+const productModifications: ProductModification[] = [
     {
         id: 1,
         productId: 1,

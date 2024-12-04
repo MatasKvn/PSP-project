@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import styles from './Navbar.module.scss'
 import { navItems } from '@/constants/navbar'
 import Button from '@/components/shared/Button'
-import { routes } from '@/constants/route'
+import { GetPageUrl } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
 
 const Navbar = () => {
@@ -15,7 +15,7 @@ const Navbar = () => {
 
     const handleLogOut = () => {
         cookies.remove('jwtToken', { secure: true })
-        router.push(routes.login)
+        router.push(GetPageUrl.login)
     }
 
     return (

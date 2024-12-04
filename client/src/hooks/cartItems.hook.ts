@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { CartItem, ProductCartItem, ServiceCartItem } from '@/types/models'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import CartItemApi from '@/api/cartItem.api'
@@ -10,14 +10,15 @@ import ServiceReservationApi from '@/api/serviceReservation.api'
 import TimeSlotApi from '@/api/timeSlot.api'
 
 async function getProductCartItemSubItems(cartItem: ProductCartItem): Promise<string | ProductCartItem> {
-    const product = await ProductApi.getProductById(cartItem.productId)
-    if (!product.result) return product.error || 'Failed to get product'
+    const productResponse= await ProductApi.getProductById(cartItem.productId)
+    if (!productResponse.result) return productResponse.error || 'Failed to get product'
+    const product = productResponse.result
     const productModificationsResponse = await ProductModificationApi.getByCartItemId(cartItem.id, 0)
     if (!productModificationsResponse.result) return productModificationsResponse.error || 'Failed to get product modifications'
     const productModifications = PagedResponseMapper.fromPageResponse(productModificationsResponse.result)
     return {
         ...cartItem,
-        product: product.result,
+        product: product,
         productModifications
     }
 }
@@ -59,33 +60,37 @@ export const useCartItems = (cartId: number, pageNumber: number) => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [error, setError] = useState<string>('')
 
-    useEffect(() => {
-        const fail = (errMsg: string) => {
-            setError(errMsg)
-            setIsLoading(false)
-        }
-        const handleFetch = async () => {
-            const response = await CartItemApi.getCartItems(cartId, pageNumber)
-            if (!response.result) {
-                fail(response.error || 'Failed to get cart items')
-                return
-            }
-            const cartItems = PagedResponseMapper.fromPageResponse(response.result)
 
-            const mappedCarts = cartItems.map((cartItem) => CartItemMapper.fromReponse(cartItem))
-            const cartsExtended = await Promise.all(mappedCarts.map(async (cartItem) => await getCartItemSubItems(cartItem)))
+    const fail = (errMsg: string) => {
+        setError(errMsg)
+        setIsLoading(false)
+    }
 
-            const allSucceeded = isCartItems(cartsExtended)
-            const failedItem = cartsExtended.find((cartItem) => typeof cartItem === 'string')
-            if (!allSucceeded) {
-                fail(failedItem || 'Failed to get cart items')
-                return
-            }
-            setCartItems(cartsExtended as CartItem[])
-            setIsLoading(false)
+    const handleFetch = useCallback(async () => {
+        const response = await CartItemApi.getCartItems(cartId, pageNumber)
+        if (!response.result) {
+            fail(response.error || 'Failed to get cart items')
+            return
         }
-        handleFetch()
+        const cartItems = PagedResponseMapper.fromPageResponse(response.result)
+
+        const mappedCarts = cartItems.map((cartItem) => CartItemMapper.fromReponse(cartItem))
+        const cartsExtended = await Promise.all(mappedCarts.map(async (cartItem) => await getCartItemSubItems(cartItem)))
+
+        const allSucceeded = isCartItems(cartsExtended)
+        const failedItem = cartsExtended.find((cartItem) => typeof cartItem === 'string')
+        if (!allSucceeded) {
+            fail(failedItem || 'Failed to get cart items')
+            return
+        }
+        setCartItems(cartsExtended as CartItem[])
+        setIsLoading(false)
     }, [cartId, pageNumber])
 
-    return { cartItems, setCartItems, isLoading, errorMsg: error }
+    useEffect(() => {
+
+        handleFetch()
+    }, [cartId, pageNumber, handleFetch])
+
+    return { cartItems, setCartItems, isLoading, errorMsg: error, refetchCartItems: handleFetch }
 }
