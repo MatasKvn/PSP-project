@@ -58,6 +58,13 @@ namespace POS_System.Business.AutoMapper
             //Business details
             CreateMap<BusinessDetailsRequest, BusinessDetails>();
             CreateMap<BusinessDetails, BusinessDetailsResponse>();
+
+            //Item discount
+            CreateMap<ItemDiscountRequest, ItemDiscount>();
+            CreateMap<ItemDiscount, ItemDiscountResponse>();
+
+            CreateMap<CartDiscountRequest, CartDiscount>();
+            CreateMap<CartDiscount, CartDiscountResponse>();
         }
     }
 }

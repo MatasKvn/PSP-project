@@ -76,6 +76,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGiftCardService, GiftCardService>();
             services.AddScoped<IEmployeeeService, EmployeeService>();
             services.AddScoped<IBusinessDetailService, BusinessDetailService>();
+            services.AddScoped<IItemDiscountService, ItemDiscountService>();
+            services.AddScoped<ICartDiscountService, CartDiscountService>();
 
             return services;
         }

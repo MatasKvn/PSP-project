@@ -1,5 +1,4 @@
 ﻿using POS_System.Domain.Entities;
-using POS_System.Domain.Entities.Generic;
 
 namespace POS_System.Data.Repositories.Interfaces;
 
@@ -22,5 +21,8 @@ public interface IUnitOfWork
     IBusinessDetailRepository BusinessDetailRepository { get; }
     IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; }
     IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; }
+    IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; }
+    IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; }
+    IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> CartOnCartDiscountRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

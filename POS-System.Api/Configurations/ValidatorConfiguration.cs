@@ -15,7 +15,7 @@ public static class ValidatorConfiguration
             .AddValidatorsFromAssemblyContaining<GiftCardRequest>()
             .AddValidatorsFromAssemblyContaining<TaxRequest>()
             .AddValidatorsFromAssemblyContaining<BusinessDetailsRequest>()
-            .AddValidatorsFromAssemblyContaining<GiftCardRequest>();
+            .AddValidatorsFromAssemblyContaining<ItemDiscountRequest>();
 
         return builder;
     }
