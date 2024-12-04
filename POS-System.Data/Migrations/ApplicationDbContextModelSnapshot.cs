@@ -689,9 +689,13 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("ItemDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ItemDiscountId"), 1L, null, null, null, null, null);
+
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -703,6 +707,51 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemDiscounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Desc1",
+                            IsDeleted = true,
+                            IsPercentage = true,
+                            ItemDiscountId = 1,
+                            Value = 12,
+                            Version = new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Desc2",
+                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsPercentage = true,
+                            ItemDiscountId = 2,
+                            Value = 15,
+                            Version = new DateTime(2024, 12, 4, 13, 48, 9, 692, DateTimeKind.Utc).AddTicks(847)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Desc3",
+                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsPercentage = false,
+                            ItemDiscountId = 3,
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = 500,
+                            Version = new DateTime(2024, 12, 4, 13, 48, 9, 692, DateTimeKind.Utc).AddTicks(849)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Desc1 Update",
+                            IsDeleted = true,
+                            IsPercentage = true,
+                            ItemDiscountId = 1,
+                            Value = 18,
+                            Version = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Product", b =>
@@ -1245,28 +1294,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4052)
+                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(744)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4100)
+                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(801)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4102)
+                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(804)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4104)
+                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(806)
                         });
                 });
 

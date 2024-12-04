@@ -22,5 +22,7 @@ public interface IUnitOfWork
     IBusinessDetailRepository BusinessDetailRepository { get; }
     IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; }
     IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; }
+    IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; }
+    IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

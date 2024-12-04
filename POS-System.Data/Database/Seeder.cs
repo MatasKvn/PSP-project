@@ -20,7 +20,7 @@ namespace POS_System.Data.Database
             SeedCartItem(modelBuilder);
             SeedProductModification(modelBuilder);
             SeedTimeSlots(modelBuilder);
-
+            SeedItemDiscounts(modelBuilder);
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
@@ -166,6 +166,16 @@ namespace POS_System.Data.Database
                     Value = 250,
                     Code = "CARD250"
                 }
+            );
+        }
+
+        public static void SeedItemDiscounts(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ItemDiscount>().HasData(
+                new ItemDiscount { Id = 1, ItemDiscountId = 1, Value = 12, IsPercentage = true, Description = "Desc1", StartDate = null, EndDate = null, Version = new DateTime(2024, 11, 15), IsDeleted = true },
+                new ItemDiscount { Id = 2, ItemDiscountId = 2, Value = 15, IsPercentage = true, Description = "Desc2", StartDate = null, EndDate = new DateTime(2025, 1, 12), Version = DateTime.UtcNow, IsDeleted = false},
+                new ItemDiscount { Id = 3, ItemDiscountId = 3, Value = 500, IsPercentage = false, Description ="Desc3", StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 1, 12), Version = DateTime.UtcNow, IsDeleted = false },
+                new ItemDiscount { Id = 4, ItemDiscountId = 1, Value = 18, IsPercentage = true, Description = "Desc1 Update", StartDate = null, EndDate = null, Version = new DateTime(2024, 11, 20), IsDeleted = true }
             );
         }
     }
