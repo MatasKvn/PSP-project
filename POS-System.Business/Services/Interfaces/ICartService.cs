@@ -1,5 +1,5 @@
 using POS_System.Business.Dtos;
-using POS_System.Domain.Entities;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services.Interfaces
 {

@@ -1,14 +1,15 @@
-﻿using POS_System.Business.Dtos.ProductDtos;
+﻿using POS_System.Business.Dtos.Request;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services.Interfaces
 {
     public interface IProductService
     {
-        public Task<IEnumerable<GetProductDto?>> GetAllProductsAsync(CancellationToken cancellationToken);
-        public Task<GetProductDto?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken);
-        public Task<IEnumerable<GetProductDto?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken);
-        public Task<GetProductDto> CreateProductAsync(CreateProductDto? productDto, CancellationToken cancellationToken);
-        public Task<GetProductDto> UpdateProductByProductIdAsync(int productId, CreateProductDto? productDto, CancellationToken cancellationToken);
-        public Task<GetProductDto> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken);
+        public Task<IEnumerable<ProductResponse?>> GetAllProductsAsync(CancellationToken cancellationToken);
+        public Task<ProductResponse?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken);
+        public Task<IEnumerable<ProductResponse?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken);
+        public Task<ProductResponse> CreateProductAsync(ProductRequest? productDto, CancellationToken cancellationToken);
+        public Task<ProductResponse> UpdateProductByProductIdAsync(int productId, ProductRequest? productDto, CancellationToken cancellationToken);
+        public Task<ProductResponse> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using POS_System.Business.Dtos.ProductDtos;
+using POS_System.Business.Dtos.Request;
+using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
@@ -8,39 +9,39 @@ namespace POS_System.Business.Services
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
     {
-        public async Task<IEnumerable<GetProductDto?>> GetAllProductsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductResponse?>> GetAllProductsAsync(CancellationToken cancellationToken)
         {
             var products = await _unitOfWork.ProductRepository.GetAllByExpressionAsync(x => !x.IsDeleted, cancellationToken);
-            var productDtos = _mapper.Map<List<GetProductDto>>(products);
+            var productDtos = _mapper.Map<List<ProductResponse>>(products);
 
             return productDtos;
         }
 
-        public async Task<GetProductDto?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse?> GetProductByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
                 cancellationToken
             );
 
-            var productDto = _mapper.Map<GetProductDto>(product);
+            var productDto = _mapper.Map<ProductResponse>(product);
 
             return productDto;
         }
 
-        public async Task<IEnumerable<GetProductDto?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductResponse?>> GetProductVersionsByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var products = await _unitOfWork.ProductRepository.GetAllByExpressionWithIncludesAsync(
                 x => x.ProductId == productId,
                 cancellationToken
             );
 
-            var productDtos = _mapper.Map<List<GetProductDto>>(products);
+            var productDtos = _mapper.Map<List<ProductResponse>>(products);
 
             return productDtos;
         }
 
-        public async Task<GetProductDto> CreateProductAsync(CreateProductDto? productDto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> CreateProductAsync(ProductRequest? productDto, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product>(productDto);
 
@@ -50,11 +51,11 @@ namespace POS_System.Business.Services
             await _unitOfWork.ProductRepository.CreateAsync(product, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(product);
+            var responseProductDto = _mapper.Map<ProductResponse>(product);
             return responseProductDto;
         }
 
-        public async Task<GetProductDto> UpdateProductByProductIdAsync(int productId, CreateProductDto? productDto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> UpdateProductByProductIdAsync(int productId, ProductRequest? productDto, CancellationToken cancellationToken)
         {
             var currentProduct = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
@@ -78,11 +79,11 @@ namespace POS_System.Business.Services
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(newProduct);
+            var responseProductDto = _mapper.Map<ProductResponse>(newProduct);
             return responseProductDto;
         }
 
-        public async Task<GetProductDto> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
+        public async Task<ProductResponse> DeleteProductByProductIdAsync(int productId, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.ProductRepository.GetByExpressionWithIncludesAsync(
                 x => x.ProductId == productId && !x.IsDeleted,
@@ -92,7 +93,7 @@ namespace POS_System.Business.Services
             product.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var responseProductDto = _mapper.Map<GetProductDto>(product);
+            var responseProductDto = _mapper.Map<ProductResponse>(product);
             return responseProductDto;
         }
     }
