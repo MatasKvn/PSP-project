@@ -10,7 +10,7 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Business.Services
 {
-    public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
+    public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper, IProductModificationService _productModification) : IProductService
     {
         public async Task<PagedResponse<ProductResponse?>> GetProductsAsync(int pageSize, int pageNumber, bool? onlyActive, CancellationToken cancellationToken)
         {
@@ -103,6 +103,8 @@ namespace POS_System.Business.Services
             newProduct.IsDeleted = false;
 
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);
+            await UpdateForeignKeysAsync(id, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var responseProductDto = _mapper.Map<ProductResponse>(newProduct);
@@ -126,6 +128,31 @@ namespace POS_System.Business.Services
 
             var responseProductDto = _mapper.Map<ProductResponse>(product);
             return responseProductDto;
+        }
+
+        private async Task UpdateForeignKeysAsync(int id, CancellationToken cancellationToken)
+        {
+            var prodMods = await _unitOfWork.ProductModificationRepository.GetAllByExpressionWithIncludesAsync(
+                x => x.ProductVersionId == id && !x.IsDeleted,
+                cancellationToken
+            );
+
+            if (prodMods is null)
+            {
+                throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            }
+
+            foreach ( var prodMod in prodMods)
+            {
+                if (prodMods is null)
+                {
+                    throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+                }
+
+                var prodModDto = _mapper.Map<ProductModificationRequest>(prodMod);
+
+                await _productModification.UpdateProductModificationByIdAsync(prodMod.Id, prodModDto, cancellationToken);
+            }
         }
     }
 }

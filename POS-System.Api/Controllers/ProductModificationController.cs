@@ -9,7 +9,7 @@ namespace POS_System.Api.Controllers
     [ApiController]
     public class ProductModificationController(IProductModificationService _productModificationService) : ControllerBase
     {
-        //[Authorize("ItemRead")]
+        [Authorize("ItemRead")]
         [HttpGet]
         public async Task<IActionResult> GetAllProductModifications([FromQuery] bool? onlyActive, CancellationToken cancellationToken, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
@@ -17,7 +17,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModifications);
         }
 
-        //[Authorize("ItemRead")]
+        [Authorize("ItemRead")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductModificationById(int id, CancellationToken cancellationToken)
         {
@@ -25,7 +25,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModifications);
         }
 
-        //[Authorize("ItemRead")]
+        [Authorize("ItemRead")]
         [HttpGet("{productModificationtId}/versions/")]
         public async Task<IActionResult> GetProductModificationVersionsByProductModificationId(int productModificationtId, CancellationToken cancellationToken)
         {
@@ -33,7 +33,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModifications);
         }
 
-        //[Authorize("ItemWrite")]
+        [Authorize("ItemWrite")]
         [HttpPost]
         public async Task<IActionResult> CreateProductModification([FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
@@ -41,7 +41,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModification);
         }
 
-        //[Authorize("ItemWrite")]
+        [Authorize("ItemWrite")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProductModification(int id, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
@@ -49,7 +49,7 @@ namespace POS_System.Api.Controllers
             return Ok(productModification);
         }
 
-        //[Authorize("ItemWrite")]
+        [Authorize("ItemWrite")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductModification(int id, CancellationToken cancellationToken)
         {
