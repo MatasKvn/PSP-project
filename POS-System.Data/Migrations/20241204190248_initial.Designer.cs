@@ -12,7 +12,7 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241204134810_initial")]
+    [Migration("20241204190248_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -409,6 +409,9 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("EmployeeVersionId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -424,6 +427,7 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             DateCreated = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 1,
+                            IsDeleted = false,
                             Status = 0
                         },
                         new
@@ -431,6 +435,7 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             DateCreated = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 2,
+                            IsDeleted = false,
                             Status = 2
                         },
                         new
@@ -438,6 +443,7 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             DateCreated = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 3,
+                            IsDeleted = false,
                             Status = 1
                         },
                         new
@@ -445,6 +451,7 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             DateCreated = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 4,
+                            IsDeleted = false,
                             Status = 0
                         });
                 });
@@ -458,7 +465,11 @@ namespace POS_System.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CartDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("CartDiscountId"), 1L, null, null, null, null, null);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -473,7 +484,7 @@ namespace POS_System.Data.Migrations
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -731,7 +742,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 4, 13, 48, 9, 692, DateTimeKind.Utc).AddTicks(847)
+                            Version = new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9824)
                         },
                         new
                         {
@@ -743,7 +754,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 4, 13, 48, 9, 692, DateTimeKind.Utc).AddTicks(849)
+                            Version = new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9827)
                         },
                         new
                         {
@@ -1297,28 +1308,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(744)
+                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9735)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(801)
+                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9784)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(804)
+                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9787)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 15, 48, 9, 692, DateTimeKind.Local).AddTicks(806)
+                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9789)
                         });
                 });
 

@@ -34,6 +34,11 @@ namespace POS_System.Data.Database
                 .UseIdentityColumn()
                 .HasIdentityOptions(startValue: 1, incrementBy: 1);
 
+            modelBuilder.Entity<CartDiscount>()
+                .Property(t => t.CartDiscountId)
+                .UseIdentityColumn()
+                .HasIdentityOptions(startValue: 1, incrementBy: 1);
+
             //Manual links for ApplicationUser (new Employee.cs)
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany<EmployeeOnService>()

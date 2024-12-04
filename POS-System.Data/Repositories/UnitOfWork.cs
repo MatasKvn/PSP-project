@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using POS_System.Data.Database;
-using POS_System.Data.Repositories.Base;
+﻿using POS_System.Data.Database;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
 
@@ -25,7 +23,8 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         IGenericManyToManyRepository<Product, Tax, ProductOnTax> productOnTaxRepository,
                         IGenericManyToManyRepository<Service, Tax, ServiceOnTax> serviceOnTaxRepository,
                         IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> productOnItemDiscountRepository,
-                        IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> serviceOnItemDiscountRepository) : IUnitOfWork
+                        IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> serviceOnItemDiscountRepository,
+                        IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> cartOnCartDiscountRepository) : IUnitOfWork
 {
     public ICardDetailsRepository CardDetailsRepository { get; } = cardDetailsRepository;
     public ICartDiscountRepository CartDiscountRepository { get; } = cartDiscountRepository;
@@ -46,7 +45,7 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
     public IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; } = productOnItemDiscountRepository;
     public IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; } = serviceOnItemDiscountRepository;
-
+    public IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> CartOnCartDiscountRepository { get; } = cartOnCartDiscountRepository;
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await dbContext.SaveChangesAsync(cancellationToken);

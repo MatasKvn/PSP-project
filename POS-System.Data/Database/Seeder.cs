@@ -121,10 +121,10 @@ namespace POS_System.Data.Database
         public static void SeedCarts(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cart>().HasData(
-                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING },
-                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED },
-                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS },
-                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING }
+                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING, IsDeleted = false },
+                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED, IsDeleted = false },
+                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS, IsDeleted = false },
+                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING, IsDeleted = false }
             );
         }
 
