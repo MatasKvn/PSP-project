@@ -6,6 +6,7 @@ using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
 using POS_System.Common.Exceptions;
 using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services;
 
@@ -13,7 +14,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
 {
     public async Task<PagedResponse<GiftCardResponseDto>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
     {
-        var (giftCards, totalCount) = await unitOfWork.GiftCardRepository.GetAllWithPaginationAsync(
+        var (giftCards, totalCount) = await unitOfWork.GiftCardRepository.GetAllByExpressionWithPaginationAsync(giftcard => giftcard.Date >= DateOnly.FromDateTime(DateTime.Now),
             pageSize,
             pageNum,
             cancellationToken
@@ -27,7 +28,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
     {
         IdValidator.ValidateId(id);
 
-        var giftCard = await unitOfWork.GiftCardRepository.GetByIdAsync(id, cancellationToken)
+        var giftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(giftcard => giftcard.Id == id && giftcard.Date >= DateOnly.FromDateTime(DateTime.Now), cancellationToken)
             ?? throw new NotFoundException($"Gift card with id {id} does not exist.");
 
         return mapper.Map<GiftCardResponseDto>(giftCard);
@@ -37,7 +38,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
     {
         ArgumentNullException.ThrowIfNull(giftCardRequestDto, nameof(giftCardRequestDto));
 
-        var existingGiftCard = await unitOfWork.GiftCardRepository.GetByExpressionWithIncludesAsync(g => g.Code == giftCardRequestDto.Code, cancellationToken);
+        var existingGiftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(g => g.Code == giftCardRequestDto.Code, cancellationToken);
         if (existingGiftCard is not null)
         {
             throw new BadRequestException("Gift card with this code already exist.", nameof(existingGiftCard.Code));

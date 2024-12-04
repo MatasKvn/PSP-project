@@ -1,5 +1,6 @@
 ﻿using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.GiftCard;
+using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services.Interfaces
 {
