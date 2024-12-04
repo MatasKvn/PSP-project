@@ -35,11 +35,11 @@ namespace POS_System.Business.Services
             return mapper.Map<ServiceResponse>(service);
         }
 
-        public async Task<ServiceResponse> CreateServiceAsync(ServiceRequest ServiceRequest, CancellationToken cancellationToken)
+        public async Task<ServiceResponse> CreateServiceAsync(ServiceRequest serviceRequest, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(ServiceRequest, nameof(ServiceRequest));
+            ArgumentNullException.ThrowIfNull(serviceRequest, nameof(serviceRequest));
 
-            var newService = mapper.Map<Service>(ServiceRequest);
+            var newService = mapper.Map<Service>(serviceRequest);
 
             newService.Version = DateTime.Now;
             newService.IsDeleted = false;
@@ -50,10 +50,10 @@ namespace POS_System.Business.Services
             return mapper.Map<ServiceResponse>(newService);
         }
 
-        public async Task<ServiceResponse> UpdateServiceAsync(int id, ServiceUpdateRequest ServiceUpdateRequest, CancellationToken cancellationToken)
+        public async Task<ServiceResponse> UpdateServiceAsync(int id, ServiceRequest serviceRequest, CancellationToken cancellationToken)
         {
             IdValidator.ValidateId(id);
-            ArgumentNullException.ThrowIfNull(ServiceUpdateRequest, nameof(ServiceUpdateRequest));
+            ArgumentNullException.ThrowIfNull(serviceRequest, nameof(serviceRequest));
 
             var serviceToUpdate = await unitOfWork.ServiceRepository.GetByExpressionAsync(
                 x => x.Id == id && !x.IsDeleted,
@@ -69,11 +69,11 @@ namespace POS_System.Business.Services
 
             var newService = new Service
             {
-                Name = ServiceUpdateRequest.Name,
-                Description = ServiceUpdateRequest.Description,
-                Duration = ServiceUpdateRequest.Duration,
-                Price = ServiceUpdateRequest.Price,
-                ImageURL = ServiceUpdateRequest.ImageURL,
+                Name = serviceRequest.Name,
+                Description = serviceRequest.Description,
+                Duration = serviceRequest.Duration,
+                Price = serviceRequest.Price,
+                ImageURL = serviceRequest.ImageURL,
                 Version = DateTime.UtcNow,
                 IsDeleted = false
             };

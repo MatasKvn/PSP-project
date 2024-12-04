@@ -61,7 +61,7 @@ namespace POS_System.Business.AutoMapper
 
             //Service
             CreateMap<ServiceRequest, Service>();
-            CreateMap<ServiceUpdateRequest, Service>();
+            CreateMap<ServiceRequest, Service>();
             CreateMap<Service, ServiceResponse>();
 
             //Cart item
