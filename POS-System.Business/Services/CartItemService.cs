@@ -12,7 +12,7 @@ namespace POS_System.Business.Services;
 
 public class CartItemService(IUnitOfWork unitOfWork, IMapper mapper) : ICartItemService
 {
-    public async Task<PagedResponse<CartItemResponseDto>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize)
+    public async Task<PagedResponse<CartItemResponse>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize)
     {
         var (cartItems, totalCount) = await unitOfWork.CartItemRepository.GetAllByExpressionWithPaginationAsync(CartItem => CartItem.CartId == cartId,
             pageSize,
@@ -20,50 +20,50 @@ public class CartItemService(IUnitOfWork unitOfWork, IMapper mapper) : ICartItem
             cancellationToken
         );
 
-        var mappedCartItems = mapper.Map<IEnumerable<CartItemResponseDto>>(cartItems);
-        return new PagedResponse<CartItemResponseDto>(totalCount, pageSize, pageNum, mappedCartItems);
+        var mappedCartItems = mapper.Map<IEnumerable<CartItemResponse>>(cartItems);
+        return new PagedResponse<CartItemResponse>(totalCount, pageSize, pageNum, mappedCartItems);
     }
 
-    public async Task<CartItemResponseDto?> GetCartItemByIdAndCartIdAsync(int cartId, int id, CancellationToken cancellationToken)
+    public async Task<CartItemResponse?> GetCartItemByIdAndCartIdAsync(int cartId, int id, CancellationToken cancellationToken)
     {
         IdValidator.ValidateId(id);
 
         var cartItem = await unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
             ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        return mapper.Map<CartItemResponseDto>(cartItem);
+        return mapper.Map<CartItemResponse>(cartItem);
     }
 
-    public async Task<CartItemResponseDto> CreateCartItemAsync(CartItemRequestDto cartItemRequestDto, CancellationToken cancellationToken)
+    public async Task<CartItemResponse> CreateCartItemAsync(CartItemRequest CartItemRequest, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(cartItemRequestDto, nameof(cartItemRequestDto));
+        ArgumentNullException.ThrowIfNull(CartItemRequest, nameof(CartItemRequest));
 
-        var cartExists = await unitOfWork.CartRepository.GetByIdAsync(cartItemRequestDto.CartId, cancellationToken);
+        var cartExists = await unitOfWork.CartRepository.GetByIdAsync(CartItemRequest.CartId, cancellationToken);
         if (cartExists is null)
         {
-            throw new BadRequestException($"Cart with Id {cartItemRequestDto.CartId} does not exist, cannot add item to it.");
+            throw new BadRequestException($"Cart with Id {CartItemRequest.CartId} does not exist, cannot add item to it.");
         }
 
-        var newCartItem = mapper.Map<CartItem>(cartItemRequestDto);
+        var newCartItem = mapper.Map<CartItem>(CartItemRequest);
 
         await unitOfWork.CartItemRepository.CreateAsync(newCartItem, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<CartItemResponseDto>(newCartItem);
+        return mapper.Map<CartItemResponse>(newCartItem);
     }
 
-    public async Task<CartItemResponseDto> UpdateCartItemAsync(int cartId, int id, CartItemRequestDto cartItemRequestDto, CancellationToken cancellationToken)
+    public async Task<CartItemResponse> UpdateCartItemAsync(int cartId, int id, CartItemRequest CartItemRequest, CancellationToken cancellationToken)
     {
         IdValidator.ValidateId(id);
-        ArgumentNullException.ThrowIfNull(cartItemRequestDto, nameof(cartItemRequestDto));
+        ArgumentNullException.ThrowIfNull(CartItemRequest, nameof(CartItemRequest));
 
         var cartItemToUpdate = await unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
             ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        mapper.Map(cartItemRequestDto, cartItemToUpdate);
+        mapper.Map(CartItemRequest, cartItemToUpdate);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<CartItemResponseDto>(cartItemToUpdate);
+        return mapper.Map<CartItemResponse>(cartItemToUpdate);
     }
 
     public async Task DeleteCartItemAsync(int cartId, int id, CancellationToken cancellationToken)

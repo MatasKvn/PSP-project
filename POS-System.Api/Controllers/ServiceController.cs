@@ -30,17 +30,17 @@ public class ServiceController(IServiceOfService serviceOfService) : ControllerB
 
     [HttpPost]
     //[Authorize(Policy = "ServiceWrite")]
-    public async Task<IActionResult> CreateService([FromBody] ServiceRequestDto serviceRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateService([FromBody] ServiceRequest ServiceRequest, CancellationToken cancellationToken)
     {
-        var newservice = await serviceOfService.CreateServiceAsync(serviceRequestDto, cancellationToken);
+        var newservice = await serviceOfService.CreateServiceAsync(ServiceRequest, cancellationToken);
         return Ok(newservice);
     }
 
     [HttpPut("{id:int}")]
     //[Authorize(Policy = "ServiceWrite")]
-    public async Task<IActionResult> UpdateService([FromRoute] int id, [FromBody] ServiceUpdateRequestDto serviceUpdateRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateService([FromRoute] int id, [FromBody] ServiceUpdateRequest ServiceUpdateRequest, CancellationToken cancellationToken)
     {
-        var updatedservice = await serviceOfService.UpdateServiceAsync(id, serviceUpdateRequestDto, cancellationToken);
+        var updatedservice = await serviceOfService.UpdateServiceAsync(id, ServiceUpdateRequest, cancellationToken);
 
         return Ok(updatedservice);
     }

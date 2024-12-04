@@ -1,4 +1,7 @@
-﻿namespace POS_System.Data.Repositories.Interfaces;
+﻿using POS_System.Domain.Entities;
+using POS_System.Domain.Entities.Generic;
+
+namespace POS_System.Data.Repositories.Interfaces;
 
 public interface IUnitOfWork
 {
@@ -17,8 +20,8 @@ public interface IUnitOfWork
     ITaxRepository TaxRepository { get; }
     ITimeSlotRepository TimeSlotRepository { get; }
     ITransactionRepository TransactionRepository { get; }
-    IProductOnTaxRepository ProductOnTaxRepository { get; }
-    IServiceOnTaxRepository ServiceOnTaxRepository { get; }
-
+    IBusinessDetailRepository BusinessDetailRepository { get; }
+    IGenericManyToManyRepository<Product, Tax, ProductOnTax> ProductOnTaxRepository { get; }
+    IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

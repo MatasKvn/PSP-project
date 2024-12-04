@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using POS_System.Domain.Entities.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS_System.Domain.Entities
 {
     [Table("Products")]
-    public record Product
+    public record Product : ILinkable
     {
         //Primary key
         [Key]

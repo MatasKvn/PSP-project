@@ -1,0 +1,52 @@
+
+.navbar {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    flex: 1;
+
+    width: 15rem;
+    height: 100%;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.label {
+    margin: 0.5em auto;
+    width: 100%;
+    text-align: center;
+}
+
+.nav_item {
+    padding: 1rem 3rem;
+    margin: 5px;
+    border-radius: 10px;
+
+    &_active {
+        padding: 1rem 3rem;
+        margin: 5px;
+        border-radius: 10px;
+        background-color: lightgrey;
+    }
+
+    &:hover {
+        padding: 1rem 3rem;
+        margin: 5px;
+        border-radius: 10px;
+        background-color: lightgrey;
+        cursor: pointer;
+    }
+}
+
+
+.logout_button_wrapper {
+    display: flex;
+    flex: 1;
+    align-items: end;
+    padding: 1em;
+    width: 100%;
+
+    button {
+        width: 100%;
+    }
+}

@@ -6,10 +6,10 @@ namespace POS_System.Business.Services.Interfaces
 {
     public interface ICartItemService
     {
-        Task<CartItemResponseDto> CreateCartItemAsync(CartItemRequestDto cartItemRequestDto, CancellationToken cancellationToken);
-        Task<PagedResponse<CartItemResponseDto>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize);
-        Task<CartItemResponseDto?> GetCartItemByIdAndCartIdAsync(int cartId, int id, CancellationToken cancellationToken);
-        Task<CartItemResponseDto> UpdateCartItemAsync(int cartId, int id, CartItemRequestDto cartItemUpdateRequestDto, CancellationToken cancellationToken);
+        Task<CartItemResponse> CreateCartItemAsync(CartItemRequest CartItemRequest, CancellationToken cancellationToken);
+        Task<PagedResponse<CartItemResponse>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize);
+        Task<CartItemResponse?> GetCartItemByIdAndCartIdAsync(int cartId, int id, CancellationToken cancellationToken);
+        Task<CartItemResponse> UpdateCartItemAsync(int cartId, int id, CartItemRequest cartItemUpdateRequestDto, CancellationToken cancellationToken);
         Task DeleteCartItemAsync(int cartId, int id, CancellationToken cancellationToken);
     }
 }

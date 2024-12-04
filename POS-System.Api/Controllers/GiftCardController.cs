@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using POS_System.Business.Dtos.GiftCard;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers;

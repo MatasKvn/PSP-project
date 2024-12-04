@@ -12,7 +12,7 @@ namespace POS_System.Business.Services
 {
     public class ServiceOfSevice(IUnitOfWork unitOfWork, IMapper mapper) : IServiceOfService
     {
-        public async Task<PagedResponse<ServiceResponseDto>> GetAllServicesAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
+        public async Task<PagedResponse<ServiceResponse>> GetAllServicesAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
             var (services, totalCount) = await unitOfWork.ServiceRepository.GetAllWithPaginationAsync(
                 pageSize,
@@ -20,11 +20,11 @@ namespace POS_System.Business.Services
             cancellationToken
             );
 
-            var mappedservices = mapper.Map<IEnumerable<ServiceResponseDto>>(services);
-            return new PagedResponse<ServiceResponseDto>(totalCount, pageSize, pageNum, mappedservices);
+            var mappedservices = mapper.Map<IEnumerable<ServiceResponse>>(services);
+            return new PagedResponse<ServiceResponse>(totalCount, pageSize, pageNum, mappedservices);
         }
 
-        public async Task<ServiceResponseDto?> GetServiceByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<ServiceResponse?> GetServiceByIdAsync(int id, CancellationToken cancellationToken)
         {
             IdValidator.ValidateId(id);
 
@@ -32,14 +32,14 @@ namespace POS_System.Business.Services
                 x => x.Id == id && !x.IsDeleted,cancellationToken) 
                     ?? throw new NotFoundException($"Service with id {id} does not exist.");
 
-            return mapper.Map<ServiceResponseDto>(service);
+            return mapper.Map<ServiceResponse>(service);
         }
 
-        public async Task<ServiceResponseDto> CreateServiceAsync(ServiceRequestDto serviceRequestDto, CancellationToken cancellationToken)
+        public async Task<ServiceResponse> CreateServiceAsync(ServiceRequest ServiceRequest, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(serviceRequestDto, nameof(serviceRequestDto));
+            ArgumentNullException.ThrowIfNull(ServiceRequest, nameof(ServiceRequest));
 
-            var newService = mapper.Map<Service>(serviceRequestDto);
+            var newService = mapper.Map<Service>(ServiceRequest);
 
             newService.Version = DateTime.Now;
             newService.IsDeleted = false;
@@ -47,13 +47,13 @@ namespace POS_System.Business.Services
             await unitOfWork.ServiceRepository.CreateAsync(newService, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<ServiceResponseDto>(newService);
+            return mapper.Map<ServiceResponse>(newService);
         }
 
-        public async Task<ServiceResponseDto> UpdateServiceAsync(int id, ServiceUpdateRequestDto serviceUpdateRequestDto, CancellationToken cancellationToken)
+        public async Task<ServiceResponse> UpdateServiceAsync(int id, ServiceUpdateRequest ServiceUpdateRequest, CancellationToken cancellationToken)
         {
             IdValidator.ValidateId(id);
-            ArgumentNullException.ThrowIfNull(serviceUpdateRequestDto, nameof(serviceUpdateRequestDto));
+            ArgumentNullException.ThrowIfNull(ServiceUpdateRequest, nameof(ServiceUpdateRequest));
 
             var serviceToUpdate = await unitOfWork.ServiceRepository.GetByExpressionAsync(
                 x => x.Id == id && !x.IsDeleted,
@@ -69,11 +69,11 @@ namespace POS_System.Business.Services
 
             var newService = new Service
             {
-                Name = serviceUpdateRequestDto.Name,
-                Description = serviceUpdateRequestDto.Description,
-                Duration = serviceUpdateRequestDto.Duration,
-                Price = serviceUpdateRequestDto.Price,
-                ImageURL = serviceUpdateRequestDto.ImageURL,
+                Name = ServiceUpdateRequest.Name,
+                Description = ServiceUpdateRequest.Description,
+                Duration = ServiceUpdateRequest.Duration,
+                Price = ServiceUpdateRequest.Price,
+                ImageURL = ServiceUpdateRequest.ImageURL,
                 Version = DateTime.UtcNow,
                 IsDeleted = false
             };
@@ -81,7 +81,7 @@ namespace POS_System.Business.Services
             await unitOfWork.ServiceRepository.CreateAsync(newService, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<ServiceResponseDto>(newService);
+            return mapper.Map<ServiceResponse>(newService);
         }
 
         public async Task DeleteServiceAsync(int id, CancellationToken cancellationToken)

@@ -6,6 +6,7 @@ using POS_System.Data.Identity;
 using POS_System.Data.Repositories;
 using POS_System.Data.Repositories.Base;
 using POS_System.Data.Repositories.Interfaces;
+using POS_System.Domain.Entities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? configuration.GetConnectionString("LocalConnection");
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.MigrationsAssembly("POS-System.Data")));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -61,9 +63,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<IProductOnTaxRepository, ProductOnTaxRepository>();
-            services.AddScoped<IServiceOnTaxRepository, ServiceOnTaxRepository>();
-            services.AddScoped<ICartItemRepository, CartItemRepository>();
+            services.AddScoped<IBusinessDetailRepository, BusinessDetailRepository>();
+            services.AddScoped<IGenericManyToManyRepository<Product, Tax, ProductOnTax>, GenericManyToManyRepository<Product, Tax, ProductOnTax>>();
+            services.AddScoped<IGenericManyToManyRepository<Service, Tax, ServiceOnTax>, GenericManyToManyRepository<Service, Tax, ServiceOnTax>>();
+            services.AddScoped<IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>, GenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>>();
+            services.AddScoped<IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>,
+                GenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>>();
+            services.AddScoped<IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>,
+                GenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>>();
+            services.AddScoped<IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>,
+                GenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         

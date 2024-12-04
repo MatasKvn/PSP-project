@@ -1,0 +1,59 @@
+@use '@/assets/styles/variables' as *;
+
+.image {
+    width: 100;
+    // max-height: 50;
+    aspect-ratio: 1 / 1;
+    margin: auto;
+}
+
+.container {
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: 10px;
+    box-shadow: $default-box-shadow;
+    width: 180px;
+    height: 270px;
+    // overflow: hidden;
+
+    border: 2px solid $light-grey;
+}
+
+.container:hover {
+    border: $hover-color-2 2px solid;
+    box-shadow: $box-shadow-dims $hover-color-2;
+}
+
+.container_selected {
+    border: $color-selected 5px solid;
+    box-shadow: $box-shadow-dims $color-selected;
+}
+.container_selected:hover {
+    border: $color-selected 5px solid;
+    box-shadow: $box-shadow-dims $color-selected;
+}
+
+.container > h6 {
+    text-align: center;
+    word-break: break-all;
+}
+
+.container > p {
+    text-align: left;
+    display: inherit;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.description {
+    margin: 0.3em;
+}
+
+.stock {
+    color: green;
+    &_empty {
+        color: red;
+    }
+}

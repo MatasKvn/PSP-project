@@ -1,12 +1,6 @@
 using AutoMapper;
-using POS_System.Business.Dtos.Tax;
-using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Data.Identity;
-using POS_System.Business.Dtos.GiftCard;
-using POS_System.Business.Dtos.ProductModificationDtos;
-using POS_System.Business.Dtos.ProductDtos;
-using POS_System.Business.Dtos.TimeSlotDtos;
 using POS_System.Domain.Entities;
 using POS_System.Business.Dtos.Response;
 
@@ -18,46 +12,61 @@ namespace POS_System.Business.AutoMapper
         {
             CreateMap<UserRegisterRequest, ApplicationUser>()
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
+
             // Cart
             CreateMap<Cart, CartResponse>();
             CreateMap<CartResponse, Cart>();
-            CreateMap<GiftCardRequestDto, GiftCard>();
-            CreateMap<GiftCard, GiftCardResponseDto>();
+            CreateMap<GiftCardRequest, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponse>();
 
             // ProductModification
-            CreateMap<ProductModification, GetProductModificationDto>();
-            CreateMap<GetProductModificationDto, ProductModification>();
-            CreateMap<ProductModification, CreateProductModificationDto>();
-            CreateMap<CreateProductModificationDto, ProductModification>();
+            CreateMap<ProductModification, ProductModificationResponse>();
+            CreateMap<ProductModificationResponse, ProductModification>();
+            CreateMap<ProductModification, ProductModificationRequest>();
+            CreateMap<ProductModificationRequest, ProductModification>();
 
             // Product
-            CreateMap<Product, GetProductDto>();
-            CreateMap<GetProductDto, Product>();
-            CreateMap<Product, CreateProductDto>();
-            CreateMap<CreateProductDto, Product>();
+            CreateMap<Product, ProductResponse>();
+            CreateMap<ProductResponse, Product>();
+            CreateMap<Product, ProductRequest>();
+            CreateMap<ProductRequest, Product>();
+
+            // Employees
+            CreateMap<ApplicationUser, EmployeeResponse>();
+            CreateMap<EmployeeRequest, ApplicationUser>();
 
             // TimeSlot
-            CreateMap<TimeSlot, GetTimeSlotDto>();
-            CreateMap<GetTimeSlotDto, TimeSlot>();
-            CreateMap<TimeSlot, CreateTimeSlotDto>();
-            CreateMap<CreateTimeSlotDto, TimeSlot>();
+            CreateMap<TimeSlot, TimeSlotResponse>();
+            CreateMap<TimeSlotResponse, TimeSlot>();
+            CreateMap<TimeSlot, TimeSlotRequest>();
+            CreateMap<TimeSlotRequest, TimeSlot>();
 
             // Tax
-            CreateMap<Tax, TaxResponseDto>();
-            CreateMap<TaxRequestDto, Tax>();
+            CreateMap<Tax, TaxResponse>();
+            CreateMap<TaxRequest, Tax>();
             
             //Gift card
-            CreateMap<GiftCardRequestDto, GiftCard>();
-            CreateMap<GiftCard, GiftCardResponseDto>();
+            CreateMap<GiftCardRequest, GiftCard>();
+            CreateMap<GiftCard, GiftCardResponse>();
+
+            // ServiceReservation
+            CreateMap<ServiceReservation, ServiceReservationResponse>();
+            CreateMap<ServiceReservation, ServiceReservationRequest>();
+            CreateMap<ServiceReservationResponse, ServiceReservation>();
+            CreateMap<ServiceReservationRequest, ServiceReservation>();
+
+            //Business details
+            CreateMap<BusinessDetailsRequest, BusinessDetails>();
+            CreateMap<BusinessDetails, BusinessDetailsResponse>();
 
             //Service
-            CreateMap<ServiceRequestDto, Service>();
-            CreateMap<ServiceUpdateRequestDto, Service>();
-            CreateMap<Service, ServiceResponseDto>();
+            CreateMap<ServiceRequest, Service>();
+            CreateMap<ServiceUpdateRequest, Service>();
+            CreateMap<Service, ServiceResponse>();
 
             //Cart item
-            CreateMap<CartItemRequestDto, CartItem>();
-            CreateMap<CartItem, CartItemResponseDto>();
+            CreateMap<CartItemRequest, CartItem>();
+            CreateMap<CartItem, CartItemResponse>();
         }
     }
 }

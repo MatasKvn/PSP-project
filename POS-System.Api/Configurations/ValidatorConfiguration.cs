@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using POS_System.Business.Dtos.GiftCard;
-
+using POS_System.Business.Dtos.Request;
 namespace POS_System.Api.Configurations;
 
 public static class ValidatorConfiguration
@@ -13,7 +12,10 @@ public static class ValidatorConfiguration
         builder.Services
             .AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters()
-            .AddValidatorsFromAssemblyContaining<GiftCardRequestDto>();
+            .AddValidatorsFromAssemblyContaining<GiftCardRequest>()
+            .AddValidatorsFromAssemblyContaining<TaxRequest>()
+            .AddValidatorsFromAssemblyContaining<BusinessDetailsRequest>()
+            .AddValidatorsFromAssemblyContaining<GiftCardRequest>();
 
         return builder;
     }

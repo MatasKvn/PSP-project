@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
 using POS_System.Business.Validators;
-using POS_System.Business.Dtos.GiftCard;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Data.Repositories.Interfaces;
 using POS_System.Domain.Entities;
 using POS_System.Common.Exceptions;
 using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services;
 
 public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCardService
 {
-    public async Task<PagedResponse<GiftCardResponseDto>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
+    public async Task<PagedResponse<GiftCardResponse>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
     {
         var (giftCards, totalCount) = await unitOfWork.GiftCardRepository.GetAllByExpressionWithPaginationAsync(giftcard => giftcard.Date >= DateOnly.FromDateTime(DateTime.Now),
             pageSize,
@@ -20,21 +20,21 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
             cancellationToken
         );
 
-        var mappedGiftCards = mapper.Map<IEnumerable<GiftCardResponseDto>>(giftCards);
-        return new PagedResponse<GiftCardResponseDto>(totalCount, pageSize, pageNum, mappedGiftCards);
+        var mappedGiftCards = mapper.Map<IEnumerable<GiftCardResponse>>(giftCards);
+        return new PagedResponse<GiftCardResponse>(totalCount, pageSize, pageNum, mappedGiftCards);
     }
 
-    public async Task<GiftCardResponseDto?> GetGiftCardByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<GiftCardResponse?> GetGiftCardByIdAsync(int id, CancellationToken cancellationToken)
     {
         IdValidator.ValidateId(id);
 
         var giftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(giftcard => giftcard.Id == id && giftcard.Date >= DateOnly.FromDateTime(DateTime.Now), cancellationToken)
             ?? throw new NotFoundException($"Gift card with id {id} does not exist.");
 
-        return mapper.Map<GiftCardResponseDto>(giftCard);
+        return mapper.Map<GiftCardResponse>(giftCard);
     }
 
-    public async Task<GiftCardResponseDto> CreateGiftCardAsync(GiftCardRequestDto giftCardRequestDto, CancellationToken cancellationToken)
+    public async Task<GiftCardResponse> CreateGiftCardAsync(GiftCardRequest giftCardRequestDto, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(giftCardRequestDto, nameof(giftCardRequestDto));
 
@@ -49,10 +49,10 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
         await unitOfWork.GiftCardRepository.CreateAsync(newGiftCard, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<GiftCardResponseDto>(newGiftCard);
+        return mapper.Map<GiftCardResponse>(newGiftCard);
     }
 
-    public async Task<GiftCardResponseDto> UpdateGiftCardAsync(int id, GiftCardRequestDto giftCardRequestDto, CancellationToken cancellationToken)
+    public async Task<GiftCardResponse> UpdateGiftCardAsync(int id, GiftCardRequest giftCardRequestDto, CancellationToken cancellationToken)
     {
         IdValidator.ValidateId(id);
         ArgumentNullException.ThrowIfNull(giftCardRequestDto, nameof(giftCardRequestDto));
@@ -66,7 +66,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
         mapper.Map(giftCardRequestDto, giftCardToUpdate);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<GiftCardResponseDto>(giftCardToUpdate);
+        return mapper.Map<GiftCardResponse>(giftCardToUpdate);
     }
 
     public async Task DeleteGiftCardAsync(int id, CancellationToken cancellationToken)

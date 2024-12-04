@@ -32,15 +32,15 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
 
     [HttpPost]
     [Authorize(Policy = "CartItemWrite")]
-    public async Task<IActionResult> CreateCartItem([FromBody] CartItemRequestDto cartItemRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateCartItem([FromBody] CartItemRequest CartItemRequest, CancellationToken cancellationToken)
     {
-        var newcartItem = await cartItemService.CreateCartItemAsync(cartItemRequestDto, cancellationToken);
+        var newcartItem = await cartItemService.CreateCartItemAsync(CartItemRequest, cancellationToken);
         return Ok(newcartItem);
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Policy = "CartItemWrite")]
-    public async Task<IActionResult> UpdateCartItem([FromRoute] int cartid, [FromRoute] int id, [FromBody] CartItemRequestDto cartItemUpdateRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateCartItem([FromRoute] int cartid, [FromRoute] int id, [FromBody] CartItemRequest cartItemUpdateRequestDto, CancellationToken cancellationToken)
     {
         var updatedcartItem = await cartItemService.UpdateCartItemAsync(cartid, id, cartItemUpdateRequestDto, cancellationToken);
 

@@ -7,6 +7,8 @@ using POS_System.Business.Dtos;
 using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Business.Utils;
+using POS_System.Data.Repositories;
+using POS_System.Data.Repositories.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -45,7 +47,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<ITokenGenerator, TokenGenerator>();
 
-            services.AddScoped<ITaxService, TaxService>();
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthorization(options => 
@@ -68,14 +69,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.AddPolicy("GiftCardRead", policy => policy.RequireClaim("GiftCardRead"));
             });
 
+            services.AddScoped(typeof(IManyToManyService<,,>), typeof(ManyToManyService<,,>));
             services.AddScoped<ITaxService, TaxService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductModificationService, ProductModificationService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
-            services.AddScoped<IProductOnTaxService, ProductOnTaxService>();
-            services.AddScoped<IServiceOnTaxService, ServiceOnTaxService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
+            services.AddScoped<IEmployeeeService, EmployeeService>();
+            services.AddScoped<IBusinessDetailService, BusinessDetailService>();
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IServiceOfService, ServiceOfSevice>();
 
