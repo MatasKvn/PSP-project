@@ -60,7 +60,7 @@ namespace POS_System.Api.Controllers
 
         [HttpPut("{id}/unlink")]
         [Authorize("TaxWrite")]
-        public async Task<IActionResult> UnlinkTaxFromProducts(int id, [FromQuery] bool itemsAreProducts, [FromBody] int[] itemIdList, CancellationToken cancellationToken)
+        public async Task<IActionResult> UnlinkTaxFromItems(int id, [FromQuery] bool itemsAreProducts, [FromBody] int[] itemIdList, CancellationToken cancellationToken)
         {
             await _taxService.UnlinkTaxFromItemsAsync(id, itemsAreProducts, itemIdList, cancellationToken);
             
@@ -68,7 +68,7 @@ namespace POS_System.Api.Controllers
         }
 
         //Leave timeStamp null if you want to get only the active items
-        [HttpGet("product/{id}")]
+        [HttpGet("item/{id}")]
         [Authorize("TaxRead")]
         public async Task<IActionResult> GetTaxesLinkedToItemId(int id, [FromQuery] bool isProduct, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
         {

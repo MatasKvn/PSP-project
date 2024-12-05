@@ -18,10 +18,10 @@ namespace POS_System.Api.Controllers
         }
 
         [Authorize("ItemRead")]
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> GetProductByProductId(int productId, CancellationToken cancellationToken)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id, CancellationToken cancellationToken)
         {
-            var products = await _productService.GetProductByProductIdAsync(productId, cancellationToken);
+            var products = await _productService.GetProductByIdAsync(id, cancellationToken);
             return Ok(products);
         }
 
@@ -42,18 +42,18 @@ namespace POS_System.Api.Controllers
         }
 
         [Authorize("ItemWrite")]
-        [HttpPut("{productId}")]
-        public async Task<IActionResult> UpdateProductByProductId(int productId, [FromBody] ProductRequest? productDto, CancellationToken cancellationToken)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProductByProductId(int id, [FromBody] ProductRequest? productDto, CancellationToken cancellationToken)
         {
-            var product = await _productService.UpdateProductByProductIdAsync(productId, productDto, cancellationToken);
+            var product = await _productService.UpdateProductByIdAsync(id, productDto, cancellationToken);
             return Ok(product);
         }
 
         [Authorize("ItemWrite")]
-        [HttpDelete("{productId}")]
-        public async Task<IActionResult> DeleteProductById(int productId, CancellationToken cancellationToken)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductById(int id, CancellationToken cancellationToken)
         {
-            var product = await _productService.DeleteProductByProductIdAsync(productId, cancellationToken);
+            var product = await _productService.DeleteProductByIdAsync(id, cancellationToken);
             return Ok(product);
         }
     }
