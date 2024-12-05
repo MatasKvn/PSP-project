@@ -9,17 +9,11 @@ import ServiceApi from '@/api/service.api'
 import ServiceReservationApi from '@/api/serviceReservation.api'
 import TimeSlotApi from '@/api/timeSlot.api'
 import ItemDiscountApi from '@/api/itemDiscount.api'
+import TaxApi from '@/api/tax.api'
 
-// TODO: Add tax fetching
-const tax: Tax = {
-    name: 'PVM',
-    dateModified: new Date(),
-    id: 1,
-    isPercentage: true,
-    rate: 13
-}
 
 const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<string | RequiredProductCartItem> => {
+    // FIXME: optmize
     const productResponse= await ProductApi.getProductById(cartItem.productId)
     if (!productResponse.result) return productResponse.error || 'Failed to get product'
     const product = productResponse.result
@@ -29,16 +23,21 @@ const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<st
     const discountsReponse = await ItemDiscountApi.getCurrentDiscountsByProductId(cartItem.productId)
     if (!discountsReponse.result) return discountsReponse.error || 'Failed to get discounts'
     const discounts = discountsReponse.result
+    const taxesResponse = await TaxApi.getTaxesByProductId(cartItem.productId)
+    if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
+    const taxes = taxesResponse.result
+
     return {
         ...cartItem,
         product: product,
         productModifications,
         discounts,
-        taxes: [tax] // TODO: Replace with fetched taxes
+        taxes
     }
 }
 
 const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<string | RequiredCartItem> => {
+    // FIXME: optmize
     const serviceResponse = await ServiceApi.getById(cartItem.serviceId)
     if (!serviceResponse.result) return serviceResponse.error || 'Failed to get service'
     const service = serviceResponse.result
@@ -51,6 +50,9 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
     const discountsResponse = await ItemDiscountApi.getCurrentDiscountByServiceId(cartItem.serviceId)
     if (!discountsResponse.result) return discountsResponse.error || 'Failed to get discounts'
     const discounts = discountsResponse.result
+    const taxesResponse = await TaxApi.getTaxesByServiceId(cartItem.serviceId)
+    if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
+    const taxes = taxesResponse.result
 
     return {
         ...cartItem,
@@ -58,7 +60,7 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
         serviceReservation: reservation,
         timeSlot,
         discounts,
-        taxes: [tax] // TODO: Replace with fetched taxes
+        taxes
     }
 }
 

@@ -1,6 +1,5 @@
 import { FetchResponse, PagedResponse } from '@/types/fetch'
-import { Service, Service } from './../types/models'
-
+import { Service } from './../types/models'
 
 const services: Service[] = [
     {
