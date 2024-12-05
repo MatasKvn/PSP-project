@@ -18,10 +18,10 @@ namespace POS_System.Api.Controllers
         }
 
         [Authorize("ItemRead")]
-        [HttpGet("{productModificationId}")]
-        public async Task<IActionResult> GetProductModificationByProductModificationId(int productModificationId, CancellationToken cancellationToken)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductModificationById(int id, CancellationToken cancellationToken)
         {
-            var productModifications = await _productModificationService.GetProductModificationByProductModificationIdAsync(productModificationId, cancellationToken);
+            var productModifications = await _productModificationService.GetProductModificationByIdAsync(id, cancellationToken);
             return Ok(productModifications);
         }
 
@@ -42,18 +42,18 @@ namespace POS_System.Api.Controllers
         }
 
         [Authorize("ItemWrite")]
-        [HttpPut("{productModificationId}")]
-        public async Task<IActionResult> UpdateProductModification(int productModificationId, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProductModification(int id, [FromBody] ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
-            var productModification = await _productModificationService.UpdateProductModificationAsync(productModificationId, productModificationDto, cancellationToken);
+            var productModification = await _productModificationService.UpdateProductModificationByIdAsync(id, productModificationDto, cancellationToken);
             return Ok(productModification);
         }
 
         [Authorize("ItemWrite")]
-        [HttpDelete("{productModificationId}")]
-        public async Task<IActionResult> DeleteProductModification(int productModificationId, CancellationToken cancellationToken)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductModification(int id, CancellationToken cancellationToken)
         {
-            var productModification = await _productModificationService.DeleteProductModificationAsync(productModificationId, cancellationToken);
+            var productModification = await _productModificationService.DeleteProductModificationByIdAsync(id, cancellationToken);
             return Ok(productModification);
         }
     }
