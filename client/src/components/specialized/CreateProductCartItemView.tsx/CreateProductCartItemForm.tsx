@@ -3,10 +3,12 @@ import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import { useProducts } from '@/hooks/products.hook'
 import { Product, ProductModification } from '@/types/models'
 import React, { useState } from 'react'
-import ProductModificationsView from '../ProductModificationsView/ProductModificationsView'
-import ProductsView from '../ProductsView'
+import ProductModificationsView from '../../shared/ProductModificationsView/ProductModificationsView'
+import ProductsView from '../ProductsView/ProductsView'
 import { useProductModifications } from '@/hooks/productModifications.hook'
 import PageChanger from '@/components/shared/PageChanger'
+
+import styles from './CreateProductCartItemForm.module.scss'
 
 type Props = {
     onSubmit: (formPayload: { productId: number; quantity: string; modificationIds: number[] }) => void
@@ -45,8 +47,9 @@ const CreateProductCartItemForm = ({ onSubmit }: Props) => {
     return (
         <div>
             <h4>Create Product</h4>
-            <div style={{ height: '40vh', overflowY: 'scroll' }}>
+            <div className={styles.products_container}>
                 <ProductsView
+                    className={styles.products_view}
                     products={products}
                     selectedProducts={selectedProduct ? [selectedProduct] : []}
                     isError={isProductsError}
@@ -66,9 +69,9 @@ const CreateProductCartItemForm = ({ onSubmit }: Props) => {
                     onClickNext={() => { setProductPageNumber((p) => p + 1) }}
                 />
             </div>
-            <div style={{ height: '20vh', overflowY: 'scroll' }}>
+            <div className={styles.product_modifications_container}>
                 <ProductModificationsView
-                    style={{ height: '20vh'}}
+                    className={styles.product_modifications_view}
                     productModifications={productModifications}
                     selectedProductModifications={selectedProductModifications}
                     onClick={(productModification) => {
