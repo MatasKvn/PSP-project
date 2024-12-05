@@ -6,6 +6,9 @@ public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
+    Task<T?> GetByExpressionAsync(Expression<Func<T, bool>> predicate,
+     CancellationToken cancellationToken = default);
+
     Task<T?> GetByExpressionWithIncludesAsync(Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
@@ -14,6 +17,11 @@ public interface IRepository<T> where T : class
         CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
     Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<(List<T> Results, int TotalCount)> GetAllByExpressionWithPaginationAsync(
+    Expression<Func<T, bool>> predicate,
+    int pageSize,
+    int pageNumber,
+    CancellationToken cancellationToken = default);
 
     Task<(IReadOnlyList<T> Results, int TotalCount)> GetAllWithPaginationAsync(
     int pageSize, int pageNumber, CancellationToken cancellationToken = default);

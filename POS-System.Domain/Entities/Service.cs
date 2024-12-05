@@ -17,7 +17,6 @@ namespace POS_System.Domain.Entities
         public virtual ICollection<EmployeeOnService> EmployeeOnServices { get; set; }
 
         //Fields
-        public int ServiceId { get; set; }
         [MaxLength(40)]
         public required string Name { get; set; }
         public required string Description { get; set; }

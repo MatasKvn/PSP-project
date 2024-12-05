@@ -3,9 +3,9 @@ using POS_System.Business.Dtos.Request;
 
 namespace POS_System.Business.Validators.GiftCard
 {
-    public class GiftCardRequestDtoValidator : AbstractValidator<GiftCardRequest>
+    public class GiftCardRequestValidator : AbstractValidator<GiftCardRequest>
     {
-        public GiftCardRequestDtoValidator()
+        public GiftCardRequestValidator()
         {
             RuleFor(x => x.Date)
                 .NotEmpty()

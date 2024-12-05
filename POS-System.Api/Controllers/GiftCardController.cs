@@ -5,10 +5,12 @@ using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/giftcards")]
 public class GiftCardController(IGiftCardService giftCardService) : ControllerBase
 {
+    [Authorize(Policy = "GiftCardRead")]
     [HttpGet]
     public async Task<IActionResult> GetAllGiftCards(CancellationToken cancellationToken, int pageNum = 0, int pageSize = 10)
     {
@@ -18,6 +20,7 @@ public class GiftCardController(IGiftCardService giftCardService) : ControllerBa
     }
 
     [HttpGet("{id:int}")]
+    [Authorize(Policy = "GiftCardRead")]
     public async Task<IActionResult> GetGiftCardById([FromRoute] int id, CancellationToken cancellationToken)
     {
         var result = await giftCardService.GetGiftCardByIdAsync(id, cancellationToken);
@@ -26,21 +29,24 @@ public class GiftCardController(IGiftCardService giftCardService) : ControllerBa
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateGiftCard([FromBody] GiftCardRequest giftCardRequestDto, CancellationToken cancellationToken)
+    [Authorize(Policy = "GiftCardWrite")]
+    public async Task<IActionResult> CreateGiftCard([FromBody] GiftCardRequest GiftCardRequest, CancellationToken cancellationToken)
     {
-        var newGiftCard = await giftCardService.CreateGiftCardAsync(giftCardRequestDto, cancellationToken);
+        var newGiftCard = await giftCardService.CreateGiftCardAsync(GiftCardRequest, cancellationToken);
         return Ok(newGiftCard);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateGiftCard([FromRoute] int id, [FromBody] GiftCardRequest GiftCardUpdateRequestDto, CancellationToken cancellationToken)
+    [Authorize(Policy = "GiftCardWrite")]
+    public async Task<IActionResult> UpdateGiftCard([FromRoute] int id, [FromBody] GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken)
     {
-        var updatedGiftCard = await giftCardService.UpdateGiftCardAsync(id, GiftCardUpdateRequestDto, cancellationToken);
+        var updatedGiftCard = await giftCardService.UpdateGiftCardAsync(id, giftCardUpdateRequestDto, cancellationToken);
 
         return Ok(updatedGiftCard);
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "GiftCardWrite")]
     public async Task<IActionResult> DeleteGiftCard([FromRoute] int id, CancellationToken cancellationToken)
     {
         await giftCardService.DeleteGiftCardAsync(id, cancellationToken);
