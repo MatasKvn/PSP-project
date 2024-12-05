@@ -55,7 +55,7 @@ export default class CartItemApi {
     static async createCartItem(cartId: number, dto: CreateCartItemDto): Promise<FetchResponse<CartItem>> {
         const maxId = Math.max(...cartItems.map((cartItem) => cartItem.id))
 
-        // @ts-expect-error
+        // @ts-ignore
         let cartItem: CartItemFetch= {
             id: maxId + 1,
             cartId,
