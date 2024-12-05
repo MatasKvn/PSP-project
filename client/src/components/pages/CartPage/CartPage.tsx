@@ -7,9 +7,11 @@ import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
 import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
+import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { ProductCartItem, ServiceCartItem } from '@/types/models'
+import { CartStatusEnum, ProductCartItem, ServiceCartItem } from '@/types/models'
 import { useRef, useState } from 'react'
+import CreateProductCartItemForm from '../../specialized/CreateProductCartItemView.tsx/CreateProductCartItemForm'
 
 type Props = {
     cartId: number
@@ -19,10 +21,12 @@ type Props = {
 const CartPage = (props: Props) => {
     const { cartId, pageNumber } = props
 
+    const { cart, isLoading: isCartLoading } = useCart(cartId)
+    const isCartOpen = cart?.status === CartStatusEnum.PENDING
     const {
         cartItems,
         errorMsg,
-        isLoading,
+        isLoading: isCartItemsLoading,
         refetchCartItems
     } = useCartItems(cartId, pageNumber)
 
@@ -88,7 +92,7 @@ const CartPage = (props: Props) => {
 
         return (
             <Table
-                isLoading={isLoading}
+                isLoading={isCartItemsLoading}
                 errorMsg={errorMsg}
                 columns={productsColumns}
                 rows={productsRows}
@@ -131,7 +135,7 @@ const CartPage = (props: Props) => {
         ]
         return (
             <Table
-                isLoading={isLoading}
+                isLoading={isCartItemsLoading}
                 errorMsg={errorMsg}
                 columns={serviceColumns}
                 rows={serviceRows}
@@ -140,13 +144,11 @@ const CartPage = (props: Props) => {
         )
     }
 
-    const handleProductItemCreate = async (formPayload: FormPayload) => {
+    const handleProductItemCreate = async (formPayload: { productId: number; quantity: string; modificationIds: number[] }) => {
+        console.log(formPayload)
         const { productId, quantity, modificationIds } = formPayload
-        const productIdParsed = parseInt(productId)
         const quantityParsed = parseInt(quantity)
-        const modificationIdsArray = modificationIds.split(',').map((id) => parseInt(id))
-        const modificationsAreValid = modificationIds.length === 0 || modificationIdsArray.every((id) => !isNaN(id))
-        if (isNaN(productIdParsed) || isNaN(quantityParsed) || !modificationsAreValid) {
+        if (isNaN(quantityParsed)) {
             console.log('Invalid input')
             return
         }
@@ -156,8 +158,8 @@ const CartPage = (props: Props) => {
             {
                 type: 'product',
                 quantity: quantityParsed,
-                productVersionId: productIdParsed,
-                variationIds: modificationIdsArray,
+                productVersionId: productId,
+                variationIds: modificationIds,
             }
         )
         if (!response.result) {
@@ -168,19 +170,7 @@ const CartPage = (props: Props) => {
     }
 
     const createProductCartItemForm = () => (
-        <div>
-            <h4>Create Product</h4>
-            <DynamicForm
-                inputs={{
-                    productId: { label: 'Product Id', placeholder: 'Enter product id:', type: 'text' },
-                    quantity: { label: 'Quantity', placeholder: 'Enter quantity:', type: 'number' },
-                    modificationIds: { label: 'Modification Ids', placeholder: '1, 2, 3...', type: 'text' },
-                }}
-                onSubmit={handleProductItemCreate}
-            >
-                <DynamicForm.Button>Submit</DynamicForm.Button>
-            </DynamicForm>
-        </div>
+        <CreateProductCartItemForm onSubmit={(payload) => handleProductItemCreate(payload)} />
     )
 
     const handleServiceCartItemCreate = async (formPayload: FormPayload) => {
@@ -235,6 +225,7 @@ const CartPage = (props: Props) => {
                         setSideDrawerContentType('createProduct')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
                 >
                     Add Product
                 </Button>
@@ -247,6 +238,7 @@ const CartPage = (props: Props) => {
                         setSideDrawerContentType('createService')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
                 >
                     Add service
                 </Button>
