@@ -4,7 +4,7 @@ import { useProducts } from '@/hooks/products.hook'
 import { Product, ProductModification } from '@/types/models'
 import React, { useState } from 'react'
 import ProductModificationsView from '../../shared/ProductModificationsView/ProductModificationsView'
-import ProductsView from '../ProductsView/ProductsView'
+import ProductsView from '../ProductsView'
 import { useProductModifications } from '@/hooks/productModifications.hook'
 import PageChanger from '@/components/shared/PageChanger'
 
@@ -46,7 +46,7 @@ const CreateProductCartItemForm = ({ onSubmit }: Props) => {
 
     return (
         <div>
-            <h4>Create Product</h4>
+            <h4>Add Product</h4>
             <div className={styles.products_container}>
                 <ProductsView
                     className={styles.products_view}

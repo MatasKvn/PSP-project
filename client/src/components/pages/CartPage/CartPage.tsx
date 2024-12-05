@@ -11,7 +11,8 @@ import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
 import { CartStatusEnum, ProductCartItem, ServiceCartItem } from '@/types/models'
 import { useRef, useState } from 'react'
-import CreateProductCartItemForm from '../../specialized/CreateProductCartItemView.tsx/CreateProductCartItemForm'
+import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
+import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
 
 type Props = {
     cartId: number
@@ -145,7 +146,6 @@ const CartPage = (props: Props) => {
     }
 
     const handleProductItemCreate = async (formPayload: { productId: number; quantity: string; modificationIds: number[] }) => {
-        console.log(formPayload)
         const { productId, quantity, modificationIds } = formPayload
         const quantityParsed = parseInt(quantity)
         if (isNaN(quantityParsed)) {
@@ -167,16 +167,11 @@ const CartPage = (props: Props) => {
             return
         }
         refetchCartItems()
+        sideDrawerRef.current?.close()
     }
 
-    const createProductCartItemForm = () => (
-        <CreateProductCartItemForm onSubmit={(payload) => handleProductItemCreate(payload)} />
-    )
-
-    const handleServiceCartItemCreate = async (formPayload: FormPayload) => {
-        const { serviceId } = formPayload
-        const serviceIdParsed = parseInt(serviceId)
-        if (isNaN(serviceIdParsed)) {
+    const handleServiceCartItemCreate = async ({ serviceId }: { serviceId: number | undefined }) => {
+        if (!serviceId) {
             console.log('Invalid input')
             return
         }
@@ -185,7 +180,7 @@ const CartPage = (props: Props) => {
             {
                 type: 'service',
                 quantity: 1,
-                serviceVersionId: serviceIdParsed,
+                serviceVersionId: serviceId,
             }
         )
         if (!response.result) {
@@ -193,25 +188,13 @@ const CartPage = (props: Props) => {
             return
         }
         refetchCartItems()
+        sideDrawerRef.current?.close()
     }
 
-    const createServiceCartItemForm = () => (
-        <div>
-            <h4>Create Service</h4>
-            <DynamicForm
-                inputs={{
-                    serviceId: { label: 'Service Id', placeholder: 'Enter service id:', type: 'text' }
-                }}
-                onSubmit={handleServiceCartItemCreate}
-            >
-                <DynamicForm.Button>Submit</DynamicForm.Button>
-            </DynamicForm>
-        </div>
-    )
-
     const sideDrawerContent = () => {
-        if (sideDrawerContentType === 'createProduct') return createProductCartItemForm()
-        if (sideDrawerContentType === 'createService') return createServiceCartItemForm()
+        if (sideDrawerContentType === 'createProduct') return <CreateProductCartItemForm onSubmit={(payload) => handleProductItemCreate(payload)} />
+        if (sideDrawerContentType === 'createService') return <CreateServiceCartItemView onSubmit={handleServiceCartItemCreate} />
+        return <></>
     }
 
     return (
