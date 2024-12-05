@@ -1,3 +1,4 @@
+
 export type Cart = {
     id: number
     dateCreated: Date
@@ -40,6 +41,10 @@ export type ItemDiscount = {
     endDate: Date
 }
 
+export type RequiredCartItem = RequiredProductCartItem | RequiredServiceCartItem
+export type RequiredServiceCartItem = Required<ServiceCartItem>
+export type RequiredProductCartItem = Required<ProductCartItem>
+
 export type CartItem = ProductCartItem | ServiceCartItem
 
 export type ProductCartItem = {
@@ -50,6 +55,8 @@ export type ProductCartItem = {
     productId: number
     product?: Product,
     productModifications?: ProductModification[]
+    discounts?: ItemDiscount[]
+    taxes?: Tax[]
 }
 
 export type ServiceCartItem = {
@@ -63,6 +70,8 @@ export type ServiceCartItem = {
     serviceReservation?: ServiceReservation
     timeSlotId: number
     timeSlot?: TimeSlot
+    discounts?: ItemDiscount[]
+    taxes: Tax[]
 }
 
 export type Product = {

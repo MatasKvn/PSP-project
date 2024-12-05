@@ -2,14 +2,12 @@
 
 import CartItemApi from '@/api/cartItem.api'
 import Button from '@/components/shared/Button'
-import DynamicForm from '@/components/shared/DynamicForm'
-import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
 import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { CartStatusEnum, ProductCartItem, ServiceCartItem } from '@/types/models'
+import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem } from '@/types/models'
 import { useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
@@ -17,6 +15,36 @@ import CreateServiceCartItemView from '@/components/specialized/CreateServiceCar
 type Props = {
     cartId: number
     pageNumber: number
+}
+
+const calculateProductModificationsValue = (cartItem: RequiredCartItem) => {
+    if (cartItem.type === 'product') {
+        return cartItem.productModifications.reduce((acc, modification) => acc + modification.price, 0)
+    }
+    return 0
+}
+
+const calculateDiscountsValue = (cartItem: RequiredCartItem) => {
+    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
+    const productModificaitonValue = calculateProductModificationsValue(cartItem)
+    const netPrice = (value + productModificaitonValue) * cartItem.quantity
+    return cartItem.discounts.reduce((acc, discount) => {
+        if (!discount.isPercentage) {
+            return acc + discount.value
+        }
+        return acc + netPrice * discount.value / 100
+    }, 0)
+}
+
+const calculateTaxesValue = (cartItem: RequiredCartItem) => {
+    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
+    const taxableValue = (value + calculateProductModificationsValue(cartItem)) * cartItem.quantity
+    return cartItem.taxes.reduce((acc, tax) => {
+        if (tax.isPercentage) {
+            return acc + taxableValue * tax.rate / 100
+        }
+        return acc + tax.rate
+    }, 0)
 }
 
 const CartPage = (props: Props) => {
@@ -30,6 +58,8 @@ const CartPage = (props: Props) => {
         isLoading: isCartItemsLoading,
         refetchCartItems
     } = useCartItems(cartId, pageNumber)
+
+    console.log(cartItems)
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
     type SideDrawerContentType = 'createProduct' | 'createService' | 'none'
@@ -45,101 +75,114 @@ const CartPage = (props: Props) => {
     }
 
     const productsTable = () => {
-        const productItems: ProductCartItem[] = cartItems.filter((cartItem) => cartItem.type === 'product')
+        const productItems = cartItems.filter((cartItem) => cartItem.type === 'product')
         const productsColumns: TableColumnData[] = [
-            { name: 'Product', key: 'product' },
+            { name: 'Name', key: 'name' },
             { name: 'Quantity', key: 'quantity' },
             { name: 'Price', key: 'price' },
             { name: 'Modification Ids', key: 'modifications' },
-            { name: 'Item Modification Total', key: 'modificationTotal' },
-            { name: 'Total', key: 'total' },
-            { name: 'Delete', key: 'delete' },
+            { name: 'Modifications Total', key: 'modificationTotal' },
+            { name: 'Total Value', key: 'totalVal' },
+            { name: 'Discounts', key: 'discounts' },
+            { name: 'Taxes', key: 'taxes' },
+            { name: 'Net price', key: 'netPrice' },
+            { name: 'Delete', key: 'delete' }
         ]
-        const productsRows = [
-            ...productItems.map((productCartItem) => {
-                const modificationPrice = productCartItem.productModifications!.reduce((acc, modification) => acc + modification.price, 0)
-                return {
-                    product: productCartItem.product?.name,
-                    quantity: productCartItem.quantity,
-                    modifications: productCartItem.productModifications?.map((modification) => modification.id).join(', '),
-                    modificationTotal: modificationPrice,
-                    price: productCartItem.product?.price,
-                    total: productCartItem.quantity * (productCartItem.product!.price + modificationPrice),
-                    delete: (
-                        <Button
-                            onClick={() => handleCartItemDelete(productCartItem.id)}
-                        >
-                            Delete
-                        </Button>
-                    )
-                }
-            }),
-            {
-                product: 'Total',
-                quantity: '...',
-                // eslint-disable-next-line
-                // @ts-ignore
-                price: '...',
-                // eslint-disable-next-line
-                // @ts-ignore
-                total: productItems.reduce(
-                    (acc, item) => acc + item.quantity *
-                        (item.product!.price +
-                        item.productModifications!.reduce((acc, modification) => acc + modification.price, 0)),
-                    0
+        const productRows = productItems.map((item) => {
+            const { name, price } = item.product
+            const modificationsPrice = calculateProductModificationsValue(item)
+            const totalVal = item.quantity * (item.product.price + modificationsPrice)
+            const discounts = calculateDiscountsValue(item)
+            const taxes = calculateTaxesValue(item)
+            const netPrice = totalVal - discounts + taxes
+            return {
+                name,
+                quantity: item.quantity,
+                modifications: item.productModifications.map((modification) => modification.id).join(', '),
+                modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
+                delete: (
+                    <Button
+                        onClick={() => handleCartItemDelete(item.id)}
+                    >
+                        Delete
+                    </Button>
                 )
             }
-        ]
+        })
+
+        const summaryRow = {
+            name: 'Total',
+            quantity: productRows.reduce((acc, row) => acc + row.quantity, 0).toFixed(2),
+            price: productRows.reduce((acc, row) => acc + row.price, 0).toFixed(2),
+            modifications: '...',
+            modificationTotal: productRows.reduce((acc, row) => acc + row.modificationTotal, 0).toFixed(2),
+            discounts: productRows.reduce((acc, row) => acc + row.discounts, 0).toFixed(2),
+            taxes: productRows.reduce((acc, row) => acc + row.taxes, 0).toFixed(2),
+            totalVal: productRows.reduce((acc, row) => acc + row.totalVal, 0).toFixed(2),
+            netPrice: productRows.reduce((acc, row) => acc + row.netPrice, 0).toFixed(2)
+        }
+        const rows = [...productRows, summaryRow]
 
         return (
             <Table
                 isLoading={isCartItemsLoading}
                 errorMsg={errorMsg}
                 columns={productsColumns}
-                rows={productsRows}
+                rows={rows}
                 lastRowHighlight
             />
         )
     }
 
     const servicesTable = () => {
-        const serviceItems: ServiceCartItem[] = cartItems.filter((cartItem) => cartItem.type === 'service')
+        const serviceItems = cartItems.filter((cartItem) => cartItem.type === 'service')
         const serviceColumns: TableColumnData[] = [
-                { name: 'Product', key: 'product' },
+                { name: 'Name', key: 'name' },
                 { name: 'Time', key: 'time' },
                 { name: 'Price', key: 'price' },
-                { name: 'Total', key: 'total' },
+                { name: 'Total Value', key: 'totalVal' },
+                { name: 'Discounts', key: 'discounts' },
+                { name: 'Taxes', key: 'taxes' },
+                { name: 'Net price', key: 'netPrice' },
                 { name: 'Delete', key: 'delete' },
             ]
-        const serviceRows = [
-            ...serviceItems.map((serviceCartItem) => ({
-                product: serviceCartItem.service?.name,
-                time: serviceCartItem.timeSlot?.startTime?.toLocaleString(),
-                price: serviceCartItem.service?.price,
-                total: serviceCartItem.quantity * (serviceCartItem.service?.price ? serviceCartItem.service.price : 0),
+        const serviceRows = serviceItems.map((item) => {
+            return {
+                name: item.service.name,
+                quantity: item.quantity,
+                price: item.service?.price,
+                totalVal: item.quantity * (item.service?.price ? item.service.price : 0),
+                discounts: calculateDiscountsValue(item),
+                taxes: calculateTaxesValue(item),
+                netPrice: (item.quantity * (item.service?.price ? item.service.price : 0)) - calculateDiscountsValue(item) + calculateTaxesValue(item),
                 delete: (
                     <Button
-                        onClick={() => handleCartItemDelete(serviceCartItem.id)}
+                        onClick={() => handleCartItemDelete(item.id)}
                     >
                         Delete
                     </Button>
                 )
-            })),
-            {
-                product: 'Total',
-                time: '...',
-                // eslint-disable-next-line
-                // @ts-ignore
-                price: '...',
-                total: serviceItems.reduce((total, item) => total + item.quantity * (item.service?.price ? item.service.price : 0), 0)
             }
-        ]
+        })
+
+        const summaryRow = {
+            name: 'Total',
+            quantity: serviceRows.reduce((acc, row) => acc + row.quantity, 0).toFixed(2),
+            price: serviceRows.reduce((acc, row) => acc + row.price, 0).toFixed(2),
+            totalVal: serviceRows.reduce((acc, row) => acc + row.totalVal, 0).toFixed(2),
+            discounts: serviceRows.reduce((acc, row) => acc + row.discounts, 0).toFixed(2),
+            taxes: serviceRows.reduce((acc, row) => acc + row.taxes, 0).toFixed(2),
+            netPrice: serviceRows.reduce((acc, row) => acc + row.netPrice, 0).toFixed(2),
+        }
+
+        const rows = [...serviceRows, summaryRow]
+
         return (
             <Table
                 isLoading={isCartItemsLoading}
                 errorMsg={errorMsg}
                 columns={serviceColumns}
-                rows={serviceRows}
+                rows={rows}
                 lastRowHighlight
             />
         )
