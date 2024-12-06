@@ -2,7 +2,7 @@ import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import { Product, ProductModification, Service, Tax } from '@/types/models'
 import React, { useState } from 'react'
-import ItemSelector from '../AllItemView'
+import AllItemView from '../AllItemView'
 
 export type TaxFormPayload = {
     name: string,
@@ -42,7 +42,7 @@ const TaxForm = ({ selectedTax, actionName, onSubmit }: Props) => {
     return (
         <div>
             <h4>{actionName} Tax</h4>
-            <ItemSelector
+            <AllItemView
                 headerText='Select Items'
                 selectedProducts={selectedProducts}
                 onProductClick={(product) => {
