@@ -21,6 +21,18 @@ export default class TaxApi {
         })
     }
 
+    static async addProductsToTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
+        return Promise.resolve({ result: tax })
+    }
+
+    static async addServicesToTax(taxId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
+        return Promise.resolve({ result: tax })
+    }
+
+    static async addProductModificationsToTax(taxId: number, productModificationIds: number[]): Promise<FetchResponse<any>> {
+        return Promise.resolve({ result: tax })
+    }
+
     static async createTax(taxRequest: CreateTaxRequest): Promise<FetchResponse<Tax>> {
         return Promise.resolve({
             result: {

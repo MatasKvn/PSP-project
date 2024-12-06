@@ -7,6 +7,8 @@ import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
 import { useTaxes } from '@/hooks/taxes.hook'
 import React, { useRef, useState } from 'react'
 import TaxForm, { TaxFormPayload } from '../../specialized/TaxForm/TaxForm'
+import TaxApi from '@/api/tax.api'
+import { Tax } from '@/types/models'
 
 type Props = {
     pageNumber: number
@@ -16,15 +18,61 @@ const TaxesPage = ({ pageNumber }: Props) => {
     const { errorMsg, isLoading, taxes, setTaxes } = useTaxes(pageNumber)
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
 
+    const [selectedTax, setSelectedTax] = useState<Tax | undefined>()
+
     type ActionType = 'Create' | 'Edit'
     const [actionType, setActionType] = useState<ActionType>('Create')
 
-    const handleTaxCreate = async (formPayload: TaxFormPayload) => {
-        console.log('create', formPayload)
+    const handleTaxCreate = async ({
+        isPercentage,
+        name,
+        rate,
+        productIds,
+        productModificationIds,
+        serviceIds,
+    }: TaxFormPayload) => {
+        const taxResponse = await TaxApi.createTax({ isPercentage, name, rate})
+        const { result: tax } = taxResponse
+        if (!tax) {
+            console.log(taxResponse.error)
+            return
+        }
+        const responses = await Promise.all([
+            await TaxApi.addProductsToTax(tax.id, productIds),
+            await TaxApi.addProductModificationsToTax(tax.id, productModificationIds),
+            await TaxApi.addServicesToTax(tax.id, serviceIds),
+        ])
+        responses.forEach((response) => {
+            if (!response.result) console.log(response.error)
+        })
+        setTaxes([...taxes, tax])
     }
 
-    const handleTaxUpdate = async (formPayload: TaxFormPayload) => {
-        console.log('update', formPayload)
+    const handleTaxUpdate = async ({
+        isPercentage,
+        name,
+        rate,
+        productIds,
+        productModificationIds,
+        serviceIds,
+    }: TaxFormPayload) => {
+        if (!selectedTax) return
+        const id = selectedTax.id
+        const taxResponse = await TaxApi.updateTax({ id, isPercentage, name, rate })
+        const { result: tax } = taxResponse
+        if (!tax) {
+            console.log(taxResponse.error)
+            return
+        }
+        const responses = await Promise.all([
+            await TaxApi.addProductsToTax(tax.id, productIds),
+            await TaxApi.addProductModificationsToTax(tax.id, productModificationIds),
+            await TaxApi.addServicesToTax(tax.id, serviceIds),
+        ])
+        responses.forEach((response) => {
+            if (!response.result) console.log(response.error)
+        })
+        setTaxes([...taxes, tax])
     }
 
     const handleSubmit = (formPayload: TaxFormPayload) => {
