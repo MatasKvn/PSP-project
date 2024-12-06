@@ -14,6 +14,10 @@ export const useProductModifications = (productId: number | undefined, pageNumbe
             return
         }
         const handleFetch = async () => {
+            if (pageNumber === undefined) {
+                setIsLoading(false)
+                return
+            }
             const response = await ProductModificationApi.getByProductId(productId, pageNumber)
             console.log(response)
             if (response.result) {
