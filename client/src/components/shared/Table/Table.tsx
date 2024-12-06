@@ -34,7 +34,7 @@ const Table = (props: Props) => {
         if (rows.length <= 0) return infoDisplayRow('No data.')
         return (
             rows.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
+                    <tr key={rowIndex} className={row.className} style={row.style} onClick={() => row.onClick?.(row)}>
                     {columns.map((column, colIndex) => (
                         lastRowHighlight && rowIndex === rows.length - 1 ? (
                             <td key={`${rowIndex}-${colIndex}`} className={styles.table_header}>{typeof row[column.key] === 'boolean' ? row[column.key].toString() : row[column.key]}</td>

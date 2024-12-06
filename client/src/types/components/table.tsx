@@ -5,6 +5,9 @@ export type TableColumnData = {
 
 export type TableRowData = {
     [key: string]: any
+    style?: React.CSSProperties
+    className?: string
+    onClick?: (row: any) => void
 }
 
 export type TableData = {

@@ -80,7 +80,11 @@ const TaxesPage = ({ pageNumber }: Props) => {
         responses.forEach((response) => {
             if (!response.result) console.log(response.error)
         })
-        setTaxes([...taxes, tax])
+        const newTaxes = [
+            ...taxes.filter((tax) => tax.id !== id),
+            tax
+        ]
+        setTaxes(newTaxes)
     }
 
     const handleSubmit = (formPayload: TaxFormPayload) => {
@@ -103,35 +107,18 @@ const TaxesPage = ({ pageNumber }: Props) => {
         const columns = [
             { name: 'Name', key: 'name' },
             { name: 'Percentage', key: 'isPercentage' },
-            { name: 'Rate', key: 'rate' },
-            { name: 'Select', key: 'select' },
-            { name: 'Delete', key: 'delete' }
+            { name: 'Rate', key: 'rate' }
         ]
         const rows = taxes.map((tax) => ({
+            id: tax.id,
             name: tax.name,
             isPercentage: tax.isPercentage ? 'Yes' : 'No',
-            rate: tax.rate,
-            select: (
-                <Button
-                    style={selectedTax?.id === tax.id ? { backgroundColor: 'green' } : {} }
-                    onClick={() => {
-                        if (selectedTax?.id === tax.id) {
-                            setSelectedTax(undefined)
-                            return
-                        }
-                        setSelectedTax(tax)
-                    }}
-                >
-                    Select
-                </Button>
-            ),
-            delete: (
-                <Button
-                    onClick={() => handleTaxDelete(tax)}
-                >
-                    Delete
-                </Button>
-            )
+            rate: `${tax.rate/100}${tax.isPercentage ? ' %' : ' €'}`,
+            className: selectedTax?.id === tax.id ? styles.selected : '',
+            onClick: (row: any) => {
+                if (selectedTax?.id === row.id) setSelectedTax(undefined)
+                else setSelectedTax(taxes.find((tax) => tax.id === row.id))
+            }
         }))
         return (
             <Table
@@ -153,10 +140,19 @@ const TaxesPage = ({ pageNumber }: Props) => {
                         Create New Tax
                     </Button>
                     <Button onClick={() => {
+                        if (!selectedTax) return
                         setActionType('Edit')
                         sideDrawerRef.current?.open()
                     }}>
                         Edit Tax
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (!selectedTax) return
+                            handleTaxDelete(selectedTax)
+                        }}
+                    >
+                        Delete Tax
                     </Button>
                 </div>
             </div>
