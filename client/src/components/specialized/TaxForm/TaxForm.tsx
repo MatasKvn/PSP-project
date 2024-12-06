@@ -16,6 +16,7 @@ export type TaxFormPayload = {
     isPercentage: boolean,
     productIds: number[],
     serviceIds: number[],
+    productModificationIds: number[]
 }
 
 type Props = {
@@ -24,13 +25,29 @@ type Props = {
 }
 
 const TaxForm = ({ actionName, onSubmit }: Props) => {
-    const [productPageNumber, setProductPageNumber] = useState<number | undefined>(0)
+    const [itemType, setItemType] = useState<'product' | 'service' | 'productModification'>('product')
+    const pretifiedItemType = {
+        product: 'Products',
+        service: 'Services',
+        productModification: 'Product Modifications'
+    } as const
+
+    const nextItemType = () => {
+        if (itemType === 'product') setItemType('service')
+        else if (itemType === 'service') setItemType('productModification')
+        else setItemType('product')
+    }
+    const [productPageNumber, setProductPageNumber] = useState<number>(0)
     const { isError: isProductsError, isLoading: isProductsLoading, products } = useProducts(productPageNumber)
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
 
-    const [servicePageNumber, setServicePageNumber] = useState<number | undefined>(undefined)
+    const [servicePageNumber, setServicePageNumber] = useState<number>(0)
     const { errorMsg: serviceErrorMsg, isLoading: isServiesLoading, services } = useServices(servicePageNumber)
     const [selectedServices, setSelectedServices] = useState<Service[]>([])
+
+    const [pmPageNumber, setPmPageNumber] = useState<number>(0)
+    const { productModifications, isLoading: isProductModificationsLoading, isError: isProductModificationsError } = useProductModifications(undefined, pmPageNumber)
+    const [selectedPms, setSeletedPms] = useState<ProductModification[]>([])
 
     const handleTaxUpdate = (formPayload: FormPayload) => {
         const { name, rate, isPercentage } = formPayload
@@ -41,17 +58,18 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
             rate: parsedRate,
             isPercentage: !!isPercentage,
             productIds: selectedProducts.map((product) => product.id),
-            serviceIds: selectedServices.map((service) => service.id)
+            serviceIds: selectedServices.map((service) => service.id),
+            productModificationIds: selectedPms.map((pm) => pm.id),
         })
         setSelectedProducts([])
         setSelectedServices([])
     }
 
     const itemView = () => {
-        if (productPageNumber !== undefined) return (
+        if (itemType === 'product') return (
             <div>
                 <ProductsView
-                    style={{ height: '40vh', overflowY: 'scroll'}}
+                    style={{ height: '40vh', overflowY: 'scroll' }}
                     isError={isProductsError}
                     isLoading={isProductsLoading}
                     pageNumber={productPageNumber}
@@ -70,9 +88,9 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
                 />
             </div>
         )
-        if (servicePageNumber !== undefined) return (
+        if (itemType === 'service') return (
             <ServicesView
-                style={{ height: '40vh', overflowY: 'scroll'}}
+                style={{ height: '40vh', overflowY: 'scroll' }}
                 isError={!!serviceErrorMsg}
                 isLoading={isServiesLoading}
                 pageNumber={servicePageNumber}
@@ -88,21 +106,32 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
                 }}
             />
         )
+        if (itemType === 'productModification') return (
+            <ProductModificationsView
+                style={{ height: '40vh', overflowY: 'scroll' }}
+                isError={isProductModificationsError}
+                isLoading={isProductModificationsLoading}
+                productModifications={productModifications}
+                selectedProductModifications={selectedPms}
+                onClick={(productModification: ProductModification) => {
+                    if (selectedPms.some((selectedPm) => selectedPm.id === productModification.id)) {
+                        const newSelectedPms = selectedPms.filter((selectedPm) => selectedPm.id !== productModification.id)
+                        setSeletedPms(newSelectedPms)
+                        return
+                    }
+                    setSeletedPms([...selectedPms, productModification])
+                }}
+            />
+        )
         throw new Error('Should never get here.')
     }
 
     return (
         <div>
             <Button onClick={() => {
-                if (productPageNumber === undefined) {
-                    setProductPageNumber(0)
-                    setServicePageNumber(undefined)
-                    return
-                }
-                setServicePageNumber(0)
-                setProductPageNumber(undefined)
+                nextItemType()
             }}>
-                {productPageNumber === undefined ? `Products` : 'Services'}
+                {pretifiedItemType[itemType]}
             </Button>
             {itemView()}
             <DynamicForm
