@@ -24,7 +24,7 @@ const Table = (props: Props) => {
 
     const infoDisplayRow = (msg: string) => (
         <tr>
-            <td colSpan={columns.length} style={{ textAlign: 'center', height: '10em' }}>Loading...</td>
+            <td colSpan={columns.length} style={{ textAlign: 'center', height: '10em' }}>{msg}</td>
         </tr>
     )
 
