@@ -4,6 +4,7 @@ export type Cart = {
     dateCreated: Date
     status: CartStatusEnum
     employeeVersionId: number
+    discount?: number
 }
 
 export enum CartStatusEnum {
@@ -21,15 +22,6 @@ export const getCartStatusEnumString = (status: CartStatusEnum): string => {
         case CartStatusEnum.COMPLETED:
             return 'Completed'
     }
-}
-
-export type CartDiscount = {
-    id: number
-    value: number
-    isPercentage: boolean
-    description: string
-    startDate: Date
-    endDate: Date
 }
 
 export type ItemDiscount = {

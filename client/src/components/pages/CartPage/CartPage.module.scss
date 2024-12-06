@@ -1,0 +1,29 @@
+@use '@/assets/styles/variables' as *;
+
+.page {
+    margin: 1vh;
+}
+
+.header {
+    height: 8vh;
+}
+
+.tables_container {
+    height: 65vh;
+    overflow-y: scroll;
+}
+
+.discount_summary_wrapper {
+    height: 25vh;
+    display: flex;
+}
+
+.discount_container {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.summary_container {
+    display: inline-block;
+    margin: 0 auto;
+}
