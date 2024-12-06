@@ -37,6 +37,16 @@ const productModifications: ProductModification[] = [
 ]
 
 export default class ProductModificationApi {
+    static async getAll(pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
+        return Promise.resolve({
+            result: {
+                pageNum: pageNumber,
+                pageSize: 35,
+                totalCount: productModifications.length,
+                results: productModifications
+            }
+        })
+    }
     static async getByProductId(productId: number, pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
         const result: ProductModification[] = productModifications.filter(pm => pm.productId === productId)
         return Promise.resolve({
