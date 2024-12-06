@@ -14,3 +14,6 @@ bin/
 # Migrations
 /.vs
 *.Development.json
+
+# Logger
+Logs/
