@@ -52,10 +52,9 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
     const handleTaxUpdate = (formPayload: FormPayload) => {
         const { name, rate, isPercentage } = formPayload
         const parsedRate = parseFloat(rate)
-        if (isNaN(parsedRate)) return
         onSubmit({
             name,
-            rate: parsedRate,
+            rate: isNaN(parsedRate) ? 0 : parsedRate,
             isPercentage: !!isPercentage,
             productIds: selectedProducts.map((product) => product.id),
             serviceIds: selectedServices.map((service) => service.id),

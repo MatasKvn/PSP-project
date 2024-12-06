@@ -1,0 +1,21 @@
+@use '@/assets/styles/variables' as *;
+
+.page {
+    margin: 1em;
+}
+
+.toolbar {
+    padding: 1em 0;
+    > button {
+        margin-right: 1em;
+    }
+}
+
+.header {
+    height: 20vh
+}
+
+.table_container {
+    height: calc(100vh - 20vh - 2em);
+    overflow-y: scroll;
+}

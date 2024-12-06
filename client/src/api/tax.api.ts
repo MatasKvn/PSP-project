@@ -37,7 +37,7 @@ export default class TaxApi {
         return Promise.resolve({
             result: {
                 ...taxRequest,
-                id: 1,
+                id: new Date().getTime(),
                 dateModified: new Date()
             }
         })
@@ -53,7 +53,6 @@ export default class TaxApi {
     }
 
     static async deleteTax(id: number): Promise<FetchResponse<any>> {
-        if (id !== 1) return Promise.resolve({ error: 'Tax not found' })
         return Promise.resolve({ result: tax })
     }
 

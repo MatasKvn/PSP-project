@@ -9,6 +9,9 @@ import React, { useRef, useState } from 'react'
 import TaxForm, { TaxFormPayload } from '../../specialized/TaxForm/TaxForm'
 import TaxApi from '@/api/tax.api'
 import { Tax } from '@/types/models'
+import Table from '@/components/shared/Table'
+
+import styles from './TaxesPage.module.scss'
 
 type Props = {
     pageNumber: number
@@ -58,7 +61,12 @@ const TaxesPage = ({ pageNumber }: Props) => {
     }: TaxFormPayload) => {
         if (!selectedTax) return
         const id = selectedTax.id
-        const taxResponse = await TaxApi.updateTax({ id, isPercentage, name, rate })
+        const taxResponse = await TaxApi.updateTax({
+            id,
+            isPercentage,
+            name: name || selectedTax.name,
+            rate: rate || selectedTax.rate
+        })
         const { result: tax } = taxResponse
         if (!tax) {
             console.log(taxResponse.error)
@@ -81,22 +89,79 @@ const TaxesPage = ({ pageNumber }: Props) => {
         sideDrawerRef.current?.close()
     }
 
+    const handleTaxDelete = async (taxToDelete: Tax) => {
+        const response = await TaxApi.deleteTax(taxToDelete.id)
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        const newTaxes = taxes.filter((tax) => tax.id !== taxToDelete.id)
+        setTaxes(newTaxes)
+    }
+
+    const taxTable = () => {
+        const columns = [
+            { name: 'Name', key: 'name' },
+            { name: 'Percentage', key: 'isPercentage' },
+            { name: 'Rate', key: 'rate' },
+            { name: 'Select', key: 'select' },
+            { name: 'Delete', key: 'delete' }
+        ]
+        const rows = taxes.map((tax) => ({
+            name: tax.name,
+            isPercentage: tax.isPercentage ? 'Yes' : 'No',
+            rate: tax.rate,
+            select: (
+                <Button
+                    style={selectedTax?.id === tax.id ? { backgroundColor: 'green' } : {} }
+                    onClick={() => {
+                        if (selectedTax?.id === tax.id) {
+                            setSelectedTax(undefined)
+                            return
+                        }
+                        setSelectedTax(tax)
+                    }}
+                >
+                    Select
+                </Button>
+            ),
+            delete: (
+                <Button
+                    onClick={() => handleTaxDelete(tax)}
+                >
+                    Delete
+                </Button>
+            )
+        }))
+        return (
+            <Table
+                columns={columns}
+                rows={rows}
+            />
+        )
+    }
 
     return (
-        <div>
+        <div className={styles.page}>
+            <div className={styles.header}>
+                <h1>Taxes</h1>
+                <div className={styles.toolbar}>
+                    <Button onClick={() => {
+                        setActionType('Create')
+                        sideDrawerRef.current?.open()
+                    }}>
+                        Create New Tax
+                    </Button>
+                    <Button onClick={() => {
+                        setActionType('Edit')
+                        sideDrawerRef.current?.open()
+                    }}>
+                        Edit Tax
+                    </Button>
+                </div>
+            </div>
             <div>
-                <Button onClick={() => {
-                    setActionType('Create')
-                    sideDrawerRef.current?.open()
-                }}>
-                    Create New Tax
-                </Button>
-                <Button onClick={() => {
-                    setActionType('Edit')
-                    sideDrawerRef.current?.open()
-                }}>
-                    Edit Tax
-                </Button>
+                {taxTable()}
             </div>
             <SideDrawer ref={sideDrawerRef}>
                 <TaxForm
