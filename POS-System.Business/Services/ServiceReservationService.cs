@@ -22,6 +22,12 @@ namespace POS_System.Business.Services
             var serviceReservation = _mapper.Map<ServiceReservation>(serviceReservationDto);
 
             await _unitOfWork.ServiceReservationRepository.CreateAsync(serviceReservation, cancellationToken);
+
+            var timeslot = await _unitOfWork.TimeSlotRepository.GetByIdAsync(serviceReservationDto.TimeSlotId, cancellationToken)
+                ?? throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+
+            timeslot.IsAvailable = false;
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var responseDto = _mapper.Map<ServiceReservationResponse>(serviceReservation);
