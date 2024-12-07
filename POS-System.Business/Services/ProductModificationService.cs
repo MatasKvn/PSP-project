@@ -31,12 +31,9 @@ namespace POS_System.Business.Services
             return responseProdModDto;
         }
 
-        public async Task<ProductModificationResponse> DeleteProductModificationAsync(int productModificationId, CancellationToken cancellationToken)
+        public async Task<ProductModificationResponse> DeleteProductModificationByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var productModification = await _unitOfWork.ProductModificationRepository.GetByExpressionWithIncludesAsync(
-                p => p.ProductModificationId == productModificationId,
-                cancellationToken
-            );
+            var productModification = await _unitOfWork.ProductModificationRepository.GetByIdAsync(id, cancellationToken);
 
             if (productModification is null)
             {
@@ -69,12 +66,9 @@ namespace POS_System.Business.Services
             return new PagedResponse<ProductModificationResponse?>(totalCount, pageSize, pageNumber, prodModDtos);
         }
 
-        public async Task<ProductModificationResponse?> GetProductModificationByProductModificationIdAsync(int productModificationId, CancellationToken cancellationToken)
+        public async Task<ProductModificationResponse?> GetProductModificationByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var productModification = await _unitOfWork.ProductModificationRepository.GetByExpressionWithIncludesAsync(
-                p => p.ProductModificationId == productModificationId && !p.IsDeleted,
-                cancellationToken
-            );
+            var productModification = await _unitOfWork.ProductModificationRepository.GetByIdAsync(id, cancellationToken);
 
             if (productModification is null)
             {
@@ -101,17 +95,14 @@ namespace POS_System.Business.Services
             return prodModDtos;
         }
 
-        public async Task<ProductModificationResponse> UpdateProductModificationAsync(int productModificationId, ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
+        public async Task<ProductModificationResponse> UpdateProductModificationByIdAsync(int id, ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
             if (productModificationDto is null)
             {
                 throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
             }
 
-            var currentProdMod = await _unitOfWork.ProductModificationRepository.GetByExpressionWithIncludesAsync(
-                p => p.ProductModificationId == productModificationId && !p.IsDeleted,
-                cancellationToken
-            );
+            var currentProdMod = await _unitOfWork.ProductModificationRepository.GetByIdAsync(id, cancellationToken);
 
             if (currentProdMod is null)
             {
@@ -120,16 +111,11 @@ namespace POS_System.Business.Services
 
             currentProdMod.IsDeleted = true;
 
-            var newProdMod = new ProductModification
-            {
-                ProductModificationId = productModificationId,
-                ProductVersionId = productModificationDto.ProductVersionId,
-                Name = productModificationDto.Name,
-                Description = productModificationDto.Description,
-                Price = productModificationDto.Price,
-                Version = DateTime.Now,
-                IsDeleted = false
-            };
+            var newProdMod = _mapper.Map<ProductModification>(productModificationDto);
+            newProdMod.ProductModificationId = currentProdMod.ProductModificationId;
+            newProdMod.ProductVersionId = currentProdMod.ProductVersionId;
+            newProdMod.Version = DateTime.Now;
+            newProdMod.IsDeleted = false;
 
             await _unitOfWork.ProductModificationRepository.CreateAsync(newProdMod, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

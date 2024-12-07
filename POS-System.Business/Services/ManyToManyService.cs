@@ -174,8 +174,8 @@ namespace POS_System.Business.Services
             else
             {
                 itemLinks = forLeft ?
-                    await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == id && queryDate >= x.StartDate && (queryDate <= x.EndDate || x.EndDate == null), cancellationToken)
-                    : await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == id && queryDate >= x.StartDate && (queryDate <= x.EndDate || x.EndDate == null), cancellationToken);
+                    await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == id && (queryDate >= x.StartDate && queryDate <= x.EndDate) || (queryDate >= x.StartDate && x.EndDate == null), cancellationToken)
+                    : await linkRepository.GetAllByExpressionAsync(x => x.RightEntityId == id && (queryDate >= x.StartDate && queryDate <= x.EndDate) || (queryDate >= x.StartDate && x.EndDate == null), cancellationToken);
             }
 
             IEnumerable<int> linkedItemIds = forLeft ?
