@@ -14,7 +14,7 @@ import TaxApi from '@/api/tax.api'
 
 const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<string | RequiredProductCartItem> => {
     // FIXME: optmize
-    const productResponse= await ProductApi.getProductById(cartItem.productId)
+    const productResponse = await ProductApi.getProductById(cartItem.productId)
     if (!productResponse.result) return productResponse.error || 'Failed to get product'
     const product = productResponse.result
     const productModificationsResponse = await ProductModificationApi.getByCartItemId(cartItem.id, 0)

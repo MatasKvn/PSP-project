@@ -263,7 +263,7 @@ const CartPage = (props: Props) => {
                 </Button>
             </div>
             <div>
-                <h4>Serivces</h4>
+                <h4>Services</h4>
                 <Table
                     isLoading={isCartItemsLoading}
                     errorMsg={errorMsg}

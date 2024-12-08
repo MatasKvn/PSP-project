@@ -1,8 +1,6 @@
 'use client'
 
 import Button from '@/components/shared/Button'
-import DynamicForm from '@/components/shared/DynamicForm'
-import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
 import { useTaxes } from '@/hooks/taxes.hook'
 import React, { useRef, useState } from 'react'
