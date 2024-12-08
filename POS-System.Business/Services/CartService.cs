@@ -34,6 +34,7 @@ namespace POS_System.Business.Services.Interfaces
             var cart = new Cart {
                 EmployeeVersionId = cartDto.EmployeeVersionId,
                 Status = CartStatusEnum.PENDING,
+                IsDeleted = false,
                 DateCreated = DateTime.Now
             };
 
