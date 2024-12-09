@@ -12,8 +12,8 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241203193141_ServiceUpdate")]
-    partial class ServiceUpdate
+    [Migration("20241209160828_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -409,6 +409,9 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("EmployeeVersionId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -424,6 +427,7 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             DateCreated = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 1,
+                            IsDeleted = false,
                             Status = 0
                         },
                         new
@@ -431,6 +435,7 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             DateCreated = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 2,
+                            IsDeleted = false,
                             Status = 2
                         },
                         new
@@ -438,6 +443,7 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             DateCreated = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 3,
+                            IsDeleted = false,
                             Status = 1
                         },
                         new
@@ -445,6 +451,7 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             DateCreated = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 4,
+                            IsDeleted = false,
                             Status = 0
                         });
                 });
@@ -458,7 +465,11 @@ namespace POS_System.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CartDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("CartDiscountId"), 1L, null, null, null, null, null);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -473,7 +484,7 @@ namespace POS_System.Data.Migrations
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -553,10 +564,10 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartOnCartDiscount", b =>
                 {
-                    b.Property<int>("CartVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CartDiscountVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -565,9 +576,9 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("CartVersionId", "CartDiscountVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("CartDiscountVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("CartOnCartDiscounts");
                 });
@@ -692,9 +703,13 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("ItemDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ItemDiscountId"), 1L, null, null, null, null, null);
+
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -706,6 +721,51 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemDiscounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Desc1",
+                            IsDeleted = true,
+                            IsPercentage = true,
+                            ItemDiscountId = 1,
+                            Value = 12,
+                            Version = new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Desc2",
+                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsPercentage = true,
+                            ItemDiscountId = 2,
+                            Value = 15,
+                            Version = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1293)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Desc3",
+                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsPercentage = false,
+                            ItemDiscountId = 3,
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = 500,
+                            Version = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1295)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Desc1 Update",
+                            IsDeleted = true,
+                            IsPercentage = true,
+                            ItemDiscountId = 1,
+                            Value = 18,
+                            Version = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Product", b =>
@@ -905,10 +965,10 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModificationOnCartItem", b =>
                 {
-                    b.Property<int>("CartItemId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductModificationVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -917,20 +977,22 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("CartItemId", "ProductModificationVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("ProductModificationVersionId")
+                    b.HasIndex("LeftEntityId")
                         .IsUnique();
+
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ProductModificationOnCartItems");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnItemDiscount", b =>
                 {
-                    b.Property<int>("ProductVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ItemDiscountVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -939,19 +1001,19 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ProductVersionId", "ItemDiscountVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("ItemDiscountVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ProductOnItemDiscounts");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnTax", b =>
                 {
-                    b.Property<int>("ProductVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TaxVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -960,37 +1022,11 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ProductVersionId", "TaxVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("TaxVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ProductOnTax");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductVersionId = 1,
-                            TaxVersionId = 1,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3269)
-                        },
-                        new
-                        {
-                            ProductVersionId = 1,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3338)
-                        },
-                        new
-                        {
-                            ProductVersionId = 4,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3342)
-                        },
-                        new
-                        {
-                            ProductVersionId = 3,
-                            TaxVersionId = 3,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3346)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Service", b =>
@@ -1079,10 +1115,10 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnItemDiscount", b =>
                 {
-                    b.Property<int>("ServiceVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ItemDiscountVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -1091,19 +1127,19 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ServiceVersionId", "ItemDiscountVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("ItemDiscountVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ServiceOnItemDiscounts");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnTax", b =>
                 {
-                    b.Property<int>("ServiceVersionId")
+                    b.Property<int>("LeftEntityId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TaxVersionId")
+                    b.Property<int>("RightEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
@@ -1112,37 +1148,11 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ServiceVersionId", "TaxVersionId", "StartDate");
+                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("TaxVersionId");
+                    b.HasIndex("RightEntityId");
 
                     b.ToTable("ServiceOnTax");
-
-                    b.HasData(
-                        new
-                        {
-                            ServiceVersionId = 1,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3435)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 4,
-                            TaxVersionId = 1,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3439)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 4,
-                            TaxVersionId = 4,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3443)
-                        },
-                        new
-                        {
-                            ServiceVersionId = 2,
-                            TaxVersionId = 3,
-                            StartDate = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3446)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceReservation", b =>
@@ -1291,28 +1301,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3669)
+                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1267)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3674)
+                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1269)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3678)
+                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1270)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 31, 40, 831, DateTimeKind.Local).AddTicks(3681)
+                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1270)
                         });
                 });
 
@@ -1429,21 +1439,21 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartOnCartDiscount", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.CartDiscount", "CartDiscount")
+                    b.HasOne("POS_System.Domain.Entities.Cart", "LeftEntity")
                         .WithMany("CartOnCartDiscounts")
-                        .HasForeignKey("CartDiscountVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Cart", "Cart")
+                    b.HasOne("POS_System.Domain.Entities.CartDiscount", "RightEntity")
                         .WithMany("CartOnCartDiscounts")
-                        .HasForeignKey("CartVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cart");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("CartDiscount");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.EmployeeOnService", b =>
@@ -1476,97 +1486,97 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModificationOnCartItem", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.CartItem", "CartItem")
-                        .WithMany("ProductModificationsOnCartItem")
-                        .HasForeignKey("CartItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("POS_System.Domain.Entities.ProductModification", "ProductModification")
+                    b.HasOne("POS_System.Domain.Entities.ProductModification", "LeftEntity")
                         .WithOne("ProductModificationOnCartItems")
-                        .HasForeignKey("POS_System.Domain.Entities.ProductModificationOnCartItem", "ProductModificationVersionId")
+                        .HasForeignKey("POS_System.Domain.Entities.ProductModificationOnCartItem", "LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CartItem");
+                    b.HasOne("POS_System.Domain.Entities.CartItem", "RightEntity")
+                        .WithMany("ProductModificationsOnCartItem")
+                        .HasForeignKey("RightEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("ProductModification");
+                    b.Navigation("LeftEntity");
+
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnItemDiscount", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.ItemDiscount", "ItemDiscount")
+                    b.HasOne("POS_System.Domain.Entities.Product", "LeftEntity")
                         .WithMany("ProductOnItemDiscounts")
-                        .HasForeignKey("ItemDiscountVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Product", "Product")
+                    b.HasOne("POS_System.Domain.Entities.ItemDiscount", "RightEntity")
                         .WithMany("ProductOnItemDiscounts")
-                        .HasForeignKey("ProductVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ItemDiscount");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Product");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductOnTax", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.Product", "Product")
+                    b.HasOne("POS_System.Domain.Entities.Product", "LeftEntity")
                         .WithMany("ProductOnTaxes")
-                        .HasForeignKey("ProductVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Tax", "Tax")
+                    b.HasOne("POS_System.Domain.Entities.Tax", "RightEntity")
                         .WithMany("ProductOnTaxes")
-                        .HasForeignKey("TaxVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Tax");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnItemDiscount", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.ItemDiscount", "ItemDiscount")
+                    b.HasOne("POS_System.Domain.Entities.Service", "LeftEntity")
                         .WithMany("ServiceOnItemDiscounts")
-                        .HasForeignKey("ItemDiscountVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Service", "Service")
+                    b.HasOne("POS_System.Domain.Entities.ItemDiscount", "RightEntity")
                         .WithMany("ServiceOnItemDiscounts")
-                        .HasForeignKey("ServiceVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ItemDiscount");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Service");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceOnTax", b =>
                 {
-                    b.HasOne("POS_System.Domain.Entities.Service", "Service")
+                    b.HasOne("POS_System.Domain.Entities.Service", "LeftEntity")
                         .WithMany("ServiceOnTaxes")
-                        .HasForeignKey("ServiceVersionId")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.Tax", "Tax")
+                    b.HasOne("POS_System.Domain.Entities.Tax", "RightEntity")
                         .WithMany("ServiceOnTaxes")
-                        .HasForeignKey("TaxVersionId")
+                        .HasForeignKey("RightEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Service");
+                    b.Navigation("LeftEntity");
 
-                    b.Navigation("Tax");
+                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ServiceReservation", b =>
