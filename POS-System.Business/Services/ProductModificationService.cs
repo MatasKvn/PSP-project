@@ -21,7 +21,7 @@ namespace POS_System.Business.Services
 
             var productModification = _mapper.Map<ProductModification>(productModificationDto);
             
-            productModification.Version = DateTime.Now;
+            productModification.Version = DateTime.UtcNow;
             productModification.IsDeleted = false;
 
             await _unitOfWork.ProductModificationRepository.CreateAsync(productModification);
@@ -114,7 +114,7 @@ namespace POS_System.Business.Services
             var newProdMod = _mapper.Map<ProductModification>(productModificationDto);
             newProdMod.ProductModificationId = currentProdMod.ProductModificationId;
             newProdMod.ProductVersionId = currentProdMod.ProductVersionId;
-            newProdMod.Version = DateTime.Now;
+            newProdMod.Version = DateTime.UtcNow;
             newProdMod.IsDeleted = false;
 
             await _unitOfWork.ProductModificationRepository.CreateAsync(newProdMod, cancellationToken);

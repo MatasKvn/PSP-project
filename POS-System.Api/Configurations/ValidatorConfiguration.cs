@@ -15,7 +15,12 @@ public static class ValidatorConfiguration
             .AddValidatorsFromAssemblyContaining<GiftCardRequest>()
             .AddValidatorsFromAssemblyContaining<TaxRequest>()
             .AddValidatorsFromAssemblyContaining<BusinessDetailsRequest>()
-            .AddValidatorsFromAssemblyContaining<ItemDiscountRequest>();
+            .AddValidatorsFromAssemblyContaining<ItemDiscountRequest>()
+            .AddValidatorsFromAssemblyContaining<CartItemRequest>()
+            .AddValidatorsFromAssemblyContaining<ProductRequest>()
+            .AddValidatorsFromAssemblyContaining<ProductModificationRequest>()
+            .AddValidatorsFromAssemblyContaining<ServiceRequest>()
+            .AddValidatorsFromAssemblyContaining<TimeSlotRequest>();
 
         return builder;
     }

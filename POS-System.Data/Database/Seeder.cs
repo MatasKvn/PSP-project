@@ -56,10 +56,10 @@ namespace POS_System.Data.Database
         public static void SeedTimeSlots(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TimeSlot>().HasData(
-                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
-                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
-                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.Now, IsAvailable = false },
-                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.Now, IsAvailable = true }
+                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.UtcNow, IsAvailable = true },
+                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.UtcNow, IsAvailable = true },
+                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.UtcNow, IsAvailable = false },
+                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.UtcNow, IsAvailable = true }
             );
         }
 
@@ -88,10 +88,10 @@ namespace POS_System.Data.Database
         {
             /*
             modelBuilder.Entity<ProductOnTax>().HasData(
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.UtcNow, EndDate = null }
             );
             */
         }
@@ -100,10 +100,10 @@ namespace POS_System.Data.Database
         {
             /*
             modelBuilder.Entity<ServiceOnTax>().HasData(
-                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
+                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.UtcNow, EndDate = null }
             );
             */
         }
@@ -131,41 +131,11 @@ namespace POS_System.Data.Database
         public static void SeedGiftCards(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GiftCard>().HasData(
-                new GiftCard
-                {
-                    Id = 1,
-                    Date = new DateOnly(2024, 1, 1),
-                    Value = 100,
-                    Code = "CARD100"
-                },
-                new GiftCard
-                {
-                    Id = 2,
-                    Date = new DateOnly(2024, 2, 15),
-                    Value = 150,
-                    Code = "CARD150"
-                },
-                new GiftCard
-                {
-                    Id = 3,
-                    Date = new DateOnly(2024, 3, 20),
-                    Value = 200,
-                    Code = "CARD200"
-                },
-                new GiftCard
-                {
-                    Id = 4,
-                    Date = new DateOnly(2024, 4, 10),
-                    Value = 50,
-                    Code = "CARD050"
-                },
-                new GiftCard
-                {
-                    Id = 5,
-                    Date = new DateOnly(2024, 5, 5),
-                    Value = 250,
-                    Code = "CARD250"
-                }
+                new GiftCard { Id = 1, Date = new DateOnly(2024, 1, 1), Value = 100, Code = "CARD100" },
+                new GiftCard { Id = 2, Date = new DateOnly(2024, 2, 15), Value = 150, Code = "CARD150" },
+                new GiftCard { Id = 3, Date = new DateOnly(2024, 3, 20), Value = 200, Code = "CARD200" },
+                new GiftCard { Id = 4, Date = new DateOnly(2024, 4, 10), Value = 50, Code = "CARD050" },
+                new GiftCard { Id = 5, Date = new DateOnly(2024, 5, 5), Value = 250, Code = "CARD250" }
             );
         }
 

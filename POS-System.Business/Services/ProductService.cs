@@ -71,7 +71,7 @@ namespace POS_System.Business.Services
 
             var product = _mapper.Map<Product>(productDto);
 
-            product.Version = DateTime.Now;
+            product.Version = DateTime.UtcNow;
             product.IsDeleted = false;
 
             await _unitOfWork.ProductRepository.CreateAsync(product, cancellationToken);
@@ -99,7 +99,7 @@ namespace POS_System.Business.Services
 
             var newProduct = _mapper.Map<Product>(productDto);
             newProduct.ProductId = currentProduct.ProductId;
-            newProduct.Version = DateTime.Now;
+            newProduct.Version = DateTime.UtcNow;
             newProduct.IsDeleted = false;
 
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);

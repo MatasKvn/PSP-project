@@ -41,7 +41,7 @@ namespace POS_System.Business.Services
 
             var newService = mapper.Map<Service>(serviceRequest);
 
-            newService.Version = DateTime.Now;
+            newService.Version = DateTime.UtcNow;
             newService.IsDeleted = false;
 
             await unitOfWork.ServiceRepository.CreateAsync(newService, cancellationToken);

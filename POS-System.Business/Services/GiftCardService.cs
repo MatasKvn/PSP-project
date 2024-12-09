@@ -14,7 +14,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
 {
     public async Task<PagedResponse<GiftCardResponse>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
     {
-        var (giftCards, totalCount) = await unitOfWork.GiftCardRepository.GetAllByExpressionWithPaginationAsync(giftcard => giftcard.Date >= DateOnly.FromDateTime(DateTime.Now),
+        var (giftCards, totalCount) = await unitOfWork.GiftCardRepository.GetAllByExpressionWithPaginationAsync(giftcard => giftcard.Date >= DateOnly.FromDateTime(DateTime.UtcNow),
             pageSize,
             pageNum,
             cancellationToken
@@ -28,7 +28,7 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
     {
         IdValidator.ValidateId(id);
 
-        var giftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(giftcard => giftcard.Id == id && giftcard.Date >= DateOnly.FromDateTime(DateTime.Now), cancellationToken)
+        var giftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(giftcard => giftcard.Id == id && giftcard.Date >= DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken)
             ?? throw new NotFoundException($"Gift card with id {id} does not exist.");
 
         return mapper.Map<GiftCardResponse>(giftCard);

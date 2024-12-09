@@ -10,7 +10,7 @@ namespace POS_System.Business.Validators.GiftCard
             RuleFor(x => x.Date)
                 .NotEmpty()
                 .WithMessage(GiftCardValidationMessages.ExpirationDateRequired)
-                .Must(date => date.CompareTo(DateOnly.FromDateTime(DateTime.Now)) >= 0)
+                .Must(date => date.CompareTo(DateOnly.FromDateTime(DateTime.UtcNow)) >= 0)
                 .WithMessage(GiftCardValidationMessages.ExpirationDateInPast);
 
             RuleFor(x => x.Value)

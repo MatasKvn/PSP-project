@@ -26,8 +26,8 @@ namespace POS_System.Business.Validators.ItemDiscount
             RuleFor(x => x.Description)
                 .NotEmpty()
                 .WithMessage("Description is required.")
-                .MaximumLength(500)
-                .WithMessage("Description cannot exceed 500 characters.");
+                .MaximumLength(255)
+                .WithMessage("Description cannot exceed 255 characters.");
 
             RuleFor(x => x)
                 .Must(x => (x.StartDate.HasValue && x.EndDate.HasValue) || (!x.StartDate.HasValue && !x.EndDate.HasValue))
