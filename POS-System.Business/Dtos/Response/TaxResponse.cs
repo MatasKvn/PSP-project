@@ -1,6 +1,6 @@
 ﻿namespace POS_System.Business.Dtos.Response
 {
-    public class TaxResponse
+    public record TaxResponse
     {
         public int Id { get; set; }
         public int TaxId { get; set; }
