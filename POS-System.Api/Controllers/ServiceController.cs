@@ -75,7 +75,7 @@ public class ServiceController(IServiceOfService _serviceOfService) : Controller
     }
 
     //Leave timeStamp null if you want to get only the active items
-    [HttpGet("item/{id}")]
+    [HttpGet("tax/{id}")]
     [Authorize(Policy = "ItemRead")]
     public async Task<IActionResult> GetServicesLinkedToTaxId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
     {
