@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using POS_System.Data.Database;
@@ -11,9 +12,11 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241209160828_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -406,6 +409,9 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("EmployeeVersionId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -421,6 +427,7 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             DateCreated = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 1,
+                            IsDeleted = false,
                             Status = 0
                         },
                         new
@@ -428,6 +435,7 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             DateCreated = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 2,
+                            IsDeleted = false,
                             Status = 2
                         },
                         new
@@ -435,6 +443,7 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             DateCreated = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 3,
+                            IsDeleted = false,
                             Status = 1
                         },
                         new
@@ -442,6 +451,7 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             DateCreated = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 4,
+                            IsDeleted = false,
                             Status = 0
                         });
                 });
@@ -455,7 +465,11 @@ namespace POS_System.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CartDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("CartDiscountId"), 1L, null, null, null, null, null);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -470,7 +484,7 @@ namespace POS_System.Data.Migrations
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -689,9 +703,13 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("ItemDiscountId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemDiscountId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ItemDiscountId"), 1L, null, null, null, null, null);
+
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -703,6 +721,7 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemDiscounts");
+
                     b.HasData(
                         new
                         {
@@ -1040,13 +1059,6 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ServiceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServiceId"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ServiceId"), 1L, null, null, null, null, null);
-
                     b.Property<DateTime>("Version")
                         .HasColumnType("timestamp without time zone");
 
@@ -1064,7 +1076,6 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service1",
                             Price = 2599,
-                            ServiceId = 1,
                             Version = new DateTime(2024, 10, 16, 19, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1076,7 +1087,6 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service2",
                             Price = 4599,
-                            ServiceId = 2,
                             Version = new DateTime(2024, 10, 18, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1088,7 +1098,6 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service3",
                             Price = 1699,
-                            ServiceId = 3,
                             Version = new DateTime(2024, 10, 19, 15, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1100,8 +1109,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service2 v2",
                             Price = 4099,
-                            ServiceId = 2,
-                            Version = new DateTime(2024, 11, 1, 15, 30, 0, 0, DateTimeKind.Unspecified)
+                            Version = new DateTime(2024, 11, 1, 15, 30, 30, 0, DateTimeKind.Unspecified)
                         });
                 });
 

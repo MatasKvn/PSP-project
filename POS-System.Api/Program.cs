@@ -36,6 +36,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<RequestLoggingMiddleware>();
+
 app.UseExceptionHandler(new ExceptionHandlerOptions
 {
     ExceptionHandler = async context =>

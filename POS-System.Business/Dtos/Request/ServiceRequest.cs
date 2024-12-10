@@ -1,6 +1,6 @@
 ﻿namespace POS_System.Business.Dtos.Request
 {
-    public record class ServiceRequest
+    public record ServiceRequest
     {
         public required string Name { get; set; }
         public required string Description { get; set; }

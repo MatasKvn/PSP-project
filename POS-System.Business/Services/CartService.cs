@@ -35,7 +35,7 @@ namespace POS_System.Business.Services.Interfaces
                 EmployeeVersionId = cartDto.EmployeeVersionId,
                 Status = CartStatusEnum.PENDING,
                 IsDeleted = false,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.UtcNow
             };
 
             await _unitOfWork.CartRepository.CreateAsync(cart, cancellationToken);

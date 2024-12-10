@@ -26,7 +26,7 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RelinkItemToItem(IRepository<TManyToMany> linkRepository, int oldItemId, int newItemId, bool relinkingLeft, CancellationToken cancellationToken)
+        public async Task RelinkItemToItemAsync(IRepository<TManyToMany> linkRepository, int oldItemId, int newItemId, bool relinkingLeft, CancellationToken cancellationToken)
         {
             IEnumerable<TManyToMany> itemLinks = relinkingLeft ?
                 await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == oldItemId && x.EndDate == null, cancellationToken)
@@ -147,7 +147,7 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<int>> GetActiveLinkIds(IRepository<TManyToMany> linkRepository, int id, bool forLeft, CancellationToken cancellationToken)
+        public async Task<IEnumerable<int>> GetActiveLinkIdsAsync(IRepository<TManyToMany> linkRepository, int id, bool forLeft, CancellationToken cancellationToken)
         {
             IEnumerable<TManyToMany> itemLinks = forLeft ?
                 await linkRepository.GetAllByExpressionAsync(x => x.LeftEntityId == id && x.EndDate == null, cancellationToken)

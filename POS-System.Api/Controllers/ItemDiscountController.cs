@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Services.Interfaces;
 
@@ -9,6 +10,7 @@ namespace POS_System.Api.Controllers
     public class ItemDiscountController(IItemDiscountService _itemDiscountService) : ControllerBase
     {
         [HttpGet]
+        [Authorize("ItemDiscountRead")]
         public async Task<IActionResult> GetAllItemDiscounts(CancellationToken cancellationToken)
         {
             var itemDiscounts = await _itemDiscountService.GetAllItemDiscountsAsync(cancellationToken);
@@ -16,6 +18,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize("ItemDiscountWrite")]
         public async Task<IActionResult> CreateItemDiscount([FromBody] ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken)
         {
             var createdItemDiscount = await _itemDiscountService.CreateItemDiscountAsync(itemDiscountDto, cancellationToken);
@@ -23,6 +26,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize("ItemDiscountRead")]
         public async Task<IActionResult> GetItemDiscountById(int id, CancellationToken cancellationToken)
         {
             var itemDiscount = await _itemDiscountService.GetItemDiscountByIdAsync(id, cancellationToken);
@@ -30,6 +34,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("ItemDiscountWrite")]
         public async Task<IActionResult> DeleteItemDiscountById(int id, CancellationToken cancellationToken)
         {
             await _itemDiscountService.DeleteItemDiscountAsync(id, cancellationToken);
@@ -37,6 +42,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize("ItemDiscountWrite")]
         public async Task<IActionResult> UpdateItemDiscountById(int id, [FromBody] ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken)
         {
             var updatedItemDiscount = await _itemDiscountService.UpdateItemDiscountAsync(id, itemDiscountDto, cancellationToken);
@@ -44,6 +50,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPut("{id}/link")]
+        [Authorize("ItemDiscountWrite")]
         public async Task<IActionResult> LinkItemDiscountToItems(int id, [FromQuery] bool itemsAreProducts, [FromBody] int[] itemIdList, CancellationToken cancellationToken)
         {
             await _itemDiscountService.LinkItemDiscountToItemsAsync(id, itemsAreProducts, itemIdList, cancellationToken);
@@ -52,6 +59,7 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpPut("{id}/unlink")]
+        [Authorize("ItemDiscountWrite")]
         public async Task<IActionResult> UnlinkItemDiscountFromItems(int id, [FromQuery] bool itemsAreProducts, [FromBody] int[] itemIdList, CancellationToken cancellationToken)
         {
             await _itemDiscountService.UnlinkItemDiscountFromItemsAsync(id, itemsAreProducts, itemIdList, cancellationToken);
@@ -61,6 +69,7 @@ namespace POS_System.Api.Controllers
 
         //Leave timeStamp null if you want to get only the active items
         [HttpGet("item/{id}")]
+        [Authorize("ItemDiscountRead")]
         public async Task<IActionResult> GetItemDiscountsLinkedToItemId(int id, [FromQuery] bool isProduct, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
         {
             var itemDiscounts = await _itemDiscountService.GetItemDiscountsLinkedToItemId(id, isProduct, timeStamp, cancellationToken);

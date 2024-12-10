@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEmployeeeService, EmployeeService>();
             services.AddScoped<IBusinessDetailService, BusinessDetailService>();
             services.AddScoped<ICartItemService, CartItemService>();
-            services.AddScoped<IServiceOfService, ServiceOfSevice>();
+            services.AddScoped<IServiceOfService, ServiceOfService>();
             services.AddScoped<IServiceReservationService, ServiceReservationService>();
             services.AddScoped<IItemDiscountService, ItemDiscountService>();
             services.AddScoped<ICartDiscountService, CartDiscountService>();

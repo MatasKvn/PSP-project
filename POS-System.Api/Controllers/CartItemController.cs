@@ -2,6 +2,7 @@
 using POS_System.Business.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using POS_System.Business.Dtos.Request;
+using POS_System.Business.Services;
 
 namespace POS_System.Api.Controllers;
 
@@ -54,5 +55,23 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
         await cartItemService.DeleteCartItemAsync(cartid, id, cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpPut("{id}/link")]
+    [Authorize(Policy = "CartItemWrite")]
+    public async Task<IActionResult> LinkCartItemToProductModifications(int id, [FromBody] int[] productModificationIdList, CancellationToken cancellationToken)
+    {
+        await cartItemService.LinkCartItemToProductModificationsAsync(id, productModificationIdList, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPut("{id}/unlink")]
+    [Authorize(Policy = "CartItemWrite")]
+    public async Task<IActionResult> UnlinkCartItemFromProductModifications(int id, [FromBody] int[] productModificationIdList, CancellationToken cancellationToken)
+    {
+        await cartItemService.UnlinkCartItemFromProductModificationsAsync(id, productModificationIdList, cancellationToken);
+
+        return Ok();
     }
 }
