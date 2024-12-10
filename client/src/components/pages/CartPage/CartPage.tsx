@@ -95,14 +95,15 @@ const CartPage = (props: Props) => {
         { name: 'Delete', key: 'delete' }
     ]
     const productRows = productItems.map((item) => {
-        const { name, price } = item.product
+        const { name } = item.product
+        const price = item.product.price / 100
         const modificationsPrice = calculateProductModificationsValue(item)
-        const totalVal = item.quantity * (item.product.price + modificationsPrice)
-        const discounts = calculateDiscountsValue(item)
-        const taxes = calculateTaxesValue(item)
+        const totalVal = item.quantity * (item.product.price + modificationsPrice) / 100
+        const discounts = calculateDiscountsValue(item) / 100
+        const taxes = calculateTaxesValue(item) / 100
         const netPrice = totalVal - discounts + taxes
         return {
-            name,
+            name: name,
             quantity: item.quantity,
             modifications: item.productModifications.map((modification) => modification.id).join(', '),
             modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
@@ -115,6 +116,13 @@ const CartPage = (props: Props) => {
             )
         }
     })
+    const productsRowsStringified = productRows.map((row) => Object.fromEntries(Object.entries(row).map(
+        ([key, value]) => {
+            if (typeof value === 'number') {
+                return [key, value.toFixed(2)]
+            }
+            return [key, value]
+        })))
     const productsSummaryRow = {
         name: 'Total',
         quantity: productRows.reduce((acc, row) => acc + row.quantity, 0).toFixed(2),
@@ -126,7 +134,7 @@ const CartPage = (props: Props) => {
         totalVal: productRows.reduce((acc, row) => acc + row.totalVal, 0).toFixed(2),
         netPrice: productRows.reduce((acc, row) => acc + row.netPrice, 0).toFixed(2)
     }
-    const productsTableRows = [...productRows, productsSummaryRow]
+    const productsTableRows = [...productsRowsStringified, productsSummaryRow]
 
     const serviceItems = cartItems.filter((cartItem) => cartItem.type === 'service')
     const serviceColumns: TableColumnData[] = [
@@ -140,10 +148,12 @@ const CartPage = (props: Props) => {
             { name: 'Delete', key: 'delete' },
         ]
     const serviceRows = serviceItems.map((item) => {
+        const startTime = item.timeSlot.startTime
         return {
             name: item.service.name,
             quantity: item.quantity,
             price: item.service?.price,
+            time: `${startTime.getMonth() + 1} ${startTime.getDay()} ${startTime.toLocaleTimeString()}`,
             totalVal: item.quantity * (item.service?.price ? item.service.price : 0),
             discounts: calculateDiscountsValue(item),
             taxes: calculateTaxesValue(item),
@@ -157,8 +167,17 @@ const CartPage = (props: Props) => {
             )
         }
     })
+    const serviceRowsStringified = serviceRows.map((row) => Object.fromEntries(Object.entries(row).map(
+        ([key, value]) => {
+            console.log(key, value)
+            if (typeof value === 'number') {
+                return [key, value.toFixed(2)]
+            }
+            return [key, value]
+        })))
     const summaryRow = {
         name: 'Total',
+        time: '...',
         quantity: serviceRows.reduce((acc, row) => acc + row.quantity, 0).toFixed(2),
         price: serviceRows.reduce((acc, row) => acc + row.price, 0).toFixed(2),
         totalVal: serviceRows.reduce((acc, row) => acc + row.totalVal, 0).toFixed(2),
@@ -166,7 +185,7 @@ const CartPage = (props: Props) => {
         taxes: serviceRows.reduce((acc, row) => acc + row.taxes, 0).toFixed(2),
         netPrice: serviceRows.reduce((acc, row) => acc + row.netPrice, 0).toFixed(2),
     }
-    const servicesTableRows = [...serviceRows, summaryRow]
+    const servicesTableRows = [...serviceRowsStringified, summaryRow]
 
     const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0)
 
@@ -303,9 +322,9 @@ const CartPage = (props: Props) => {
                 <div className={styles.summary_container}>
                     <h4>Checkout</h4>
                     <div>
-                        <p>{`Total: ${totalPrice}`}</p>
-                        <p>{`Discount: ${cartDiscount}`}</p>
-                        <p>{`Total: ${totalPrice - cartDiscount}`}</p>
+                        <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
+                        <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
+                        <p>{`Total: ${(totalPrice - cartDiscount).toFixed(2)} €`}</p>
                         <Button
                             onClick={handleCartCheckout}
                             disabled={isCartLoading || isCartItemsLoading || !isCartOpen}

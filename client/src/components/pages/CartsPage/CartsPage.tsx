@@ -20,7 +20,7 @@ const CartsPage = ({ pageNumber }: Props) => {
     const router = useRouter()
 
     const handleCartCreate = async () => {
-        const response = await CartApi.createCart({employeeVersionId: getEmployeeId()})
+        const response = await CartApi.createCart({ employeeVersionId: getEmployeeId() })
         if (response.error) {
             console.log('An error occured when creating cart: ', response.error)
             return
