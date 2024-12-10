@@ -11,8 +11,7 @@ namespace POS_System.Business.Services.Interfaces
         public Task<ServiceResponse?> GetServiceByIdAsync(int id, CancellationToken cancellationToken);
         public Task<ServiceResponse> UpdateServiceAsync(int id, ServiceRequest serviceRequest, CancellationToken cancellationToken);
         public Task DeleteServiceAsync(int id, CancellationToken cancellationToken);
-        public Task LinkServiceToTaxesAsync(int serviceId, int[] taxIdList, CancellationToken cancellationToken);
-        public Task UnlinkServiceFromTaxesAsync(int serviceId, int[] taxIdList, CancellationToken cancellationToken);
         public Task<IEnumerable<ServiceResponse>> GetServicesLinkedToTaxId(int taxId, DateTime? timeStamp, CancellationToken cancellationToken);
+        public Task<IEnumerable<ServiceResponse>> GetServicesLinkedToItemDiscountId(int itemDiscountId, DateTime? timeStamp, CancellationToken cancellationToken);
     }
 }

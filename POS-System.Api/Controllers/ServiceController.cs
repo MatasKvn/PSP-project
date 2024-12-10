@@ -55,31 +55,21 @@ public class ServiceController(IServiceOfService _serviceOfService) : Controller
         return NoContent();
     }
 
-
-    [HttpPut("{id}/link")]
-    [Authorize(Policy = "ServiceWrite")]
-    public async Task<IActionResult> LinkServiceToTaxes(int id, [FromBody] int[] taxIdList, CancellationToken cancellationToken)
-    {
-        await _serviceOfService.LinkServiceToTaxesAsync(id, taxIdList, cancellationToken);
-
-        return Ok();
-    }
-
-    [HttpPut("{id}/unlink")]
-    [Authorize(Policy = "ServiceRead")]
-    public async Task<IActionResult> UnlinkServiceFromTaxes(int id, [FromBody] int[] taxIdList, CancellationToken cancellationToken)
-    {
-        await _serviceOfService.UnlinkServiceFromTaxesAsync(id, taxIdList, cancellationToken);
-
-        return Ok();
-    }
-
     //Leave timeStamp null if you want to get only the active items
     [HttpGet("tax/{id}")]
     [Authorize(Policy = "ItemRead")]
     public async Task<IActionResult> GetServicesLinkedToTaxId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
     {
         var services = await _serviceOfService.GetServicesLinkedToTaxId(id, timeStamp, cancellationToken);
+        return Ok(services);
+    }
+
+    //Leave timeStamp null if you want to get only the active items
+    [HttpGet("item-discount/{id}")]
+    [Authorize(Policy = "ItemRead")]
+    public async Task<IActionResult> GetServicesLinkedToItemDiscountId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
+    {
+        var services = await _serviceOfService.GetServicesLinkedToItemDiscountId(id, timeStamp, cancellationToken);
         return Ok(services);
     }
 }

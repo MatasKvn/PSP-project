@@ -40,7 +40,7 @@ namespace POS_System.Business.Services
         public async Task DeleteTaxAsync(int id, CancellationToken cancellationToken)
         {
             var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
-                ?? throw new NotFoundException(ApplicationMessages.TAX_NOT_FOUND);
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             tax.IsDeleted = true;
             await _productOnTaxService.MarkActiveLinksDeletedAsync(_unitOfWork.ProductOnTaxRepository, id, false, cancellationToken);
@@ -52,7 +52,7 @@ namespace POS_System.Business.Services
         public async Task<TaxResponse> UpdateTaxAsync(int id, TaxRequest taxDto, CancellationToken cancellationToken)
         {
             var currentTax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
-                ?? throw new NotFoundException(ApplicationMessages.TAX_NOT_FOUND);
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             currentTax.IsDeleted = true;
 
@@ -74,7 +74,7 @@ namespace POS_System.Business.Services
         public async Task<TaxResponse> GetTaxByIdAsync(int id, CancellationToken cancellationToken)
         {
             var tax = await _unitOfWork.TaxRepository.GetByIdAsync(id, cancellationToken)
-                ?? throw new NotFoundException(ApplicationMessages.TAX_NOT_FOUND);
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             var taxDto = _mapper.Map<TaxResponse>(tax);
             return taxDto;
@@ -111,18 +111,9 @@ namespace POS_System.Business.Services
             IEnumerable<int> taxLinkIds;
             IList<Tax> taxes = new List<Tax>();
 
-            if (timeStamp is null)
-            {
-                taxLinkIds = isProduct ?
-                    await _productOnTaxService.GetLinkIdsAsync(_unitOfWork.ProductOnTaxRepository, itemId, true, null, cancellationToken)
-                    : await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, itemId, true, null, cancellationToken);
-            }
-            else
-            {
-                taxLinkIds = isProduct ?
-                    await _productOnTaxService.GetLinkIdsAsync(_unitOfWork.ProductOnTaxRepository, itemId, true, timeStamp, cancellationToken)
-                    : await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, itemId, true, timeStamp, cancellationToken);
-            }
+            taxLinkIds = isProduct ?
+                await _productOnTaxService.GetLinkIdsAsync(_unitOfWork.ProductOnTaxRepository, itemId, true, timeStamp, cancellationToken)
+                : await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, itemId, true, timeStamp, cancellationToken);
 
             foreach (var taxId in taxLinkIds)
             {

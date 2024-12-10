@@ -8,10 +8,11 @@ using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Dtos.Request;
 using POS_System.Data.Repositories;
+using POS_System.Common.Constants;
 
 namespace POS_System.Business.Services
 {
-    public class ServiceOfService(IUnitOfWork _unitOfWork, IManyToManyService<Service, Tax, ServiceOnTax> _serviceOnTaxService, IMapper _mapper) : IServiceOfService
+    public class ServiceOfService(IUnitOfWork _unitOfWork, IManyToManyService<Service, Tax, ServiceOnTax> _serviceOnTaxService, IManyToManyService<Service, ItemDiscount, ServiceOnItemDiscount> _serviceOnItemDiscountService, IMapper _mapper) : IServiceOfService
     {
         public async Task<PagedResponse<ServiceResponse>> GetAllServicesAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
@@ -83,6 +84,7 @@ namespace POS_System.Business.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _serviceOnTaxService.RelinkItemToItem(_unitOfWork.ServiceOnTaxRepository, id, newService.Id, true, cancellationToken);
+            await _serviceOnItemDiscountService.RelinkItemToItem(_unitOfWork.ServiceOnItemDiscountRepository, id, newService.Id, true, cancellationToken);
 
             return _mapper.Map<ServiceResponse>(newService);
         }
@@ -100,34 +102,17 @@ namespace POS_System.Business.Services
             serviceToDelete.IsDeleted = true;
 
             await _serviceOnTaxService.MarkActiveLinksDeletedAsync(_unitOfWork.ServiceOnTaxRepository, id, true, cancellationToken);
+            await _serviceOnItemDiscountService.MarkActiveLinksDeletedAsync(_unitOfWork.ServiceOnItemDiscountRepository, id, true, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
-        public async Task LinkServiceToTaxesAsync(int serviceId, int[] taxIdList, CancellationToken cancellationToken)
-        {
-            await _serviceOnTaxService.LinkItemToItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, serviceId, taxIdList, true, cancellationToken);
-        }
-
-        public async Task UnlinkServiceFromTaxesAsync(int serviceId, int[] taxIdList, CancellationToken cancellationToken)
-        {
-            await _serviceOnTaxService.UnlinkItemFromItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, serviceId, taxIdList, true, cancellationToken);
-        }
-
 
         public async Task<IEnumerable<ServiceResponse>> GetServicesLinkedToTaxId(int taxId, DateTime? timeStamp, CancellationToken cancellationToken)
         {
             IEnumerable<int> serviceLinkIds;
             IList<Service> services = new List<Service>();
 
-            if (timeStamp is null)
-            {
-                serviceLinkIds = await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, taxId, false, null, cancellationToken);
-            }
-            else
-            {
-                serviceLinkIds = await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, taxId, false, timeStamp, cancellationToken);
-            }
+            serviceLinkIds = await _serviceOnTaxService.GetLinkIdsAsync(_unitOfWork.ServiceOnTaxRepository, taxId, false, timeStamp, cancellationToken);
 
             foreach (var serviceId in serviceLinkIds)
             {
@@ -135,6 +120,31 @@ namespace POS_System.Business.Services
 
                 if (service is not null)
                     services.Add(service);
+            }
+
+            var serviceDtos = _mapper.Map<List<ServiceResponse>>(services);
+            return serviceDtos;
+        }
+
+        public async Task<IEnumerable<ServiceResponse>> GetServicesLinkedToItemDiscountId(int itemDiscountId, DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            IEnumerable<int> serviceLinkIds;
+            IList<Service> services = new List<Service>();
+
+            var itemDiscount = await _unitOfWork.ItemDiscountRepository.GetByIdAsync(itemDiscountId, cancellationToken)
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+
+            serviceLinkIds = await _serviceOnItemDiscountService.GetLinkIdsAsync(_unitOfWork.ServiceOnItemDiscountRepository, itemDiscountId, false, timeStamp, cancellationToken);
+
+            foreach (var serviceId in serviceLinkIds)
+            {
+                var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceId, cancellationToken);
+
+                if (service is not null)
+                {
+                    if ((itemDiscount.StartDate is null && itemDiscount.EndDate is null) || (itemDiscount.StartDate <= timeStamp && itemDiscount.EndDate >= timeStamp))
+                        services.Add(service);
+                }
             }
 
             var serviceDtos = _mapper.Map<List<ServiceResponse>>(services);
