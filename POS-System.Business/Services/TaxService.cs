@@ -67,7 +67,6 @@ namespace POS_System.Business.Services
             var newTaxDto = _mapper.Map<TaxResponse>(newTax);
 
             await _productOnTaxService.RelinkItemToItem(_unitOfWork.ProductOnTaxRepository, id, newTax.Id, false, cancellationToken);
-            await _serviceOnTaxService.RelinkItemToItem(_unitOfWork.ServiceOnTaxRepository, id, newTax.Id, false, cancellationToken);
 
             return newTaxDto;
         }

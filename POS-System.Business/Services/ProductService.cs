@@ -10,7 +10,7 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Business.Services
 {
-    public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper, IProductModificationService _productModification) : IProductService
+    public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper, IManyToManyService<Product, Tax, ProductOnTax> _productOnTaxService, IProductModificationService _productModification) : IProductService
     {
         public async Task<PagedResponse<ProductResponse?>> GetProductsAsync(int pageSize, int pageNumber, bool? onlyActive, CancellationToken cancellationToken)
         {
@@ -104,10 +104,12 @@ namespace POS_System.Business.Services
 
             await _unitOfWork.ProductRepository.CreateAsync(newProduct, cancellationToken);
             await UpdateForeignKeysAsync(id, cancellationToken);
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var responseProductDto = _mapper.Map<ProductResponse>(newProduct);
+
+            await _productOnTaxService.RelinkItemToItem(_unitOfWork.ProductOnTaxRepository, id, newProduct.Id, true, cancellationToken);
+
             return responseProductDto;
         }
 
@@ -124,6 +126,9 @@ namespace POS_System.Business.Services
             }
 
             product.IsDeleted = true;
+
+            await _productOnTaxService.MarkActiveLinksDeletedAsync(_unitOfWork.ProductOnTaxRepository, id, true, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var responseProductDto = _mapper.Map<ProductResponse>(product);
@@ -153,6 +158,43 @@ namespace POS_System.Business.Services
 
                 await _productModification.UpdateProductModificationByIdAsync(prodMod.Id, prodModDto, cancellationToken);
             }
+        }
+
+        public async Task LinkProductToTaxesAsync(int productId, int[] taxIdList, CancellationToken cancellationToken)
+        {
+            await _productOnTaxService.LinkItemToItemsAsync(_unitOfWork.ProductRepository, _unitOfWork.TaxRepository, _unitOfWork.ProductOnTaxRepository, productId, taxIdList, true, cancellationToken);
+        }
+
+        public async Task UnlinkProductFromTaxesAsync(int productId, int[] taxIdList, CancellationToken cancellationToken)
+        {
+            await _productOnTaxService.UnlinkItemFromItemsAsync(_unitOfWork.ProductRepository, _unitOfWork.TaxRepository, _unitOfWork.ProductOnTaxRepository, productId, taxIdList, true, cancellationToken);
+        }
+
+
+        public async Task<IEnumerable<ProductResponse>> GetProductsLinkedToTaxId(int taxId, DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            IEnumerable<int> productLinkIds;
+            IList<Product> products = new List<Product>();
+
+            if (timeStamp is null)
+            {
+                productLinkIds = await _productOnTaxService.GetLinkIdsAsync(_unitOfWork.ProductOnTaxRepository, taxId, false, null, cancellationToken);
+            }
+            else
+            {
+                productLinkIds = await _productOnTaxService.GetLinkIdsAsync(_unitOfWork.ProductOnTaxRepository, taxId, false, timeStamp, cancellationToken);
+            }
+
+            foreach (var productId in productLinkIds)
+            {
+                var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId, cancellationToken);
+
+                if (product is not null)
+                    products.Add(product);
+            }
+
+            var productDtos = _mapper.Map<List<ProductResponse>>(products);
+            return productDtos;
         }
     }
 }

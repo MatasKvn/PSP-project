@@ -12,5 +12,8 @@ namespace POS_System.Business.Services.Interfaces
         public Task<ProductResponse> CreateProductAsync(ProductRequest? productDto, CancellationToken cancellationToken);
         public Task<ProductResponse> UpdateProductByIdAsync(int id, ProductRequest? productDto, CancellationToken cancellationToken);
         public Task<ProductResponse> DeleteProductByIdAsync(int id, CancellationToken cancellationToken);
+        public Task LinkProductToTaxesAsync(int productId, int[] taxIdList, CancellationToken cancellationToken);
+        public Task UnlinkProductFromTaxesAsync(int productId, int[] taxIdList, CancellationToken cancellationToken);
+        public Task<IEnumerable<ProductResponse>> GetProductsLinkedToTaxId(int taxId, DateTime? timeStamp, CancellationToken cancellationToken);
     }
 }

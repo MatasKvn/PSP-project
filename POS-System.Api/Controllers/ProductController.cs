@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Request;
+using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -55,6 +56,33 @@ namespace POS_System.Api.Controllers
         {
             var product = await _productService.DeleteProductByIdAsync(id, cancellationToken);
             return Ok(product);
+        }
+
+        [HttpPut("{id}/link")]
+        [Authorize(Policy = "ItemWrite")]
+        public async Task<IActionResult> LinkProductToTaxes(int id, [FromBody] int[] taxIdList, CancellationToken cancellationToken)
+        {
+            await _productService.LinkProductToTaxesAsync(id, taxIdList, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPut("{id}/unlink")]
+        [Authorize(Policy = "ItemWrite")]
+        public async Task<IActionResult> UnlinkProductFromTaxes(int id, [FromBody] int[] taxIdList, CancellationToken cancellationToken)
+        {
+            await _productService.UnlinkProductFromTaxesAsync(id, taxIdList, cancellationToken);
+
+            return Ok();
+        }
+
+        //Leave timeStamp null if you want to get only the active items
+        [HttpGet("item/{id}")]
+        [Authorize(Policy = "ItemRead")]
+        public async Task<IActionResult> GetProductsLinkedToTaxId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            var products = await _productService.GetProductsLinkedToTaxId(id, timeStamp, cancellationToken);
+            return Ok(products);
         }
     }
 }
