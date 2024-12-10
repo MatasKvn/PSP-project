@@ -20,7 +20,7 @@ namespace POS_System.Data.Database
             SeedCartItem(modelBuilder);
             SeedProductModification(modelBuilder);
             SeedTimeSlots(modelBuilder);
-
+            SeedItemDiscounts(modelBuilder);
         }
 
         public static void SeedTax(ModelBuilder modelBuilder)
@@ -121,10 +121,10 @@ namespace POS_System.Data.Database
         public static void SeedCarts(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cart>().HasData(
-                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING },
-                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED },
-                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS },
-                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING }
+                new Cart { Id = 1, EmployeeVersionId = 1, DateCreated = new DateTime(2024, 01, 01), Status = CartStatusEnum.PENDING, IsDeleted = false },
+                new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED, IsDeleted = false },
+                new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS, IsDeleted = false },
+                new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING, IsDeleted = false }
             );
         }
 
@@ -166,6 +166,16 @@ namespace POS_System.Data.Database
                     Value = 250,
                     Code = "CARD250"
                 }
+            );
+        }
+
+        public static void SeedItemDiscounts(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ItemDiscount>().HasData(
+                new ItemDiscount { Id = 1, ItemDiscountId = 1, Value = 12, IsPercentage = true, Description = "Desc1", StartDate = null, EndDate = null, Version = new DateTime(2024, 11, 15), IsDeleted = true },
+                new ItemDiscount { Id = 2, ItemDiscountId = 2, Value = 15, IsPercentage = true, Description = "Desc2", StartDate = null, EndDate = new DateTime(2025, 1, 12), Version = DateTime.UtcNow, IsDeleted = false},
+                new ItemDiscount { Id = 3, ItemDiscountId = 3, Value = 500, IsPercentage = false, Description ="Desc3", StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 1, 12), Version = DateTime.UtcNow, IsDeleted = false },
+                new ItemDiscount { Id = 4, ItemDiscountId = 1, Value = 18, IsPercentage = true, Description = "Desc1 Update", StartDate = null, EndDate = null, Version = new DateTime(2024, 11, 20), IsDeleted = true }
             );
         }
     }
