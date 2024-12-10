@@ -158,7 +158,7 @@ const ServicesPage = (props: Props) => {
 
     return (
         <div className={styles.page}>
-            <h1>Products Page</h1>
+            <h1>Services Page</h1>
             <div className={styles.toolbar}>
                 <Button
                     disabled={isLoading || !!errorMsg}
@@ -167,7 +167,7 @@ const ServicesPage = (props: Props) => {
                         sideDrawerRef.current?.open()
                     }}
                 >
-                    Create Product
+                    Create Service
                 </Button>
                 <Button
                     disabled={!selectedService || isLoading || !!errorMsg}
@@ -177,13 +177,13 @@ const ServicesPage = (props: Props) => {
                         sideDrawerRef.current?.open()
                     }}
                 >
-                    Edit Product
+                    Edit Service
                 </Button>
                 <Button
                     disabled={!selectedService || isLoading || !!errorMsg}
                     onClick={() => handleServiceDelete(selectedService)}
                 >
-                    Delete Product
+                    Delete Service
                 </Button>
             </div>
             <div className={styles.card_container}>
