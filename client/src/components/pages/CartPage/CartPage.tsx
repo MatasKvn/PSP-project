@@ -118,14 +118,14 @@ const CartPage = (props: Props) => {
     })
     const productsRowsStringified = productRows.map((row) => Object.fromEntries(Object.entries(row).map(
         ([key, value]) => {
-            if (typeof value === 'number') {
+            if (typeof value === 'number' && key !== 'quantity') {
                 return [key, value.toFixed(2)]
             }
             return [key, value]
         })))
     const productsSummaryRow = {
         name: 'Total',
-        quantity: productRows.reduce((acc, row) => acc + row.quantity, 0).toFixed(2),
+        quantity: productRows.reduce((acc, row) => acc + row.quantity, 0),
         price: productRows.reduce((acc, row) => acc + row.price, 0).toFixed(2),
         modifications: '...',
         modificationTotal: productRows.reduce((acc, row) => acc + row.modificationTotal, 0).toFixed(2),
@@ -312,7 +312,7 @@ const CartPage = (props: Props) => {
                     <h4>Cart Discount</h4>
                     <DynamicForm
                         inputs={{
-                            discount: { label: 'Discount', placeholder: 'Enter discount ammount:', type: 'number' },
+                            discount: { label: 'Discount', placeholder: 'Enter discount amount:', type: 'number' },
                         }}
                         onSubmit={(formPayload) => handleCartDiscount(formPayload)}
                     >
