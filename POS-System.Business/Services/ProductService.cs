@@ -108,8 +108,8 @@ namespace POS_System.Business.Services
 
             var responseProductDto = _mapper.Map<ProductResponse>(newProduct);
 
-            await _productOnTaxService.RelinkItemToItem(_unitOfWork.ProductOnTaxRepository, id, newProduct.Id, true, cancellationToken);
-            await _productOnItemDiscountService.RelinkItemToItem(_unitOfWork.ProductOnItemDiscountRepository, id, newProduct.Id, true, cancellationToken);
+            await _productOnTaxService.RelinkItemToItemAsync(_unitOfWork.ProductOnTaxRepository, id, newProduct.Id, true, cancellationToken);
+            await _productOnItemDiscountService.RelinkItemToItemAsync(_unitOfWork.ProductOnItemDiscountRepository, id, newProduct.Id, true, cancellationToken);
 
             return responseProductDto;
         }

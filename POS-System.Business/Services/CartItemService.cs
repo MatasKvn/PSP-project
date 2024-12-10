@@ -7,20 +7,21 @@ using POS_System.Common.Exceptions;
 using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
+using POS_System.Data.Repositories;
 
 namespace POS_System.Business.Services;
 
-public class CartItemService(IUnitOfWork unitOfWork, IMapper mapper) : ICartItemService
+public class CartItemService(IUnitOfWork _unitOfWork, IManyToManyService<ProductModification, CartItem, ProductModificationOnCartItem> _productModificationOnCartItemService, IMapper _mapper) : ICartItemService
 {
     public async Task<PagedResponse<CartItemResponse>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize)
     {
-        var (cartItems, totalCount) = await unitOfWork.CartItemRepository.GetAllByExpressionWithPaginationAsync(CartItem => CartItem.CartId == cartId,
+        var (cartItems, totalCount) = await _unitOfWork.CartItemRepository.GetAllByExpressionWithPaginationAsync(CartItem => CartItem.CartId == cartId,
             pageSize,
             pageNum,
             cancellationToken
         );
 
-        var mappedCartItems = mapper.Map<IEnumerable<CartItemResponse>>(cartItems);
+        var mappedCartItems = _mapper.Map<IEnumerable<CartItemResponse>>(cartItems);
         return new PagedResponse<CartItemResponse>(totalCount, pageSize, pageNum, mappedCartItems);
     }
 
@@ -28,28 +29,29 @@ public class CartItemService(IUnitOfWork unitOfWork, IMapper mapper) : ICartItem
     {
         IdValidator.ValidateId(id);
 
-        var cartItem = await unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
+        var cartItem = await _unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
             ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        return mapper.Map<CartItemResponse>(cartItem);
+        return _mapper.Map<CartItemResponse>(cartItem);
     }
 
     public async Task<CartItemResponse> CreateCartItemAsync(CartItemRequest CartItemRequest, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(CartItemRequest, nameof(CartItemRequest));
 
-        var cartExists = await unitOfWork.CartRepository.GetByIdAsync(CartItemRequest.CartId, cancellationToken);
+        var cartExists = await _unitOfWork.CartRepository.GetByIdAsync(CartItemRequest.CartId, cancellationToken);
         if (cartExists is null)
         {
             throw new BadRequestException($"Cart with Id {CartItemRequest.CartId} does not exist, cannot add item to it.");
         }
 
-        var newCartItem = mapper.Map<CartItem>(CartItemRequest);
+        var newCartItem = _mapper.Map<CartItem>(CartItemRequest);
+        newCartItem.IsDeleted = false;
 
-        await unitOfWork.CartItemRepository.CreateAsync(newCartItem, cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.CartItemRepository.CreateAsync(newCartItem, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<CartItemResponse>(newCartItem);
+        return _mapper.Map<CartItemResponse>(newCartItem);
     }
 
     public async Task<CartItemResponse> UpdateCartItemAsync(int cartId, int id, CartItemRequest CartItemRequest, CancellationToken cancellationToken)
@@ -57,23 +59,33 @@ public class CartItemService(IUnitOfWork unitOfWork, IMapper mapper) : ICartItem
         IdValidator.ValidateId(id);
         ArgumentNullException.ThrowIfNull(CartItemRequest, nameof(CartItemRequest));
 
-        var cartItemToUpdate = await unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
+        var cartItemToUpdate = await _unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
             ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        mapper.Map(CartItemRequest, cartItemToUpdate);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        _mapper.Map(CartItemRequest, cartItemToUpdate);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<CartItemResponse>(cartItemToUpdate);
+        return _mapper.Map<CartItemResponse>(cartItemToUpdate);
     }
 
     public async Task DeleteCartItemAsync(int cartId, int id, CancellationToken cancellationToken)
     {
         IdValidator.ValidateId(id);
 
-        var cartItemToDelete = await unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
+        var cartItemToDelete = await _unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
            ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        unitOfWork.CartItemRepository.Delete(cartItemToDelete);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        _unitOfWork.CartItemRepository.Delete(cartItemToDelete);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task LinkCartItemToProductModificationsAsync(int cartItemId, int[] productModificationIdList, CancellationToken cancellationToken)
+    {
+        await _productModificationOnCartItemService.LinkItemToItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, true, cancellationToken);
+    }
+
+    public async Task UnlinkCartItemFromProductModificationsAsync(int cartItemId, int[] productModificationIdList, CancellationToken cancellationToken)
+    {
+        await _productModificationOnCartItemService.UnlinkItemFromItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, true, cancellationToken);
     }
 }

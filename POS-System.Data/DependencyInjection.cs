@@ -74,6 +74,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 GenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>>();
             services.AddScoped<IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>,
                 GenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount>>();
+            services.AddScoped<IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>,
+                GenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         

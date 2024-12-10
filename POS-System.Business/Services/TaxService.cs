@@ -66,7 +66,7 @@ namespace POS_System.Business.Services
 
             var newTaxDto = _mapper.Map<TaxResponse>(newTax);
 
-            await _productOnTaxService.RelinkItemToItem(_unitOfWork.ProductOnTaxRepository, id, newTax.Id, false, cancellationToken);
+            await _productOnTaxService.RelinkItemToItemAsync(_unitOfWork.ProductOnTaxRepository, id, newTax.Id, false, cancellationToken);
 
             return newTaxDto;
         }
@@ -104,7 +104,6 @@ namespace POS_System.Business.Services
                 await _serviceOnTaxService.UnlinkItemFromItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, taxId, itemIdList, false, cancellationToken);
             }
         }
-            
 
         public async Task<IEnumerable<TaxResponse>> GetTaxesLinkedToItemId(int itemId, bool isProduct, DateTime? timeStamp, CancellationToken cancellationToken)
         {

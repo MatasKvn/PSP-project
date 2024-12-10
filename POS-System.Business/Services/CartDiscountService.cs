@@ -73,7 +73,7 @@ namespace POS_System.Business.Services
 
             var newCartDiscountDto = _mapper.Map<CartDiscountResponse>(newCartDiscount);
 
-            await _cartOnCartDiscountService.RelinkItemToItem(_unitOfWork.CartOnCartDiscountRepository, id, newCartDiscount.Id, false, cancellationToken);
+            await _cartOnCartDiscountService.RelinkItemToItemAsync(_unitOfWork.CartOnCartDiscountRepository, id, newCartDiscount.Id, false, cancellationToken);
 
             return newCartDiscountDto;
         }

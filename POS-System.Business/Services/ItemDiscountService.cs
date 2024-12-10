@@ -75,8 +75,8 @@ namespace POS_System.Business.Services
 
             var newItemDiscountDto = _mapper.Map<ItemDiscountResponse>(newItemDiscount);
 
-            await _productOnItemDiscountService.RelinkItemToItem(_unitOfWork.ProductOnItemDiscountRepository, id, newItemDiscount.Id, false, cancellationToken);
-            await _serviceOnItemDiscountService.RelinkItemToItem(_unitOfWork.ServiceOnItemDiscountRepository, id, newItemDiscount.Id, false, cancellationToken);
+            await _productOnItemDiscountService.RelinkItemToItemAsync(_unitOfWork.ProductOnItemDiscountRepository, id, newItemDiscount.Id, false, cancellationToken);
+            await _serviceOnItemDiscountService.RelinkItemToItemAsync(_unitOfWork.ServiceOnItemDiscountRepository, id, newItemDiscount.Id, false, cancellationToken);
 
             return newItemDiscountDto;
         }

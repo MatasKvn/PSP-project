@@ -12,5 +12,6 @@ namespace POS_System.Business.Services.Interfaces
         public Task<ProductModificationResponse> CreateProductModificationAsync(ProductModificationRequest? productModificationDto, CancellationToken cancellationToken);
         public Task<ProductModificationResponse> UpdateProductModificationByIdAsync(int id, ProductModificationRequest? productModificationDto, CancellationToken cancellationToken);
         public Task<ProductModificationResponse> DeleteProductModificationByIdAsync(int id, CancellationToken cancellationToken);
+        public Task<IEnumerable<ProductModificationResponse>> GetProductModificationsLinkedToCartItemId(int cartItemId, DateTime? timeStamp, CancellationToken cancellationToken);
     }
 }

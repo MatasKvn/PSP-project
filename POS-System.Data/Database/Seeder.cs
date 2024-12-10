@@ -111,10 +111,10 @@ namespace POS_System.Data.Database
         public static void SeedCartItem(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CartItem>().HasData(
-                new CartItem { Id = 1, CartId = 1, ProductVersionId = 1, ServiceVersionId = null, Quantity = 2, IsProduct = true },
-                new CartItem { Id = 2, CartId = 1, ProductVersionId = null, ServiceVersionId = 1, Quantity = 1, IsProduct = false },
-                new CartItem { Id = 3, CartId = 2, ProductVersionId = 2, ServiceVersionId = null, Quantity = 4, IsProduct = true },
-                new CartItem { Id = 4, CartId = 2, ProductVersionId = 3, ServiceVersionId = null, Quantity = 10, IsProduct = true }
+                new CartItem { Id = 1, CartId = 1, ProductVersionId = 1, ServiceVersionId = null, Quantity = 2, IsProduct = true, IsDeleted = false },
+                new CartItem { Id = 2, CartId = 1, ProductVersionId = null, ServiceVersionId = 1, Quantity = 1, IsProduct = false, IsDeleted = false },
+                new CartItem { Id = 3, CartId = 2, ProductVersionId = 2, ServiceVersionId = null, Quantity = 4, IsProduct = true, IsDeleted = false },
+                new CartItem { Id = 4, CartId = 2, ProductVersionId = 3, ServiceVersionId = null, Quantity = 10, IsProduct = true, IsDeleted = false }
             );
         }
 

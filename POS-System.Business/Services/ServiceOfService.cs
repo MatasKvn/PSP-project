@@ -83,8 +83,8 @@ namespace POS_System.Business.Services
             await _unitOfWork.ServiceRepository.CreateAsync(newService, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _serviceOnTaxService.RelinkItemToItem(_unitOfWork.ServiceOnTaxRepository, id, newService.Id, true, cancellationToken);
-            await _serviceOnItemDiscountService.RelinkItemToItem(_unitOfWork.ServiceOnItemDiscountRepository, id, newService.Id, true, cancellationToken);
+            await _serviceOnTaxService.RelinkItemToItemAsync(_unitOfWork.ServiceOnTaxRepository, id, newService.Id, true, cancellationToken);
+            await _serviceOnItemDiscountService.RelinkItemToItemAsync(_unitOfWork.ServiceOnItemDiscountRepository, id, newService.Id, true, cancellationToken);
 
             return _mapper.Map<ServiceResponse>(newService);
         }

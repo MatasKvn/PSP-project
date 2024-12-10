@@ -10,7 +10,7 @@ using POS_System.Domain.Entities;
 
 namespace POS_System.Business.Services
 {
-    public class ProductModificationService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductModificationService
+    public class ProductModificationService(IUnitOfWork _unitOfWork, IManyToManyService<ProductModification, CartItem, ProductModificationOnCartItem> _productModificationOnCartItemService, IMapper _mapper) : IProductModificationService
     {
         public async Task<ProductModificationResponse> CreateProductModificationAsync(ProductModificationRequest? productModificationDto, CancellationToken cancellationToken)
         {
@@ -41,6 +41,8 @@ namespace POS_System.Business.Services
             }
 
             productModification.IsDeleted = true;
+            await _productModificationOnCartItemService.MarkActiveLinksDeletedAsync(_unitOfWork.ProductModificationOnCartItemRepository, id, true, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var responseProdModDto = _mapper.Map<ProductModificationResponse>(productModification);
@@ -120,8 +122,29 @@ namespace POS_System.Business.Services
             await _unitOfWork.ProductModificationRepository.CreateAsync(newProdMod, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            await _productModificationOnCartItemService.RelinkItemToItemAsync(_unitOfWork.ProductModificationOnCartItemRepository, id, newProdMod.Id, true, cancellationToken);
+
             var responseProdModDto = _mapper.Map<ProductModificationResponse>(newProdMod);
             return responseProdModDto;
+        }
+
+        public async Task<IEnumerable<ProductModificationResponse>> GetProductModificationsLinkedToCartItemId(int cartItemId, DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            IEnumerable<int> prodModLinkIds;
+            IList<ProductModification> productModifications = new List<ProductModification>();
+
+            prodModLinkIds = await _productModificationOnCartItemService.GetLinkIdsAsync(_unitOfWork.ProductModificationOnCartItemRepository, cartItemId, false, timeStamp, cancellationToken);
+
+            foreach (var productModificationId in prodModLinkIds)
+            {
+                var productModification = await _unitOfWork.ProductModificationRepository.GetByIdAsync(productModificationId, cancellationToken);
+
+                if (productModification is not null)
+                    productModifications.Add(productModification);
+            }
+
+            var productModificationDtos = _mapper.Map<List<ProductModificationResponse>>(productModifications);
+            return productModificationDtos;
         }
     }
 }

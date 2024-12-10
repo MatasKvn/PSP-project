@@ -25,5 +25,6 @@ public interface IUnitOfWork
     IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; }
     IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; }
     IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> CartOnCartDiscountRepository { get; }
+    IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> ProductModificationOnCartItemRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
