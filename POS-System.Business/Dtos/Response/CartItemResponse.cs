@@ -9,5 +9,8 @@
 
         public int? ProductVersionId { get; set; }
         public int? ServiceVersionId { get; set; }
+
+        public int? ServiceReservationId { get; set; }
+        public int? TimeSlotId { get; set; }
     }
 }

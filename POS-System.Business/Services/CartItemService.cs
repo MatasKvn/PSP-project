@@ -15,11 +15,11 @@ public class CartItemService(IUnitOfWork _unitOfWork, IManyToManyService<Product
 {
     public async Task<PagedResponse<CartItemResponse>> GetAllCartItemsAsync(int cartId, CancellationToken cancellationToken, int pageNum, int pageSize)
     {
-        var (cartItems, totalCount) = await _unitOfWork.CartItemRepository.GetAllByExpressionWithPaginationAsync(CartItem => CartItem.CartId == cartId,
+        var (cartItems, totalCount) = await _unitOfWork.CartItemRepository.GetAllByExpressionWithIncludesAndPaginationAsync(CartItem => CartItem.CartId == cartId,
             pageSize,
             pageNum,
-            cancellationToken
-        );
+            cancellationToken,
+            c => c.ServiceReservation);
 
         var mappedCartItems = _mapper.Map<IEnumerable<CartItemResponse>>(cartItems);
         return new PagedResponse<CartItemResponse>(totalCount, pageSize, pageNum, mappedCartItems);
@@ -29,10 +29,15 @@ public class CartItemService(IUnitOfWork _unitOfWork, IManyToManyService<Product
     {
         IdValidator.ValidateId(id);
 
-        var cartItem = await _unitOfWork.CartItemRepository.GetByExpressionAsync(cartItem => cartItem.Id == id && cartItem.CartId == cartId, cancellationToken)
+        var cartItem = await _unitOfWork.CartItemRepository.GetByExpressionWithIncludesAsync(
+            cartItem => cartItem.Id == id && cartItem.CartId == cartId,
+            cancellationToken,
+            c => c.ServiceReservation) 
             ?? throw new NotFoundException($"Item with id {id} is not in cart with id {cartId}.");
 
-        return _mapper.Map<CartItemResponse>(cartItem);
+        var response = _mapper.Map<CartItemResponse>(cartItem);
+
+        return response;
     }
 
     public async Task<CartItemResponse> CreateCartItemAsync(CartItemRequest CartItemRequest, CancellationToken cancellationToken)

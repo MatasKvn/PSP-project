@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
-    if (process.env.REQUIRE_AUTH !== 'YES') {
+    if (process.env.REQUIRE_AUTH === 'NO') {
         return NextResponse.next()
     }
 

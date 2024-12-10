@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using POS_System.Data.Database;
@@ -11,9 +12,11 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210151959_ServiceEntityUpdate")]
+    partial class ServiceEntityUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,50 +706,6 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemDiscounts");
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Desc1",
-                            IsDeleted = true,
-                            IsPercentage = true,
-                            ItemDiscountId = 1,
-                            Value = 12,
-                            Version = new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Desc2",
-                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            IsPercentage = true,
-                            ItemDiscountId = 2,
-                            Value = 15,
-                            Version = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1293)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Desc3",
-                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            IsPercentage = false,
-                            ItemDiscountId = 3,
-                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Value = 500,
-                            Version = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1295)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Desc1 Update",
-                            IsDeleted = true,
-                            IsPercentage = true,
-                            ItemDiscountId = 1,
-                            Value = 18,
-                            Version = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Product", b =>
@@ -1293,28 +1252,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1267)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(4953)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1269)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5014)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1270)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5018)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 9, 16, 8, 27, 858, DateTimeKind.Utc).AddTicks(1270)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5022)
                         });
                 });
 

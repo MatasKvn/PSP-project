@@ -38,6 +38,10 @@ public interface IRepository<T> where T : class
     Task<List<T>> GetAllByExpressionAsync(Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default);
 
+    Task<(IEnumerable<T>, int)> GetAllByExpressionWithIncludesAndPaginationAsync(
+    Expression<Func<T, bool>> predicate, int pageSize, int pageNum,
+    CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes);
+
     Task CreateAsync(T entity, CancellationToken cancellationToken = default);
 
     void Delete(T entity);

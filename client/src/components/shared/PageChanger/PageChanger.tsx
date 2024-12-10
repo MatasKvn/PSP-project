@@ -7,14 +7,16 @@ type Props = {
     pageNumber: number
     onClickPrevious: () => void
     onClickNext: () => void
+    disabledPrevious?: boolean
+    disabledNext?: boolean
 }
 
-const PageChanger = ({ pageNumber, onClickPrevious, onClickNext }: Props) => {
+const PageChanger = ({ pageNumber, onClickPrevious, onClickNext, disabledPrevious, disabledNext }: Props) => {
     return (
         <div className={styles.container}>
-            <Button onClick={onClickPrevious}>Previous</Button>
+            <Button onClick={onClickPrevious} disabled={disabledPrevious}>Previous</Button>
             <span>{`Page: ${pageNumber}`}</span>
-            <Button onClick={onClickNext}>Next</Button>
+            <Button onClick={onClickNext} disabled={disabledNext}>Next</Button>
         </div>
     )
 }
