@@ -137,4 +137,5 @@ export type Service = {
     duration: number
     price: number
     imageUrl: string
+    employeeId: number
 }
