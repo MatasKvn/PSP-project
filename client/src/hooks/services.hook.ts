@@ -3,7 +3,7 @@ import { Service } from '@/types/models'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import ServiceApi from '@/api/service.api'
 
-export const useServices = (pageNumber: number | undefined) => {
+export const useServices = (pageNumber: number | undefined, comparedServices?: (s1: Service, s2: Service) => number) => {
     const [services, setServices] = useState<Service[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [errorMsg, setErrorMsg] = useState<string>('')
@@ -22,11 +22,12 @@ export const useServices = (pageNumber: number | undefined) => {
                 return
             }
             const services = PagedResponseMapper.fromPageResponse(response.result!)
+            if (comparedServices) services.sort(comparedServices)
             setServices(services)
             setIsLoading(false)
         }
         handleFetch()
-    }, [pageNumber])
+    }, [pageNumber, comparedServices])
 
     return { services, setServices, isLoading, errorMsg }
 }

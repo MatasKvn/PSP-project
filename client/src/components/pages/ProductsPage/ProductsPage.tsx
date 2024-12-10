@@ -12,7 +12,6 @@ import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
 import ProductModificationsView from '@/components/specialized/ProductModificationManagementView'
-import ButtonToolbar from '@/components/shared/ButtonToolbar'
 
 type Props = {
     pageNumber: number
