@@ -27,8 +27,8 @@ const ServicesPage = (props: Props) => {
     const [selectedService, selectService] = useState<Service | undefined>(undefined)
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
-    type SideDrawerContentType = 'create' | 'edit'
-    const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('create')
+    type ActionType = 'create' | 'edit'
+    const [actionType, setActionType] = useState<ActionType>('create')
 
     const productCards = () => {
         if (isLoading) {
@@ -59,10 +59,10 @@ const ServicesPage = (props: Props) => {
         ))
     }
 
-    const createServiceForm = () => {
+    const serviceForm = () => {
         return (
             <>
-                <h4>Create Product</h4>
+                <h4>{actionType === 'create' ? 'Create Service' : 'Edit Service'}</h4>
                 <DynamicForm
                     inputs={{
                         serviceName: { label: 'Service Name', placeholder: 'Enter service name:', type: 'text' },
@@ -71,7 +71,7 @@ const ServicesPage = (props: Props) => {
                         serviceDuration: { label: 'Service Duration', placeholder: 'Enter service duration:', type: 'number' },
                         serviceImageUrl: { label: 'Service Image URL', placeholder: 'Enter service image url:', type: 'text' },
                     }}
-                    onSubmit={handleServiceCreate}
+                    onSubmit={actionType === 'create' ? handleServiceCreate : handleServiceUpdate}
                 >
                     <DynamicForm.Button>Submit</DynamicForm.Button>
                 </DynamicForm>
@@ -106,28 +106,6 @@ const ServicesPage = (props: Props) => {
             .sort(compareServices)
         setServices(newServices)
         sideDrawerRef.current?.close()
-    }
-
-    const editServiceForm = () => {
-        return (
-            <>
-                <h4>Edit Service</h4>
-                <DynamicForm
-                    inputs={{
-                        serviceName: { label: 'Service Name', placeholder: 'Enter service name:', type: 'text' },
-                        serviceDescription: { label: 'Service Description', placeholder: 'Enter service description:', type: 'text' },
-                        servicePrice: { label: 'Service Price', placeholder: 'Enter service price:', type: 'number' },
-                        serviceDuration: { label: 'Service Duration', placeholder: 'Enter service duration:', type: 'number' },
-                        serviceImageUrl: { label: 'Service Image URL', placeholder: 'Enter service image url:', type: 'text' },
-                    }}
-                    onSubmit={(formPayload) => {
-                        handleServiceUpdate(formPayload)
-                    }}
-                >
-                    <DynamicForm.Button>Submit</DynamicForm.Button>
-                </DynamicForm>
-            </>
-        )
     }
     const handleServiceUpdate = async (formPayload: DynamicFormPayload) => {
         if (!selectedService) return
@@ -174,33 +152,31 @@ const ServicesPage = (props: Props) => {
         selectService(undefined)
     }
 
-    const sideDrawerContent = () => {
-        if (sideDrawerContentType === 'create') return createServiceForm()
-        if (sideDrawerContentType === 'edit') return editServiceForm()
-    }
-
     return (
         <div className={styles.page}>
             <h1>Products Page</h1>
             <div className={styles.toolbar}>
                 <Button
+                    disabled={isLoading || !!errorMsg}
                     onClick={() => {
-                        setSideDrawerContentType('create')
+                        setActionType('create')
                         sideDrawerRef.current?.open()
                     }}
                 >
                     Create Product
                 </Button>
                 <Button
+                    disabled={!selectedService || isLoading || !!errorMsg}
                     onClick={() => {
                         if (!selectedService) return
-                        setSideDrawerContentType('edit')
+                        setActionType('edit')
                         sideDrawerRef.current?.open()
                     }}
                 >
                     Edit Product
                 </Button>
                 <Button
+                    disabled={!selectedService || isLoading || !!errorMsg}
                     onClick={() => handleServiceDelete(selectedService)}
                 >
                     Delete Product
@@ -211,7 +187,7 @@ const ServicesPage = (props: Props) => {
                 {productCards()}
             </div>
             <SideDrawer ref={sideDrawerRef}>
-                {sideDrawerContent()}
+                {serviceForm()}
             </SideDrawer>
         </div>
     )
