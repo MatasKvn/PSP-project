@@ -406,9 +406,6 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("EmployeeVersionId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -424,7 +421,6 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             DateCreated = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 1,
-                            IsDeleted = false,
                             Status = 0
                         },
                         new
@@ -432,7 +428,6 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             DateCreated = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 2,
-                            IsDeleted = false,
                             Status = 2
                         },
                         new
@@ -440,7 +435,6 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             DateCreated = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 3,
-                            IsDeleted = false,
                             Status = 1
                         },
                         new
@@ -448,7 +442,6 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             DateCreated = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeVersionId = 4,
-                            IsDeleted = false,
                             Status = 0
                         });
                 });
@@ -462,11 +455,7 @@ namespace POS_System.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CartDiscountId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartDiscountId"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("CartDiscountId"), 1L, null, null, null, null, null);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -481,7 +470,7 @@ namespace POS_System.Data.Migrations
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -700,13 +689,9 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("ItemDiscountId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemDiscountId"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ItemDiscountId"), 1L, null, null, null, null, null);
-
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
@@ -718,51 +703,6 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemDiscounts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Desc1",
-                            IsDeleted = true,
-                            IsPercentage = true,
-                            ItemDiscountId = 1,
-                            Value = 12,
-                            Version = new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Desc2",
-                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            IsPercentage = true,
-                            ItemDiscountId = 2,
-                            Value = 15,
-                            Version = new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9824)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Desc3",
-                            EndDate = new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            IsPercentage = false,
-                            ItemDiscountId = 3,
-                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Value = 500,
-                            Version = new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9827)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Desc1 Update",
-                            IsDeleted = true,
-                            IsPercentage = true,
-                            ItemDiscountId = 1,
-                            Value = 18,
-                            Version = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Product", b =>
@@ -1056,6 +996,13 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ServiceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServiceId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ServiceId"), 1L, null, null, null, null, null);
+
                     b.Property<DateTime>("Version")
                         .HasColumnType("timestamp without time zone");
 
@@ -1073,6 +1020,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service1",
                             Price = 2599,
+                            ServiceId = 1,
                             Version = new DateTime(2024, 10, 16, 19, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1084,6 +1032,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service2",
                             Price = 4599,
+                            ServiceId = 2,
                             Version = new DateTime(2024, 10, 18, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1095,6 +1044,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service3",
                             Price = 1699,
+                            ServiceId = 3,
                             Version = new DateTime(2024, 10, 19, 15, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1106,7 +1056,8 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service2 v2",
                             Price = 4099,
-                            Version = new DateTime(2024, 11, 1, 15, 30, 30, 0, DateTimeKind.Unspecified)
+                            ServiceId = 2,
+                            Version = new DateTime(2024, 11, 1, 15, 30, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -1298,28 +1249,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9735)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(4953)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9784)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5014)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9787)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5018)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9789)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5022)
                         });
                 });
 

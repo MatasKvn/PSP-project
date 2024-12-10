@@ -62,7 +62,7 @@ namespace POS_System.Business.Services
         public async Task<PagedResponse<TimeSlotResponse?>> GetTimeSlotsAsync(int pageSize, int pageNumber, bool? onlyAvailable, CancellationToken cancellationToken)
         {
             var (timeSlots, totalCount) = await _unitOfWork.TimeSlotRepository.GetByExpressionWithPaginationAsync(
-                onlyAvailable is null ? null : r => r.IsAvailable != onlyAvailable,
+                onlyAvailable is null ? null : r => r.IsAvailable == onlyAvailable,
                 pageSize,
                 pageNumber,
                 cancellationToken

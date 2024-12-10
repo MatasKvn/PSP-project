@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class ServiceEntityUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,13 +86,11 @@ namespace POS_System.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CartDiscountId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:IdentitySequenceOptions", "'1', '1', '', '', 'False', '1'")
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CartDiscountId = table.Column<int>(type: "integer", nullable: false),
                     Value = table.Column<int>(type: "integer", nullable: false),
                     IsPercentage = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Version = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -136,13 +134,11 @@ namespace POS_System.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemDiscountId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:IdentitySequenceOptions", "'1', '1', '', '', 'False', '1'")
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemDiscountId = table.Column<int>(type: "integer", nullable: false),
                     Value = table.Column<int>(type: "integer", nullable: false),
                     IsPercentage = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Version = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -180,7 +176,9 @@ namespace POS_System.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:IdentitySequenceOptions", "'1', '1', '', '', 'False', '1'")
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
@@ -328,7 +326,6 @@ namespace POS_System.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EmployeeVersionId = table.Column<int>(type: "integer", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -679,17 +676,6 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "ItemDiscounts",
-                columns: new[] { "Id", "Description", "EndDate", "IsDeleted", "IsPercentage", "ItemDiscountId", "StartDate", "Value", "Version" },
-                values: new object[,]
-                {
-                    { 1, "Desc1", null, true, true, 1, null, 12, new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9824) },
-                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 4, 19, 2, 47, 731, DateTimeKind.Utc).AddTicks(9827) },
-                    { 4, "Desc1 Update", null, true, true, 1, null, 18, new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "Description", "ImageURL", "IsDeleted", "Name", "Price", "ProductId", "Stock", "Version" },
                 values: new object[,]
@@ -724,13 +710,13 @@ namespace POS_System.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Carts",
-                columns: new[] { "Id", "DateCreated", "EmployeeVersionId", "IsDeleted", "Status" },
+                columns: new[] { "Id", "DateCreated", "EmployeeVersionId", "Status" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, false, 0 },
-                    { 2, new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, false, 2 },
-                    { 3, new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, false, 1 },
-                    { 4, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, false, 0 }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 0 },
+                    { 2, new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2 },
+                    { 3, new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 1 },
+                    { 4, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -750,10 +736,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9735) },
-                    { 2, 1, true, new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9784) },
-                    { 3, 2, false, new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9787) },
-                    { 4, 3, true, new DateTime(2024, 12, 4, 21, 2, 47, 731, DateTimeKind.Local).AddTicks(9789) }
+                    { 1, 1, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(4953) },
+                    { 2, 1, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5014) },
+                    { 3, 2, false, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5018) },
+                    { 4, 3, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5022) }
                 });
 
             migrationBuilder.InsertData(
