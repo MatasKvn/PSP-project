@@ -1,7 +1,6 @@
 import { Product } from './../types/models'
 import { apiBaseUrl, defaultHeaders } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
-import { Product } from '@/types/models'
 import { fetch } from '@/utils/fetch'
 
 let products: Product[] = [
@@ -9,7 +8,7 @@ let products: Product[] = [
         id: 1,
         name: 'Banana',
         description: 'Banana is a fruit',
-        price: 10,
+        price: 100,
         dateModified: new Date(),
         imageUrl: '',
         stock: 11

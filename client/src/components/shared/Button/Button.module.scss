@@ -10,3 +10,7 @@
         background-color: $light-grey;
     }
 }
+
+.button:disabled {
+    opacity: 0.5;
+}

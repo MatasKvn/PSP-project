@@ -5,6 +5,11 @@
     overflow-x: hidden;
 }
 
+.card_wrapper {
+    margin: 1em;
+    display: inline-block
+}
+
 .toolbar {
     padding: 1em;
     > button {

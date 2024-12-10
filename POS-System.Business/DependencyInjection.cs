@@ -1,9 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.IdentityModel.Tokens;
 using POS_System.Business.AutoMapper;
 using POS_System.Business.Dtos;
+using POS_System.Business.Logger;
 using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Business.Utils;
@@ -85,6 +89,15 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IServiceReservationService, ServiceReservationService>();
             services.AddScoped<IItemDiscountService, ItemDiscountService>();
             services.AddScoped<ICartDiscountService, CartDiscountService>();
+
+            services.Configure<ApplicationLoggerOptions>(
+                configuration.GetSection("FileProvider"));
+
+            services.AddLogging(options =>
+            {
+                options.ClearProviders();
+                options.AddFile();
+            });
 
             return services;
         }

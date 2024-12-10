@@ -8,13 +8,13 @@ import { Product, ProductModification } from '@/types/models'
 import React, { useState } from 'react'
 import ProductModificationCard from '../ProductModificationCard/ProductModificationCard'
 
-import styles from './ProductModificationView.module.scss'
+import styles from './ProductModificationManagementView.module.scss'
 
 type Props = {
     product: Product | undefined
 }
 
-const ProductModificationsView = (props: Props) => {
+const ProductModificationManagementView = (props: Props) => {
     const { product } = props
     const { id: productId, name: productName } = product!
 
@@ -33,6 +33,7 @@ const ProductModificationsView = (props: Props) => {
             return
         }
         const response = await ProductModificationApi.createProductModification(productId, {
+            productId,
             name: 'Name',
             description: 'Description',
             price: 0
@@ -87,11 +88,11 @@ const ProductModificationsView = (props: Props) => {
         <div>
             <h3>{`${productName} Modifications`}</h3>
             <div className={styles.card_container}>
-                {
-                    isLoading || isError ? <div>Loading...</div> :
-                    productModifications.map((productModification) => (
+            {
+                isLoading || isError ? <div>Loading...</div> :
+                productModifications.map((productModification) => (
+                    <div key={productModification.id} className={styles.card_wrapper}>
                         <ProductModificationCard
-                            key={productModification.id}
                             isSelected={selectedProductModification?.id === productModification.id}
                             productModification={productModification}
                             onClick={() => {
@@ -102,8 +103,9 @@ const ProductModificationsView = (props: Props) => {
                                 setSelectedProductModification(productModification)
                             }}
                         />
-                    ))
-                }
+                    </div>
+                ))
+            }
             </div>
             <div className={styles.toolbar}>
                 <Button onClick={handleCreate}>Create New</Button>
@@ -126,4 +128,4 @@ const ProductModificationsView = (props: Props) => {
     )
 }
 
-export default ProductModificationsView
+export default ProductModificationManagementView

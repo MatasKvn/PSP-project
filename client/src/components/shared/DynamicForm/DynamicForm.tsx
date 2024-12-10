@@ -9,7 +9,7 @@ import styles from './DynamivForm.module.scss'
 export type DynamicFormInputs = {
     [key: string]: {
         label: string
-        placeholder: React.InputHTMLAttributes<HTMLInputElement>['placeholder']
+        placeholder?: React.InputHTMLAttributes<HTMLInputElement>['placeholder']
         type: React.InputHTMLAttributes<HTMLInputElement>['type']
     }
 }

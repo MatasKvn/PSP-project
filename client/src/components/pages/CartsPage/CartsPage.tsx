@@ -8,7 +8,7 @@ import Table from '@/components/shared/Table'
 import { useCarts } from '@/hooks/carts.hook'
 import { Cart, CartStatusEnum, getCartStatusEnumString } from '@/types/models'
 import { useRouter } from 'next/navigation'
-import { routes } from '@/constants/route'
+import { GetPageUrl } from '@/constants/route'
 import { getEmployeeId } from '@/utils/employeeId'
 
 type Props = {
@@ -16,13 +16,11 @@ type Props = {
 }
 
 const CartsPage = ({ pageNumber }: Props) => {
-    const { carts, setCarts, isLoading } = useCarts(pageNumber)
+    const { carts, setCarts, isLoading, isError } = useCarts(pageNumber)
     const router = useRouter()
 
-    const employeeId = getEmployeeId()
-
-    const handleCartCreate = async (employeeId: number) => {
-        const response = await CartApi.createCart({employeeVersionId: employeeId})
+    const handleCartCreate = async () => {
+        const response = await CartApi.createCart({employeeVersionId: getEmployeeId()})
         if (response.error) {
             console.log('An error occured when creating cart: ', response.error)
             return
@@ -55,7 +53,7 @@ const CartsPage = ({ pageNumber }: Props) => {
         ...cart,
         status: getCartStatusEnumString(cart.status),
         Delete: <Button onClick={() => handleCartDelete(cart)}>Delete</Button>,
-        Open: <Button onClick={() => router.push(routes.cart(cart.id))}>Open</Button>
+        Open: <Button onClick={() => router.push(GetPageUrl.cart(cart.id, 0))}>Open</Button>
     })) || []
     const columns = Object.keys(dummyCartRow).map((key) => ({ name: key, key }))
 
@@ -63,20 +61,16 @@ const CartsPage = ({ pageNumber }: Props) => {
         <>
             <h1>Carts Page</h1>
             <div style={{ margin: '2em auto' }}>
-                <Button onClick={() => handleCartCreate(employeeId)}>
+                <Button onClick={() => handleCartCreate()}>
                     <h5>Create New Cart</h5>
                 </Button>
             </div>
-            {isLoading ? (
-                <div>...Loading</div>
-            ) :
-                (
-                    <Table
-                        columns={columns}
-                        rows={rows}
-                    />
-                )
-            }
+                <Table
+                    columns={columns}
+                    rows={rows}
+                    isLoading={isLoading}
+                    errorMsg={isError ? 'An error occurred' : ''}
+                />
         </>
     )
 }

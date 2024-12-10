@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import styles from './LoginPage.module.scss'
 import AuthApi from '@/api/auth.api'
 import { useRouter } from 'next/navigation'
-import { routes } from '@/constants/route'
+import { GetPageUrl } from '@/constants/route'
 import { useCookies } from 'next-client-cookies'
 import { setEmployeeId } from '@/utils/employeeId'
 
@@ -30,7 +30,7 @@ const LoginPage = () => {
         const { jwtToken, id } = response.result!
         cookies.set('jwtToken', jwtToken, { secure: true, sameSite: 'strict' })
         setEmployeeId(id)
-        router.push(routes.carts)
+        router.push(GetPageUrl.carts(0))
     }
 
     return (
