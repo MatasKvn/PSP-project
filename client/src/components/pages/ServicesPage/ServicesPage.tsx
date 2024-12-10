@@ -4,15 +4,18 @@ import Button from '@/components/shared/Button'
 import ItemCard from '@/components/shared/ItemCard'
 import { Service } from '@/types/models'
 import React, { useRef, useState } from 'react'
-
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
 
-import styles from './ServicesPage.module.scss'
 import { useServices } from '@/hooks/services.hook'
 import ServiceApi from '@/api/service.api'
 import { getEmployeeId } from '@/utils/employeeId'
+import PageChanger from '@/components/shared/PageChanger'
+import { GetPageUrl } from '@/constants/route'
+import { useRouter } from 'next/navigation'
+
+import styles from './ServicesPage.module.scss'
 
 type Props = {
     pageNumber: number
@@ -22,6 +25,7 @@ const compareServices = (product1: Service, product2: Service) => product1.name.
 
 const ServicesPage = (props: Props) => {
     const { pageNumber } = props
+    const router = useRouter()
 
     const { services, setServices, isLoading, errorMsg } = useServices(pageNumber, compareServices)
     const [selectedService, selectService] = useState<Service | undefined>(undefined)
@@ -186,6 +190,12 @@ const ServicesPage = (props: Props) => {
                 {services.length <= 0 && <div>No products</div>}
                 {productCards()}
             </div>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.services(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.services(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
             <SideDrawer ref={sideDrawerRef}>
                 {serviceForm()}
             </SideDrawer>

@@ -1,5 +1,6 @@
 
 .toolbar {
+    text-wrap: nowrap;
     padding: 1em;
     > button {
         margin-right: 1em;
@@ -8,7 +9,7 @@
 
 .card_container {
     display: block;
-    height: 80vh;
+    height: 75vh;
     padding: 0.5em;
     overflow-y: scroll;
 
