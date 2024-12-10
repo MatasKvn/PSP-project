@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class ServiceEntityUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -176,7 +176,9 @@ namespace POS_System.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:IdentitySequenceOptions", "'1', '1', '', '', 'False', '1'")
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
@@ -734,10 +736,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4052) },
-                    { 2, 1, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4100) },
-                    { 3, 2, false, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4102) },
-                    { 4, 3, true, new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4104) }
+                    { 1, 1, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(4953) },
+                    { 2, 1, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5014) },
+                    { 3, 2, false, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5018) },
+                    { 4, 3, true, new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5022) }
                 });
 
             migrationBuilder.InsertData(

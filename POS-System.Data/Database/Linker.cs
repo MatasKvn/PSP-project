@@ -45,6 +45,11 @@ namespace POS_System.Data.Database
                 .HasMany<Cart>()
                 .WithOne()
                 .HasForeignKey(e => e.EmployeeVersionId);
+
+            modelBuilder.Entity<Service>()
+               .Property(t => t.ServiceId)
+               .UseIdentityColumn()
+               .HasIdentityOptions(startValue: 1, incrementBy: 1);
         }
     }
 }

@@ -996,6 +996,13 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ServiceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServiceId"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("ServiceId"), 1L, null, null, null, null, null);
+
                     b.Property<DateTime>("Version")
                         .HasColumnType("timestamp without time zone");
 
@@ -1013,6 +1020,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service1",
                             Price = 2599,
+                            ServiceId = 1,
                             Version = new DateTime(2024, 10, 16, 19, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1024,6 +1032,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service2",
                             Price = 4599,
+                            ServiceId = 2,
                             Version = new DateTime(2024, 10, 18, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1035,6 +1044,7 @@ namespace POS_System.Data.Migrations
                             IsDeleted = true,
                             Name = "Service3",
                             Price = 1699,
+                            ServiceId = 3,
                             Version = new DateTime(2024, 10, 19, 15, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -1046,7 +1056,8 @@ namespace POS_System.Data.Migrations
                             IsDeleted = false,
                             Name = "Service2 v2",
                             Price = 4099,
-                            Version = new DateTime(2024, 11, 1, 15, 30, 30, 0, DateTimeKind.Unspecified)
+                            ServiceId = 2,
+                            Version = new DateTime(2024, 11, 1, 15, 30, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -1238,28 +1249,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4052)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(4953)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4100)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5014)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4102)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5018)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 3, 21, 49, 55, 799, DateTimeKind.Local).AddTicks(4104)
+                            StartTime = new DateTime(2024, 12, 10, 17, 19, 58, 424, DateTimeKind.Local).AddTicks(5022)
                         });
                 });
 
