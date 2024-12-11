@@ -105,6 +105,17 @@ export type Employee = {
     accessibility: AccessibilityEnum
 }
 
+export type BusinessDetails = {
+    businessName: string
+    businessEmail: string
+    businessPhone: string
+    country: string
+    city: string
+    street: string
+    houseNumber: number
+    flatNumber?: number
+}
+
 export enum AccessibilityEnum {
     NONE = 'NONE',
     SERVICE_PROVIDER = 'SERVICE_PROVIDER',
