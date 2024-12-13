@@ -110,6 +110,28 @@ public class Repository<T> : IRepository<T> where T : class
         return (results, totalCount);
     }
 
+    public async Task<(IEnumerable<T>, int)> GetAllByExpressionWithIncludesAndPaginationAsync(
+    Expression<Func<T, bool>> predicate, int pageSize, int pageNum,
+    CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _dbContext.Set<T>();
+
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+
+        var totalCount = await query.CountAsync(predicate, cancellationToken);
+        var items = await query
+            .Where(predicate)
+            .OrderBy(x => EF.Property<object>(x, "Id"))
+            .Skip(pageNum * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
+
     public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);

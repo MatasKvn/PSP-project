@@ -1,7 +1,7 @@
 import { FetchResponse, PagedResponse } from '@/types/fetch'
-import { Product, ProductModification, ProductModification, ProductModification, ProductModification } from './../types/models'
+import { Product, ProductModification } from './../types/models'
 
-const productModifications: (ProductModification & { productId: number })[] = [
+const productModifications: ProductModification[] = [
     {
         id: 1,
         productId: 1,
@@ -37,8 +37,30 @@ const productModifications: (ProductModification & { productId: number })[] = [
 ]
 
 export default class ProductModificationApi {
+    static async getAll(pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
+        return Promise.resolve({
+            result: {
+                pageNum: pageNumber,
+                pageSize: 35,
+                totalCount: productModifications.length,
+                results: productModifications
+            }
+        })
+    }
     static async getByProductId(productId: number, pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
         const result: ProductModification[] = productModifications.filter(pm => pm.productId === productId)
+        return Promise.resolve({
+            result: {
+                pageNum: pageNumber,
+                pageSize: 35,
+                totalCount: result.length,
+                results: result
+            }
+        })
+    }
+
+    static async getByCartItemId(cartItemId: number, pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
+        const result = productModifications.slice(1, 10)
         return Promise.resolve({
             result: {
                 pageNum: pageNumber,

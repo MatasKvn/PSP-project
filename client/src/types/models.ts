@@ -1,8 +1,10 @@
+
 export type Cart = {
     id: number
     dateCreated: Date
     status: CartStatusEnum
     employeeVersionId: number
+    discount?: number
 }
 
 export enum CartStatusEnum {
@@ -22,15 +24,6 @@ export const getCartStatusEnumString = (status: CartStatusEnum): string => {
     }
 }
 
-export type CartDiscount = {
-    id: number
-    value: number
-    isPercentage: boolean
-    description: string
-    startDate: Date
-    endDate: Date
-}
-
 export type ItemDiscount = {
     id: number
     value: number
@@ -40,11 +33,38 @@ export type ItemDiscount = {
     endDate: Date
 }
 
-export type CartItem = {
+export type RequiredCartItem = RequiredProductCartItem | RequiredServiceCartItem
+export type RequiredServiceCartItem = Required<ServiceCartItem>
+export type RequiredProductCartItem = Required<ProductCartItem>
+
+export type CartItem = ProductCartItem | ServiceCartItem
+
+export type ProductCartItem = {
+    type: 'product'
     id: number
+    cartId: number
     quantity: number
-    notes: string
-} & { product: Product, productModifications: ProductModification[] } | { serviceReservation?: ServiceReservation }
+    productId: number
+    product?: Product,
+    productModifications?: ProductModification[]
+    discounts?: ItemDiscount[]
+    taxes?: Tax[]
+}
+
+export type ServiceCartItem = {
+    type: 'service'
+    id: number
+    cartId: number
+    quantity: number
+    serviceId: number
+    service?: Service
+    serviceReservationId: number
+    serviceReservation?: ServiceReservation
+    timeSlotId: number
+    timeSlot?: TimeSlot
+    discounts?: ItemDiscount[]
+    taxes: Tax[]
+}
 
 export type Product = {
     id: number
@@ -58,13 +78,17 @@ export type Product = {
 
 export type ServiceReservation = {
     id: number
-    timeSlot: TimeSlot
-    customerName: string
+    cartItemId: number
+    timeSlotId: number
+    timeSlot?: TimeSlot
+    bookingTime: Date
     customerPhone: string
+    customerName: string
 }
 
 export type TimeSlot = {
     id: number
+    employeeId: number
     startTime: Date
     isAvailable: boolean
 }
@@ -99,6 +123,7 @@ export type Tax = {
 
 export type ProductModification = {
     id: number
+    productId: number
     name: string
     description: string
     price: number
@@ -112,4 +137,5 @@ export type Service = {
     duration: number
     price: number
     imageUrl: string
+    employeeId: number
 }

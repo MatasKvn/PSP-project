@@ -39,7 +39,7 @@ namespace POS_System.Business.Services.Services
                 Status = CartStatusEnum.PENDING,
                 IsDeleted = false,
                 CartDiscountId = null,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.UtcNow
             };
 
             await _unitOfWork.CartRepository.CreateAsync(cart, cancellationToken);

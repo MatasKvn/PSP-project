@@ -25,8 +25,8 @@ namespace POS_System.Business.Services
         {
             var user = mapper.Map<ApplicationUser>(registerUser);
             
-            user.StartDate = DateOnly.FromDateTime(DateTime.Now);
-            user.Version = DateTime.Now;
+            user.StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            user.Version = DateTime.UtcNow;
 
             var response = await userManager.CreateAsync(user, registerUser.Password);
 

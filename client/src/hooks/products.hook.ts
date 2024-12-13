@@ -3,13 +3,18 @@ import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import { Product } from '@/types/models'
 import { useEffect, useState } from 'react'
 
-export const useProducts = (pageNumber: number, compareFn?: (a: Product, b: Product) => number) => {
+export const useProducts = (pageNumber: number | undefined, compareFn?: (a: Product, b: Product) => number) => {
     const [products, setProducts] = useState<Product[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isError, setIsError] = useState<boolean>(false)
 
     useEffect(() => {
         const handleFetch = async () => {
+            if (pageNumber === undefined) {
+                setIsLoading(false)
+                return
+            }
+            console.log('products fetched')
             const response = await ProductApi.getAllProducts(pageNumber)
             if (response.result) {
                 const products = PagedResponseMapper.fromPageResponse(response.result!)

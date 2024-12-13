@@ -56,10 +56,10 @@ namespace POS_System.Data.Database
         public static void SeedTimeSlots(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TimeSlot>().HasData(
-                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
-                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.Now, IsAvailable = true },
-                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.Now, IsAvailable = false },
-                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.Now, IsAvailable = true }
+                new TimeSlot { Id = 1, EmployeeVersionId = 1, StartTime = DateTime.UtcNow, IsAvailable = true },
+                new TimeSlot { Id = 2, EmployeeVersionId = 1, StartTime = DateTime.UtcNow, IsAvailable = true },
+                new TimeSlot { Id = 3, EmployeeVersionId = 2, StartTime = DateTime.UtcNow, IsAvailable = false },
+                new TimeSlot { Id = 4, EmployeeVersionId = 3, StartTime = DateTime.UtcNow, IsAvailable = true }
             );
         }
 
@@ -77,10 +77,10 @@ namespace POS_System.Data.Database
         public static void SeedService(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Service>().HasData(
-                new Service { Id = 1, Name = "Service1", Description = "S1 desc", Price = 2599, Duration = 45, ImageURL = "", Version = new DateTime(2024, 10, 16, 19, 0, 0), IsDeleted = false },
-                new Service { Id = 2, Name = "Service2", Description = "S2 desc", Price = 4599, Duration = 25, ImageURL = "", Version = new DateTime(2024, 10, 18, 12, 0, 0), IsDeleted = true },
-                new Service { Id = 3, Name = "Service3", Description = "S3 desc", Price = 1699, Duration = 10, ImageURL = "", Version = new DateTime(2024, 10, 19, 15, 0, 0), IsDeleted = true },
-                new Service { Id = 4, Name = "Service2 v2", Description = "S2 v2 desc", Price = 4099, Duration = 40, ImageURL = "", Version = new DateTime(2024, 11, 1, 15, 30, 30), IsDeleted = false }
+                new Service { Id = 1, ServiceId = 1, Name = "Service1", Description = "S1 desc", Price = 2599, Duration = 45, ImageURL = "", Version = new DateTime(2024, 10, 16, 19, 0, 0), IsDeleted = false },
+                new Service { Id = 2, ServiceId = 2, Name = "Service2", Description = "S2 desc", Price = 4599, Duration = 25, ImageURL = "", Version = new DateTime(2024, 10, 18, 12, 0, 0), IsDeleted = true },
+                new Service { Id = 3, ServiceId = 3, Name = "Service3", Description = "S3 desc", Price = 1699, Duration = 10, ImageURL = "", Version = new DateTime(2024, 10, 19, 15, 0, 0), IsDeleted = true },
+                new Service { Id = 4, ServiceId = 2, Name = "Service2 v2", Description = "S2 v2 desc", Price = 4099, Duration = 40, ImageURL = "", Version = new DateTime(2024, 11, 1, 15, 30, 0), IsDeleted = false }
             );
         }
 
@@ -88,10 +88,10 @@ namespace POS_System.Data.Database
         {
             /*
             modelBuilder.Entity<ProductOnTax>().HasData(
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 1, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 1, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 4, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ProductOnTax { ProductVersionId = 3, TaxVersionId = 3, StartDate = DateTime.UtcNow, EndDate = null }
             );
             */
         }
@@ -100,10 +100,10 @@ namespace POS_System.Data.Database
         {
             /*
             modelBuilder.Entity<ServiceOnTax>().HasData(
-                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.Now, EndDate = null },
-                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.Now, EndDate = null }
+                new ServiceOnTax { ServiceVersionId = 1, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 1, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 4, TaxVersionId = 4, StartDate = DateTime.UtcNow, EndDate = null },
+                new ServiceOnTax { ServiceVersionId = 2, TaxVersionId = 3, StartDate = DateTime.UtcNow, EndDate = null }
             );
             */
         }
@@ -111,10 +111,10 @@ namespace POS_System.Data.Database
         public static void SeedCartItem(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CartItem>().HasData(
-                new CartItem { Id = 1, CartId = 1, ProductVersionId = 1, ServiceVersionId = null, Quantity = 2, IsProduct = true },
-                new CartItem { Id = 2, CartId = 1, ProductVersionId = null, ServiceVersionId = 1, Quantity = 1, IsProduct = false },
-                new CartItem { Id = 3, CartId = 2, ProductVersionId = 2, ServiceVersionId = null, Quantity = 4, IsProduct = true },
-                new CartItem { Id = 4, CartId = 2, ProductVersionId = 3, ServiceVersionId = null, Quantity = 10, IsProduct = true }
+                new CartItem { Id = 1, CartId = 1, ProductVersionId = 1, ServiceVersionId = null, Quantity = 2, IsProduct = true, IsDeleted = false },
+                new CartItem { Id = 2, CartId = 1, ProductVersionId = null, ServiceVersionId = 1, Quantity = 1, IsProduct = false, IsDeleted = false },
+                new CartItem { Id = 3, CartId = 2, ProductVersionId = 2, ServiceVersionId = null, Quantity = 4, IsProduct = true, IsDeleted = false },
+                new CartItem { Id = 4, CartId = 2, ProductVersionId = 3, ServiceVersionId = null, Quantity = 10, IsProduct = true, IsDeleted = false }
             );
         }
 
@@ -131,41 +131,11 @@ namespace POS_System.Data.Database
         public static void SeedGiftCards(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GiftCard>().HasData(
-                new GiftCard
-                {
-                    Id = 1,
-                    Date = new DateOnly(2024, 1, 1),
-                    Value = 100,
-                    Code = "CARD100"
-                },
-                new GiftCard
-                {
-                    Id = 2,
-                    Date = new DateOnly(2024, 2, 15),
-                    Value = 150,
-                    Code = "CARD150"
-                },
-                new GiftCard
-                {
-                    Id = 3,
-                    Date = new DateOnly(2024, 3, 20),
-                    Value = 200,
-                    Code = "CARD200"
-                },
-                new GiftCard
-                {
-                    Id = 4,
-                    Date = new DateOnly(2024, 4, 10),
-                    Value = 50,
-                    Code = "CARD050"
-                },
-                new GiftCard
-                {
-                    Id = 5,
-                    Date = new DateOnly(2024, 5, 5),
-                    Value = 250,
-                    Code = "CARD250"
-                }
+                new GiftCard { Id = 1, Date = new DateOnly(2024, 1, 1), Value = 100, Code = "CARD100" },
+                new GiftCard { Id = 2, Date = new DateOnly(2024, 2, 15), Value = 150, Code = "CARD150" },
+                new GiftCard { Id = 3, Date = new DateOnly(2024, 3, 20), Value = 200, Code = "CARD200" },
+                new GiftCard { Id = 4, Date = new DateOnly(2024, 4, 10), Value = 50, Code = "CARD050" },
+                new GiftCard { Id = 5, Date = new DateOnly(2024, 5, 5), Value = 250, Code = "CARD250" }
             );
         }
 

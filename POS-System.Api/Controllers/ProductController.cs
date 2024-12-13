@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Request;
+using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -55,6 +56,24 @@ namespace POS_System.Api.Controllers
         {
             var product = await _productService.DeleteProductByIdAsync(id, cancellationToken);
             return Ok(product);
+        }
+
+        //Leave timeStamp null if you want to get only the active items
+        [HttpGet("tax/{id}")]
+        [Authorize(Policy = "ItemRead")]
+        public async Task<IActionResult> GetProductsLinkedToTaxId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            var products = await _productService.GetProductsLinkedToTaxId(id, timeStamp, cancellationToken);
+            return Ok(products);
+        }
+
+        //Leave timeStamp null if you want to get only the active items
+        [HttpGet("item-discount/{id}")]
+        [Authorize(Policy = "ItemRead")]
+        public async Task<IActionResult> GetProductsLinkedToItemDiscountId(int id, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
+        {
+            var products = await _productService.GetProductsLinkedToItemDiscountId(id, timeStamp, cancellationToken);
+            return Ok(products);
         }
     }
 }

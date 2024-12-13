@@ -15,3 +15,6 @@ node_modules
 # Migrations
 /.vs
 *.Development.json
+
+# Logger
+Logs/

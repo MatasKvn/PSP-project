@@ -1,3 +1,5 @@
+using POS_System.Api.ExceptionHandler;
+
 namespace POS_System.Api.Configurations;
 
 public static class DependencyInjection
@@ -8,5 +10,11 @@ public static class DependencyInjection
         services.AddControllers();
 
         return services;
+    }
+
+    public static WebApplicationBuilder AddGlobalExceptionHandler(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        return builder;
     }
 }

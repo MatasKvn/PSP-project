@@ -1,6 +1,6 @@
 ﻿namespace POS_System.Business.Dtos.Request
 {
-    public record class CartItemRequest
+    public record CartItemRequest
     {
         public required int CartId { get; set; }
         public required int Quantity { get; set; }

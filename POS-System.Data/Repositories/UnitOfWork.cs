@@ -23,7 +23,8 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         IGenericManyToManyRepository<Product, Tax, ProductOnTax> productOnTaxRepository,
                         IGenericManyToManyRepository<Service, Tax, ServiceOnTax> serviceOnTaxRepository,
                         IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> productOnItemDiscountRepository,
-                        IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> serviceOnItemDiscountRepository) : IUnitOfWork
+                        IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> serviceOnItemDiscountRepository,
+                        IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> productModificationOnCartItemRepository) : IUnitOfWork
 {
     public ICartDiscountRepository CartDiscountRepository { get; } = cartDiscountRepository;
     public ICartRepository CartRepository { get; } = cartRepository;
@@ -44,6 +45,7 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
     public IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; } = productOnItemDiscountRepository;
     public IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; } = serviceOnItemDiscountRepository;
+    public IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> ProductModificationOnCartItemRepository { get; } = productModificationOnCartItemRepository;
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await dbContext.SaveChangesAsync(cancellationToken);

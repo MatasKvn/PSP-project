@@ -22,7 +22,7 @@ export const useCarts = (pageNumber: number) => {
         }
         handleFetch()
     }, [pageNumber])
-    
+
     return { carts, setCarts, isLoading, isError }
 }
 

@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Diagnostics;
 using POS_System.Api.Configurations;
+using POS_System.Api.ExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder
     .ConfigureSwagger()
-    .ConfigureValidators();
+    .ConfigureValidators()
+    .AddGlobalExceptionHandler();
 
 builder.Services.AddAuthentication();
 builder.Services.AddApiServices(builder.Configuration); // configuration may be removed if not used
@@ -34,6 +37,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+    ExceptionHandler = async context =>
+    {
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        if (exception != null)
+        {
+            var handler = context.RequestServices.GetRequiredService<GlobalExceptionHandler>();
+            await handler.TryHandleAsync(context, exception, CancellationToken.None);
+        }
+    }
+});
 
 app.UseHttpsRedirection();
 app.UseRouting();

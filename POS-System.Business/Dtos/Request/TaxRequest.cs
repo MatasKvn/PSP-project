@@ -1,6 +1,6 @@
 ﻿namespace POS_System.Business.Dtos.Request
 {
-    public class TaxRequest
+    public record TaxRequest
     {
         public required string Name { get; set; }
         public required int Rate { get; set; }
