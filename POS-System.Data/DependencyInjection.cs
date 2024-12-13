@@ -49,7 +49,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            services.AddScoped<ICardDetailsRepository, CardDetailsRepository>();
             services.AddScoped<ICartDiscountRepository, CartDiscountRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<ICartItemRepository, CartItemRepository>();
@@ -67,7 +66,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IBusinessDetailRepository, BusinessDetailRepository>();
             services.AddScoped<IGenericManyToManyRepository<Product, Tax, ProductOnTax>, GenericManyToManyRepository<Product, Tax, ProductOnTax>>();
             services.AddScoped<IGenericManyToManyRepository<Service, Tax, ServiceOnTax>, GenericManyToManyRepository<Service, Tax, ServiceOnTax>>();
-            services.AddScoped<IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>, GenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount>>();
             services.AddScoped<IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>,
                 GenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem>>();
             services.AddScoped<IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount>,

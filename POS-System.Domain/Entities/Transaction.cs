@@ -10,20 +10,14 @@ namespace POS_System.Domain.Entities
         //Primary key
         [Key]
         public DateTime Id { get; set; }
-
-        //Foreign keys
-        [ForeignKey("CardDetails")]
-        public int CardId { get; set; }
-        [ForeignKey("GiftCardDetails")]
-        public int CardDetailsId { get; set; }
-
+        
         //Navigation properties
         public virtual Cart Cart { get; set; }
 
         //Fields
-        public required int Amount { get; set; }
-        public required int Tip { get; set; }
-        [MaxLength(18)]
+        public int CartId { get; set; }
+        public required ulong Amount { get; set; }
+        public int? Tip { get; set; }
         public required string TransactionRef { get; set; }
         public required TransactionStatusEnum Status { get; set; }
     }

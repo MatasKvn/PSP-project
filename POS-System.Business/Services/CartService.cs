@@ -5,8 +5,11 @@ using POS_System.Domain.Entities;
 using POS_System.Common.Enums;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Dtos.Request;
+using POS_System.Common.Exceptions;
+using POS_System.Common.Constants;
+using POS_System.Business.Services.Interfaces;
 
-namespace POS_System.Business.Services.Interfaces
+namespace POS_System.Business.Services.Services
 {
     public class CartService(IUnitOfWork _unitOfWork, IMapper _mapper) : ICartService
     {
@@ -35,6 +38,7 @@ namespace POS_System.Business.Services.Interfaces
                 EmployeeVersionId = cartDto.EmployeeVersionId,
                 Status = CartStatusEnum.PENDING,
                 IsDeleted = false,
+                CartDiscountId = null,
                 DateCreated = DateTime.Now
             };
 
@@ -57,6 +61,16 @@ namespace POS_System.Business.Services.Interfaces
                 throw new Exception("Cannot delete a non-pending cart.");
             }
             _unitOfWork.CartRepository.Delete(cart);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateCartStatusAsync(int id, CartStatusEnum status, CancellationToken cancellationToken = default)
+        {
+            var cart = await _unitOfWork.CartRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+            
+            cart.Status = status;
+            
             await _unitOfWork.SaveChangesAsync();
         }
     }

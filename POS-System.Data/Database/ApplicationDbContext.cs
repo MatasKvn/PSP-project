@@ -9,9 +9,7 @@ namespace POS_System.Data.Database
         : IdentityDbContext<ApplicationUser, ApplicationRole, int>(options)
     {
         //DbSets
-        public DbSet<CardDetails> CardDetails { get; set; }
-        public DbSet<CartOnCartDiscount> Carts { get; set; }
-        public DbSet<Cart> CartOnCartDisocunts { get; set; }
+        public DbSet<Cart> Carts { get; set; }
         public DbSet<CartDiscount> CardDiscounts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<EmployeeOnService> EmployeeOnServices { get; set; }

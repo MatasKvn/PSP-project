@@ -12,9 +12,9 @@ namespace POS_System.Data.Database
             SeedEmployees(modelBuilder);
             SeedTax(modelBuilder);
             SeedProduct(modelBuilder);
-            SeedProductOnTax(modelBuilder);
+            // SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
-            SeedServiceOnTax(modelBuilder);
+            // SeedServiceOnTax(modelBuilder);
             SeedGiftCards(modelBuilder);
             SeedCarts(modelBuilder);
             SeedCartItem(modelBuilder);

@@ -6,6 +6,10 @@ public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken);
 
+    Task<T?> GetByIdStringAsync(string id, CancellationToken cancellationToken = default);
+
+    Task<T?> GetByIdDateTimeAsync(DateTime id, CancellationToken cancellationToken = default);
+
     Task<T?> GetByExpressionAsync(Expression<Func<T, bool>> predicate,
      CancellationToken cancellationToken = default);
 
@@ -39,6 +43,8 @@ public interface IRepository<T> where T : class
         CancellationToken cancellationToken = default);
 
     Task CreateAsync(T entity, CancellationToken cancellationToken = default);
+
+    Task CreateRangeAsync(List<T> range);
 
     void Delete(T entity);
 }

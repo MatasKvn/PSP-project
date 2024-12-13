@@ -1,6 +1,7 @@
 using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
+using POS_System.Common.Enums;
 using POS_System.Domain.Entities;
 
 namespace POS_System.Business.Services.Interfaces
@@ -14,5 +15,7 @@ namespace POS_System.Business.Services.Interfaces
         Task<CartResponse> CreateCartAsync(CartRequest cartDto, CancellationToken cancellationToken);
 
         Task DeleteCartAsync(int id, CancellationToken cancellationToken);
+
+        Task UpdateCartStatusAsync(int id, CartStatusEnum status, CancellationToken cancellationToken = default);
     }
 }

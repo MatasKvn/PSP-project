@@ -14,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.WebHost.UseUrls("http://localhost:3000");
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

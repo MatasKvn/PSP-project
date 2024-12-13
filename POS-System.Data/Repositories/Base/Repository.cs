@@ -20,6 +20,16 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.FindAsync([id], cancellationToken);
     }
 
+    public async Task<T?> GetByIdStringAsync(string id, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FindAsync([id], cancellationToken);
+    }
+
+    public async Task<T?> GetByIdDateTimeAsync(DateTime id, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FindAsync([id], cancellationToken);
+    }
+
     public async Task<T?> GetByExpressionAsync(Expression<Func<T, bool>> predicate,
      CancellationToken cancellationToken = default)
     {
@@ -103,6 +113,11 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
+    }
+
+    public async Task CreateRangeAsync(List<T> range)
+    {
+        await _dbSet.AddRangeAsync(range);
     }
 
     public void Delete(T entity)
