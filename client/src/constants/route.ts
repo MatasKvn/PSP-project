@@ -10,5 +10,6 @@ export const GetPageUrl = {
     products: (pageNumber: number) => `/dashboard/products/${pageNumber}`,
     services: (pageNumber: number) => `/dashboard/services/${pageNumber}`,
     taxes: (pageNumber: number) => `/dashboard/taxes/${pageNumber}`,
+    discounts: (pageNumber: number) => `/dashboard/discounts/${pageNumber}`,
     businessDetails: `/dashboard/business-details`
 } as const
