@@ -12,8 +12,7 @@ export type DiscountFormPayload = {
     startDate: string,
     endDate: string,
     productIds: number[],
-    serviceIds: number[],
-    productModificationIds: number[]
+    serviceIds: number[]
 }
 
 type Props = {
@@ -27,7 +26,6 @@ const DiscountForm = ({
 }: Props) => {
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
     const [selectedServices, setSelectedServices] = useState<Service[]>([])
-    const [selectedPms, setSeletedPms] = useState<ProductModification[]>([])
 
     const handleTaxUpdate = (formPayload: FormPayload) => {
         const { description, value, isPercentage, startDate, endDate } = formPayload
@@ -40,7 +38,6 @@ const DiscountForm = ({
             endDate,
             productIds: selectedProducts.map((product) => product.id),
             serviceIds: selectedServices.map((service) => service.id),
-            productModificationIds: selectedPms.map((pm) => pm.id),
         })
         setSelectedProducts([])
         setSelectedServices([])
@@ -69,15 +66,6 @@ const DiscountForm = ({
                         return
                     }
                     setSelectedServices([...selectedServices, service])
-                }}
-                selectedPms={selectedPms}
-                onProductModificationClick={(pm) => {
-                    if (selectedPms.some((selectedPm) => selectedPm.id === pm.id)) {
-                        const newSelectedPms = selectedPms.filter((selectedPm) => selectedPm.id !== pm.id)
-                        setSeletedPms(newSelectedPms)
-                        return
-                    }
-                    setSeletedPms([...selectedPms, pm])
                 }}
             />
             <DynamicForm
