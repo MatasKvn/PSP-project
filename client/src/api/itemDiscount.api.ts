@@ -1,4 +1,4 @@
-import { FetchResponse } from '@/types/fetch'
+import { FetchResponse, PagedResponse } from '@/types/fetch'
 import { ItemDiscount } from '@/types/models'
 
 const discounts: ItemDiscount[] = [
@@ -30,4 +30,33 @@ export default class ItemDiscountApi {
         const result = discounts.filter(discount => discount.startDate <= new Date() && discount.endDate >= new Date() && discount.id === serviceId)
         return Promise.resolve({ result })
     }
+
+    static async getAllDiscounts(pageNumber: number): Promise<FetchResponse<PagedResponse<ItemDiscount>>> {
+        return { result: { pageNum: pageNumber, pageSize: 10, totalCount: discounts.length, results: discounts } }
+    }
+
+    static async updateDiscount(dto: UpdateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
+        const discount = discounts.find(d => d.id === dto.id)
+        if (!discount) return { error: 'Discount not found' }
+        return { result: { ...discount, ...dto } }
+    }
+
+    static async createDiscount(dto: CreateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
+        const discount = {
+            ...dto,
+            id: Math.max(...discounts.map((discount) => discount.id))
+        }
+        discounts.push(discount)
+        return { result: discount }
+    }
+
+    static async deleteDiscount(id: number): Promise<FetchResponse<any>> {
+        const discount = discounts.find(d => d.id === id)
+        if (!discount) return { error: 'Discount not found' }
+        discounts.splice(discounts.indexOf(discount), 1)
+        return { result: discount }
+    }
 }
+
+type CreateDiscountRequest = Omit<ItemDiscount, 'id'>
+type UpdateDiscountRequest = ItemDiscount
