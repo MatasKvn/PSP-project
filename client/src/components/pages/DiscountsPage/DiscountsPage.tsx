@@ -12,6 +12,9 @@ import { useRouter } from 'next/navigation'
 import { GetPageUrl } from '@/constants/route'
 import ItemCard from '@/components/shared/ItemCard'
 import DiscountCard from '@/components/shared/DiscountCard'
+import DiscountForm from '@/components/specialized/DiscountForm'
+import { DiscountFormPayload } from '@/components/specialized/DiscountForm/DiscountForm'
+import ItemDiscountApi from '@/api/itemDiscount.api'
 
 type Props = {
     pageNumber: number
@@ -22,7 +25,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
     const [selectedDiscount, selectDiscount] = useState<ItemDiscount | undefined>(undefined)
     const router = useRouter()
 
-    type DrawerContentType = 'create' | 'edit' | 'none'
+    type DrawerContentType = 'Create' | 'Edit' | 'none'
     const [actionType, setActionType] = React.useState<DrawerContentType>('none')
     const sideDrawerRef = React.useRef<SideDrawerRef | null>(null)
 
@@ -48,6 +51,106 @@ const DiscountsPage = ({ pageNumber }: Props) => {
         ))
     }
 
+    const handleUpdate = async ({
+        isPercentage,
+        description,
+        value,
+        startDate,
+        endDate,
+        productIds,
+        serviceIds
+    }: DiscountFormPayload) => {
+        if (!selectedDiscount) return
+        const startDateParsed = new Date(startDate)
+        const endDateParsed = new Date(endDate)
+        const response = await ItemDiscountApi.updateDiscount({
+            id: selectedDiscount.id,
+            isPercentage,
+            value: isNaN(value) ? selectedDiscount.value : value,
+            description: description.length > 0 ? description : selectedDiscount.description,
+            startDate: isNaN(endDateParsed.getTime()) ? selectedDiscount.startDate : startDateParsed,
+            endDate: isNaN(endDateParsed.getTime()) ? selectedDiscount.endDate : endDateParsed
+        })
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        const responses = await Promise.all([
+            await ItemDiscountApi.addProductsToDiscount(selectedDiscount.id, productIds),
+            await ItemDiscountApi.addServicesToDiscount(selectedDiscount.id, serviceIds)
+        ])
+        responses.forEach((response) => {
+            if (!response.result) console.log(response.error)
+        })
+        const newDiscounts = [
+            ...discounts.filter((discount) => discount.id !== selectedDiscount!.id),
+            response.result
+        ]
+        setDiscounts(newDiscounts)
+    }
+
+    const handleCreate = async ({
+        isPercentage,
+        description,
+        value,
+        startDate,
+        endDate,
+        productIds,
+        serviceIds
+    }: DiscountFormPayload) => {
+        const startDateParsed = new Date(startDate)
+        const endDateParsed = new Date(endDate)
+        if (isNaN(startDateParsed.getTime()) && startDate !== '' || isNaN(endDateParsed.getTime()) && endDate !== '') {
+            console.log('Incorrect Date format')
+            return
+        }
+        if (!description) {
+            console.log('Please enter a description')
+            return
+        }
+        const response = await ItemDiscountApi.createDiscount({
+            isPercentage,
+            value,
+            description,
+            startDate: startDateParsed,
+            endDate: endDateParsed
+        })
+        const { result: discount } = response
+        if (!discount) {
+            console.log(response.error)
+            return
+        }
+        const responses = await Promise.all([
+            await ItemDiscountApi.addProductsToDiscount(discount.id, productIds),
+            await ItemDiscountApi.addServicesToDiscount(discount.id, serviceIds)
+        ])
+        responses.forEach((response) => {
+            if (!response.result) console.log(response.error)
+        })
+        const newDiscounts = [
+            ...discounts,
+            discount
+        ]
+        setDiscounts(newDiscounts)
+    }
+
+    const handleDelete = async () => {
+        if (!selectedDiscount) return
+        const response = await ItemDiscountApi.deleteDiscount(selectedDiscount.id)
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        const newDiscounts = discounts.filter((discount) => discount.id !== selectedDiscount.id)
+        setDiscounts(newDiscounts)
+    }
+
+    const handleFormSubmit = (discountFormPayload: DiscountFormPayload) => {
+        console.log(discountFormPayload)
+        if (actionType === 'Edit') handleUpdate(discountFormPayload)
+        if (actionType === 'Create') handleCreate(discountFormPayload)
+    }
+
     return (
         <div className={styles.page}>
             <h1>Item Discounts Page</h1>
@@ -55,7 +158,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
                 <Button
                     disabled={isLoading || !!errorMsg}
                     onClick={() => {
-                        setActionType('create')
+                        setActionType('Create')
                         sideDrawerRef.current?.open()
                     }}
                 >
@@ -65,7 +168,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
                     disabled={!selectedDiscount || isLoading || !!errorMsg}
                     onClick={() => {
                         if (!selectedDiscount) return
-                        setActionType('edit')
+                        setActionType('Edit')
                         sideDrawerRef.current?.open()
                     }}
                 >
@@ -73,7 +176,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
                 </Button>
                 <Button
                     disabled={!selectedDiscount || isLoading || !!errorMsg}
-                    onClick={() => {}}
+                    onClick={() => handleDelete()}
                 >
                     Delete Discount
                 </Button>
@@ -88,7 +191,10 @@ const DiscountsPage = ({ pageNumber }: Props) => {
                 pageNumber={pageNumber}
             />
             <SideDrawer ref={sideDrawerRef}>
-                {<div>xzd</div>}
+                <DiscountForm
+                    actionName={actionType}
+                    onSubmit={handleFormSubmit}
+                />
             </SideDrawer>
         </div>
     )

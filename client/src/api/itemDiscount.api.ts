@@ -1,7 +1,7 @@
 import { FetchResponse, PagedResponse } from '@/types/fetch'
 import { ItemDiscount } from '@/types/models'
 
-const discounts: ItemDiscount[] = [
+let discounts: ItemDiscount[] = [
     {
         id: 1,
         value: 10,
@@ -46,14 +46,26 @@ export default class ItemDiscountApi {
             ...dto,
             id: Math.max(...discounts.map((discount) => discount.id)) + 1
         }
-        discounts.push(discount)
+        discounts = [...discounts, discount]
         return { result: discount }
     }
 
     static async deleteDiscount(id: number): Promise<FetchResponse<any>> {
         const discount = discounts.find(d => d.id === id)
         if (!discount) return { error: 'Discount not found' }
-        discounts.splice(discounts.indexOf(discount), 1)
+        discounts = discounts.filter((discount) => discount.id !== id)
+        return { result: discount }
+    }
+
+    static async addProductsToDiscount(discountId: number, productIds: number[]): Promise<FetchResponse<any>> {
+        const discount = discounts.find(d => d.id === discountId)
+        if (!discount) return { error: 'Discount not found' }
+        return { result: discount }
+    }
+
+    static async addServicesToDiscount(discountId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
+        const discount = discounts.find(d => d.id === discountId)
+        if (!discount) return { error: 'Discount not found' }
         return { result: discount }
     }
 }

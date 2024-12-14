@@ -7,7 +7,7 @@ import { useProductModifications } from '@/hooks/productModifications.hook'
 import { useProducts } from '@/hooks/products.hook'
 import { useServices } from '@/hooks/services.hook'
 import { Product, ProductModification, Service } from '@/types/models'
-import React, { useState } from 'react'
+import React, { CSSProperties, useState } from 'react'
 
 import styles from './AllItemView.module.scss'
 
@@ -18,6 +18,8 @@ export type SelectedItems = {
 }
 
 type Props = {
+    style?: CSSProperties
+    className?: string
     headerText: string
     selectedProducts: Product[]
     onProductClick: (product: Product) => void
@@ -29,6 +31,8 @@ type Props = {
 
 const AllItemView = (props: Props) => {
     const {
+        className,
+        style,
         headerText,
         selectedProducts,
         onProductClick,
@@ -99,7 +103,8 @@ const AllItemView = (props: Props) => {
                 </Button>
             </div>
             <div
-                className={styles.item_view_container}
+                className={className || styles.item_view_container}
+                style={style}
             >
                 {itemView()}
                 <PageChanger
