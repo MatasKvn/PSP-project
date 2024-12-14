@@ -6,6 +6,7 @@ export const navItems = [
     { name: 'Products', url: '/dashboard/products', href: GetPageUrl.products(0) },
     { name: 'Services', url: '/dashboard/services', href: GetPageUrl.services(0) },
     { name: 'Taxes', url: '/dashboard/taxes', href: GetPageUrl.taxes(0) },
+    { name: 'Time Slots', url: '/dashboard/time-slots', href: GetPageUrl.timeSlots(0) },
     { name: 'Discounts', url: '/dashboard/discounts', href: GetPageUrl.discounts(0) },
     { name: 'Business Details', url: '/dashboard/business-details', href: GetPageUrl.businessDetails }
 ]
