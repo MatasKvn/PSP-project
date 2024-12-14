@@ -1,34 +1,41 @@
 import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
-import { Product, ProductModification, Service, Tax } from '@/types/models'
+import { Product, ProductModification, Service } from '@/types/models'
 import React, { useState } from 'react'
 import AllItemView from '../AllItemView'
 
-export type TaxFormPayload = {
-    name: string,
-    rate: number,
+
+export type DiscountFormPayload = {
+    description: string,
+    value: number,
     isPercentage: boolean,
+    startDate: string,
+    endDate: string,
     productIds: number[],
-    serviceIds: number[],
+    serviceIds: number[]
 }
 
 type Props = {
-    selectedTax?: Tax // TODO: get already applied items for this tax, and preselect them
     actionName: string
-    onSubmit: (data: TaxFormPayload) => void
+    onSubmit: (data: DiscountFormPayload) => void
 }
 
-const TaxForm = ({ actionName, onSubmit }: Props) => {
+const DiscountForm = ({
+    actionName,
+    onSubmit
+}: Props) => {
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
     const [selectedServices, setSelectedServices] = useState<Service[]>([])
 
     const handleTaxUpdate = (formPayload: FormPayload) => {
-        const { name, rate, isPercentage } = formPayload
-        const parsedRate = parseFloat(rate)
+        const { description, value, isPercentage, startDate, endDate } = formPayload
+        const parsedValue = parseFloat(value)
         onSubmit({
-            name,
-            rate: isNaN(parsedRate) ? 0 : parsedRate,
+            description,
+            value: isNaN(parsedValue) ? 0 : parsedValue,
             isPercentage: !!isPercentage,
+            startDate,
+            endDate,
             productIds: selectedProducts.map((product) => product.id),
             serviceIds: selectedServices.map((service) => service.id),
         })
@@ -38,8 +45,9 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
 
     return (
         <div>
-            <h4>{actionName} Tax</h4>
+            <h4>{actionName} Discount</h4>
             <AllItemView
+                style={{ height: '35vh' }}
                 headerText='Select Items'
                 selectedProducts={selectedProducts}
                 onProductClick={(product) => {
@@ -62,9 +70,11 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
             />
             <DynamicForm
                 inputs={{
-                    name: { label: 'Name', placeholder: 'Enter name:', type: 'text' },
-                    rate: { label: 'Rate', placeholder: 'Enter rate:', type: 'number' },
-                    isPercentage: { label: 'Percentage?', type: 'checkbox' }
+                    description: { label: 'Description', placeholder: 'Enter description:', type: 'text' },
+                    value: { label: 'Value', placeholder: 'Enter value:', type: 'number' },
+                    isPercentage: { label: 'Percentage?', type: 'checkbox' },
+                    startDate: { label: 'Start Date', placeholder: 'Enter start date', type: 'date' },
+                    endDate: { label: 'End Date', placeholder: 'Enter end date', type: 'date' },
                 }}
                 onSubmit={handleTaxUpdate}
             >
@@ -74,4 +84,4 @@ const TaxForm = ({ actionName, onSubmit }: Props) => {
     )
 }
 
-export default TaxForm
+export default DiscountForm

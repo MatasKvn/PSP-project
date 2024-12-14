@@ -29,7 +29,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
         name,
         rate,
         productIds,
-        productModificationIds,
         serviceIds,
     }: TaxFormPayload) => {
         const taxResponse = await TaxApi.createTax({ isPercentage, name, rate})
@@ -40,7 +39,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
         }
         const responses = await Promise.all([
             await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addProductModificationsToTax(tax.id, productModificationIds),
             await TaxApi.addServicesToTax(tax.id, serviceIds),
         ])
         responses.forEach((response) => {
@@ -54,7 +52,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
         name,
         rate,
         productIds,
-        productModificationIds,
         serviceIds,
     }: TaxFormPayload) => {
         if (!selectedTax) return
@@ -72,7 +69,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
         }
         const responses = await Promise.all([
             await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addProductModificationsToTax(tax.id, productModificationIds),
             await TaxApi.addServicesToTax(tax.id, serviceIds),
         ])
         responses.forEach((response) => {
