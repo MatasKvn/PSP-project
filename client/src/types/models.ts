@@ -181,3 +181,8 @@ export type Service = {
     imageURL: string
     employeeId: number
 }
+
+export type EmployeeService = {
+    serviceId: number,
+    employeeId: number 
+}
