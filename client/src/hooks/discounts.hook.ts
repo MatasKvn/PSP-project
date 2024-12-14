@@ -3,7 +3,7 @@ import { ItemDiscount } from '@/types/models'
 import ItemDiscountApi from '@/api/itemDiscount.api'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 
-export const useCarts = (pageNumber: number, compareFn?: (a: ItemDiscount, b: ItemDiscount) => number) => {
+export const useDiscounts = (pageNumber: number, compareFn?: (a: ItemDiscount, b: ItemDiscount) => number) => {
     const [discounts, setDiscounts] = useState<ItemDiscount[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [errorMsg, setErrorMsg] = useState<string>('')
