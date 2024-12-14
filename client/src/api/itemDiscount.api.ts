@@ -44,7 +44,7 @@ export default class ItemDiscountApi {
     static async createDiscount(dto: CreateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
         const discount = {
             ...dto,
-            id: Math.max(...discounts.map((discount) => discount.id))
+            id: Math.max(...discounts.map((discount) => discount.id)) + 1
         }
         discounts.push(discount)
         return { result: discount }
