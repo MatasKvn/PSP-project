@@ -10,7 +10,23 @@ export type Cart = {
 export enum CartStatusEnum {
     PENDING,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    REFUNDED
+}
+
+export type Transaction = {
+    id: number
+    cartId: number
+    amount: number
+    tip?: number
+    status: TransactionStatusEnum
+}
+
+export enum TransactionStatusEnum {
+    SUCEEDED,
+    FAILED,
+    PENDING,
+    REFUNDED
 }
 
 export const getCartStatusEnumString = (status: CartStatusEnum): string => {
