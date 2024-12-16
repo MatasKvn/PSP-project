@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
@@ -11,7 +12,7 @@ namespace POS_System.Business.Services
 {
     public class TaxService(IUnitOfWork _unitOfWork, IManyToManyService<Product, Tax, ProductOnTax> _productOnTaxService, IManyToManyService<Service, Tax, ServiceOnTax> _serviceOnTaxService,  IMapper _mapper) : ITaxService
     {
-        public async Task<IEnumerable<TaxResponse>> GetAllTaxesAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+        public async Task<PagedResponse<TaxResponse>> GetAllTaxesAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             var (taxes, totalCount) = await _unitOfWork.TaxRepository.GetByExpressionWithIncludesAndPaginationAsync(
                 x => x.IsDeleted != true,
@@ -21,7 +22,7 @@ namespace POS_System.Business.Services
             );
 
             var taxDtos = _mapper.Map<List<TaxResponse>>(taxes);
-            return taxDtos;
+            return new PagedResponse<TaxResponse>(totalCount, pageSize, pageNumber, taxDtos);
         }
 
         public async Task<TaxResponse> CreateTaxAsync(TaxRequest taxDto, CancellationToken cancellationToken)
@@ -90,7 +91,7 @@ namespace POS_System.Business.Services
             {
                 await _serviceOnTaxService.LinkItemToItemsAsync(_unitOfWork.ServiceRepository, _unitOfWork.TaxRepository, _unitOfWork.ServiceOnTaxRepository, taxId, itemIdList, false, cancellationToken);
             }
-            
+
         }
 
         public async Task UnlinkTaxFromItemsAsync(int taxId, bool itemsAreProducts, int[] itemIdList, CancellationToken cancellationToken)

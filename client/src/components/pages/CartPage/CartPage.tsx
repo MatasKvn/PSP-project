@@ -75,6 +75,7 @@ const CartPage = (props: Props) => {
     type SideDrawerContentType = 'createProduct' | 'createService' | 'none'
     const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('none')
     const [cartDiscount, setCartDiscount] = useState<number>(0)
+    const [appliedTip, setAppliedTip] = useState<number>(0);
 
     if (!isCartLoading && !cart) return null
 
@@ -201,7 +202,8 @@ const CartPage = (props: Props) => {
             { name: 'Amount', key: 'amount' },
             { name: 'Tip', key: 'tip' },
             { name: 'Status', key: 'status' },
-            { name: 'Payment', key: 'payment_action' },
+            { name: 'Card payment', key: 'card_payment_action' },
+            { name: 'Cash payment', key: 'cash_payment_action' },
             { name: 'Refund', key: 'refund_action' }
         ]
 
@@ -214,9 +216,14 @@ const CartPage = (props: Props) => {
             amount: `${transaction.amount.toFixed(2)} €`,
             tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
-            payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+            card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
                 <Button onClick={async () => await handlePayment({ cartId: cartId, id: transaction.id })}>
-                    Pay
+                    Pay by card
+                </Button>
+            ) : null,
+            cash_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+                <Button>
+                    Pay by cash
                 </Button>
             ) : null,
             refund_action: ((transaction.status === TransactionStatusEnum.SUCEEDED) && allTransactionsSucceededOrRefunded(cartTransactions)) || transaction.status === TransactionStatusEnum.CASH ? (
@@ -319,7 +326,6 @@ const CartPage = (props: Props) => {
             console.log('Invalid input')
             return
         }
-
         setAppliedTip(tipParsed);
     }
 
@@ -504,7 +510,8 @@ const CartPage = (props: Props) => {
                     <div>
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
-                        <p>{`Total: ${(totalPrice - cartDiscount).toFixed(2)} €`}</p>
+                        <p>{`Tip: ${appliedTip.toFixed(2)} €`}</p>
+                        <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip).toFixed(2)} €`}</p>
                         <div className={styles.split_checkout}>
                             <Button
                                 onClick={handleCartCheckout}
