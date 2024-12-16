@@ -3,7 +3,7 @@ import { Transaction, TransactionStatusEnum } from '@/types/models'
 import CartTransactionApi from '@/api/transaction.api'
 
 export const useCartTransactions = (cartId: number) => {
-    const [cartTransactions, setCartTransactions] = useState<Transaction[] | null>(null)
+    const [cartTransactions, setCartTransactions] = useState<Transaction[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [errorMsg, setErrorMsg] = useState<string>('')
 
@@ -24,7 +24,7 @@ export const useCartTransactions = (cartId: number) => {
         handleFetch()
     }, [])
 
-    console.log(cartTransactions);
+    console.log("Transactions: " + cartTransactions);
 
     return { cartTransactions, setCartTransactions, isLoading, errorMsg }
 }

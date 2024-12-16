@@ -17,10 +17,11 @@ namespace POS_System.Domain.Entities
         public int EmployeeVersionId { get; set; }
 
         //Navigation properties
-        public virtual ICollection<CartOnCartDiscount> CartOnCartDiscounts { get; set; }
+        public virtual CartDiscount CartDiscount { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
 
         //Fields
+        public string? CartDiscountId { get; set; }
         public required DateTime DateCreated { get; init; }
         //Not used currently as entity is not versioned
         //Need to keep it to implement ILinkable for generic many to many logic

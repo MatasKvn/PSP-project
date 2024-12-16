@@ -4,12 +4,10 @@ namespace POS_System.Data.Repositories.Interfaces;
 
 public interface IUnitOfWork
 {
-    ICardDetailsRepository CardDetailsRepository { get; }
     ICartDiscountRepository CartDiscountRepository { get; }
     ICartRepository CartRepository { get; }
     ICartItemRepository CartItemRepository { get; }
     IEmployeeRepository EmployeeRepository { get; }
-    IGiftCardDetailsRepository GiftCardDetailsRepository { get; }
     IGiftCardRepository GiftCardRepository { get; }
     IItemDiscountRepository ItemDiscountRepository { get; }
     IProductModificationRepository ProductModificationRepository { get; }
@@ -24,7 +22,6 @@ public interface IUnitOfWork
     IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; }
     IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; }
     IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; }
-    IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> CartOnCartDiscountRepository { get; }
     IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> ProductModificationOnCartItemRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

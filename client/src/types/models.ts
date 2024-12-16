@@ -1,10 +1,22 @@
 
+export type DateTimeWithMicroseconds = string;
+
 export type Cart = {
-    id: number
-    dateCreated: Date
-    status: CartStatusEnum
-    employeeVersionId: number
-    discount?: number
+    id: number,
+    dateCreated: Date,
+    status: CartStatusEnum,
+    employeeVersionId: number,
+    discount?: number,
+}
+
+export type CartDiscountBody = {
+    discountCode: string
+};
+
+export type CartDiscount = {
+    id: string,
+    value: number,
+    isPercentage: boolean
 }
 
 export enum CartStatusEnum {
@@ -15,18 +27,19 @@ export enum CartStatusEnum {
 }
 
 export type Transaction = {
-    id: number
-    cartId: number
-    amount: number
-    tip?: number
-    status: TransactionStatusEnum
+    id: DateTimeWithMicroseconds,
+    amount: number,
+    tip?: number,
+    transactionRef: string,
+    status: TransactionStatusEnum,
 }
 
 export enum TransactionStatusEnum {
     SUCEEDED,
     FAILED,
     PENDING,
-    REFUNDED
+    REFUNDED,
+    CASH
 }
 
 export const getCartStatusEnumString = (status: CartStatusEnum): string => {
@@ -37,6 +50,8 @@ export const getCartStatusEnumString = (status: CartStatusEnum): string => {
             return 'In Progress'
         case CartStatusEnum.COMPLETED:
             return 'Completed'
+        case CartStatusEnum.REFUNDED:
+            return 'Refunded'
     }
 }
 

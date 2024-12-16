@@ -8,8 +8,8 @@ namespace POS_System.Business.Services.Interfaces
     {
         Task<GiftCardResponse> CreateGiftCardAsync(GiftCardRequest GiftCardRequest, CancellationToken cancellationToken);
         Task<PagedResponse<GiftCardResponse>> GetAllGiftCardsAsync(CancellationToken cancellationToken, int pageNum, int pageSize);
-        Task<GiftCardResponse?> GetGiftCardByIdAsync(int id, CancellationToken cancellationToken);
-        Task<GiftCardResponse> UpdateGiftCardAsync(int id, GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken);
-        Task DeleteGiftCardAsync(int id, CancellationToken cancellationToken);
+        Task<GiftCardResponse?> GetGiftCardByIdAsync(string id, CancellationToken cancellationToken);
+        Task<GiftCardResponse> UpdateGiftCardAsync(string id, GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken);
+        Task DeleteGiftCardAsync(string id, CancellationToken cancellationToken);
     }
 }

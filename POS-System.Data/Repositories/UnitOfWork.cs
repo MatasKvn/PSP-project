@@ -5,12 +5,10 @@ using POS_System.Domain.Entities;
 namespace POS_System.Data.Repositories;
 
 public class UnitOfWork(ApplicationDbContext dbContext,
-                        ICardDetailsRepository cardDetailsRepository,
                         ICartDiscountRepository cartDiscountRepository,
                         ICartRepository cartRepository,
                         ICartItemRepository cartItemRepository,
                         IEmployeeRepository employeeRepository,
-                        IGiftCardDetailsRepository giftCardDetailsRepository,
                         IGiftCardRepository giftCardRepository,
                         IItemDiscountRepository itemDiscountRepository,
                         IProductModificationRepository productModificationRepository,
@@ -25,15 +23,12 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         IGenericManyToManyRepository<Service, Tax, ServiceOnTax> serviceOnTaxRepository,
                         IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> productOnItemDiscountRepository,
                         IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> serviceOnItemDiscountRepository,
-                        IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> cartOnCartDiscountRepository,
                         IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> productModificationOnCartItemRepository) : IUnitOfWork
 {
-    public ICardDetailsRepository CardDetailsRepository { get; } = cardDetailsRepository;
     public ICartDiscountRepository CartDiscountRepository { get; } = cartDiscountRepository;
     public ICartRepository CartRepository { get; } = cartRepository;
     public ICartItemRepository CartItemRepository { get; } = cartItemRepository;
     public IEmployeeRepository EmployeeRepository { get; } = employeeRepository;
-    public IGiftCardDetailsRepository GiftCardDetailsRepository { get; } = giftCardDetailsRepository;
     public IGiftCardRepository GiftCardRepository { get; } = giftCardRepository;
     public IItemDiscountRepository ItemDiscountRepository { get; } = itemDiscountRepository;
     public IProductModificationRepository ProductModificationRepository { get; } = productModificationRepository;
@@ -48,7 +43,6 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public IGenericManyToManyRepository<Service, Tax, ServiceOnTax> ServiceOnTaxRepository { get; } = serviceOnTaxRepository;
     public IGenericManyToManyRepository<Product, ItemDiscount, ProductOnItemDiscount> ProductOnItemDiscountRepository { get; } = productOnItemDiscountRepository;
     public IGenericManyToManyRepository<Service, ItemDiscount, ServiceOnItemDiscount> ServiceOnItemDiscountRepository { get; } = serviceOnItemDiscountRepository;
-    public IGenericManyToManyRepository<Cart, CartDiscount, CartOnCartDiscount> CartOnCartDiscountRepository { get; } = cartOnCartDiscountRepository;
     public IGenericManyToManyRepository<ProductModification, CartItem, ProductModificationOnCartItem> ProductModificationOnCartItemRepository { get; } = productModificationOnCartItemRepository;
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -14,9 +14,11 @@ import CreateServiceCartItemView from '@/components/specialized/CreateServiceCar
 import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import CartDiscountApi from '@/api/cartDiscount.api'
-
 import styles from './CartPage.module.scss'
 import { useCartTransactions } from '../../../hooks/transactions.hook'
+import { loadStripe } from '@stripe/stripe-js'
+import PaymentApi from '@/api/payment.api'
+import { DateTimeWithMicroseconds, FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, RefundBody } from '@/types/payment'
 
 type Props = {
     cartId: number
@@ -61,7 +63,7 @@ const CartPage = (props: Props) => {
     const { cart, setCart, isLoading: isCartLoading } = useCart(cartId)
     const { cartTransactions, setCartTransactions, isLoading: isCartTransactionsLoading} = useCartTransactions(cartId)
 
-    const isCartOpen = cart?.status === CartStatusEnum.PENDING
+    const isCartOpen = cart?.status === CartStatusEnum.IN_PROGRESS
     const {
         cartItems,
         errorMsg,
@@ -73,7 +75,7 @@ const CartPage = (props: Props) => {
     type SideDrawerContentType = 'createProduct' | 'createService' | 'none'
     const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('none')
     const [cartDiscount, setCartDiscount] = useState<number>(0)
-    const [cartTip, setCartTip] = useState<number>(0)
+    const [appliedTip, setAppliedTip] = useState<number>(0);
 
     if (!isCartLoading && !cart) return null
 
@@ -192,8 +194,8 @@ const CartPage = (props: Props) => {
     }
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
 
-    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0)
-
+    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
+    const [appliedTip, setAppliedTip] = useState<number>(0);
     const cartTransactionTable = () => {
         const cartTransactionColumns = [
             { name: 'Id', key: 'id' },
@@ -211,11 +213,11 @@ const CartPage = (props: Props) => {
 
         const cartTransactionRows = cartTransactions.map(transaction => ({
             id: transaction.id,
-            amount: transaction.amount,
-            tip: transaction.tip,
+            amount: `${transaction.amount.toFixed(2)} €`,
+            tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
             card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
-                <Button>
+                <Button onClick={async () => await handlePayment({ cartId: cartId, id: transaction.id })}>
                     Pay by card
                 </Button>
             ) : null,
@@ -224,8 +226,8 @@ const CartPage = (props: Props) => {
                     Pay by cash
                 </Button>
             ) : null,
-            refund_action: transaction.status === TransactionStatusEnum.SUCEEDED && allTransactionsSucceededOrRefunded(cartTransactions) ? (
-                <Button>
+            refund_action: ((transaction.status === TransactionStatusEnum.SUCEEDED) && allTransactionsSucceededOrRefunded(cartTransactions)) || transaction.status === TransactionStatusEnum.CASH ? (
+                <Button onClick={async () => await handleRefund(transaction.id, { cartId: cartId, isCard: transaction.status === TransactionStatusEnum.SUCEEDED ? true : false })}>
                     Refund
                 </Button>
             ) : null
@@ -290,29 +292,41 @@ const CartPage = (props: Props) => {
     }
 
     const handleCartDiscount = async (formPayload: FormPayload) => {
-        const { discount } = formPayload
-        const discountParsed = parseInt(discount)
-        if (isNaN(discountParsed)) {
-            console.log('Invalid input')
-            return
+        const { code } = formPayload;
+        console.log(code);
+        if (cart === undefined)
+            throw new Error("Cart data could not be loaded.");
+
+        if (cart.status !== CartStatusEnum.IN_PROGRESS) {
+            return Promise.resolve({
+                error: 'Cannot apply discount to not in progress cart.'
+            })
         }
-        const response = await CartDiscountApi.applyDiscount(cart!, discountParsed)
-        if (!response.result?.discount) {
+
+        const response = await CartDiscountApi.applyCartDiscount(cart.id, { discountCode: code });
+        if (response.error) {
             console.log(response.error)
             return
         }
-        setCartDiscount(response.result.discount)
+        
+        if (response.result) {
+            let discount = response.result.isPercentage
+                ? totalPrice * response.result.value
+                : response.result.value;
+
+            setCartDiscount(discount);
+        }
     }
 
     const handleTip = async (formPayload: FormPayload) => {
-        const { tip } = formPayload
-        const tipParsed = parseInt(tip)
+        const { tip } = formPayload;
+        const tipParsed = parseInt(tip);
 
         if (isNaN(tipParsed)) {
             console.log('Invalid input')
             return
         }
-        setCartTip(tipParsed)
+        setAppliedTip(tipParsed);
     }
 
     const sideDrawerContent = () => {
@@ -384,23 +398,84 @@ const CartPage = (props: Props) => {
 
         if (splitCountParsed === 1 || splitCountValue === '') {
             console.log('Triggering single checkout');
-            handleSinglePayment();
+            let body: FullCheckoutBody = {
+                cartId: 1,
+                employeeId: 6,
+                tip: appliedTip,
+                cartItems: [
+                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
+                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
+                ]
+            };
+            handlePayment(body);
         } else {
             if (totalPrice - cartDiscount < 30) {
                 console.log('Cannot process split transaction if the total sum is less than 30 €');
             } else {
                 console.log('Triggering multiple checkout');
-                handleSplitPayment(splitCountParsed);
+                let body: InitPartialCheckoutBody = {
+                    cartId: 1,
+                    employeeId: 6,
+                    tip: appliedTip,
+                    paymentCount: splitCountParsed,
+                    cartItems: [
+                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
+                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
+                    ]
+                };
+
+                handleSplitPaymentInit(body);
             }
         }
     }
 
-    const handleSinglePayment = () => {
-        throw new Error('Checkout not implemented')
+    const handlePayment = async (body: FullCheckoutBody | PartialCheckoutBody) => {
+        let response = 'employeeId' in body
+            ? await PaymentApi.fullCheckout(body as FullCheckoutBody)
+            : await PaymentApi.partialCheckout(body as PartialCheckoutBody);
+
+        if (response.error) {
+            alert("Payment session was not created.");
+            return;
+        }
+
+        if (response.result) {
+            let stripe = await loadStripe(response.result.pubKey);
+            
+            if (!stripe) {
+                alert("Stripe was not launched.");
+            }
+
+            let result = await stripe?.redirectToCheckout({ sessionId: response.result.sessionId });
+
+            if (!result) {
+                console.log(result);
+                alert("Transaction failed.");
+            }
+        }
     }
 
-    const handleSplitPayment = (splitNum: number) => {
-        throw new Error('Split checkout not implemented')
+    const handleSplitPaymentInit = async (body: InitPartialCheckoutBody) => {       
+        let response = await PaymentApi.initializePartialCheckout(body);
+
+        if (response.error) {
+            alert("Payments were not initialized.");
+            return;
+        }
+    }
+
+    const handleRefund = async (id: DateTimeWithMicroseconds, body: RefundBody) => {
+        let response = await PaymentApi.refundPayment(id, body);
+
+        if (response.error) {
+            alert("Failed to issue refund.");
+            return;
+        }
+        
+        if (response.result) {
+            let refundedTransaction = response.result;
+            setCartTransactions(cartTransactions?.map((value) => value.id === id ? refundedTransaction : value));
+        }
     }
 
     return (
@@ -412,7 +487,7 @@ const CartPage = (props: Props) => {
                     <h4>Cart Discount</h4>
                     <DynamicForm
                         inputs={{
-                            discount: { label: 'Discount', placeholder: 'Enter discount amount:', type: 'number' },
+                            code: { label: 'Discount', placeholder: 'Enter discount code:', type: 'string' },
                         }}
                         onSubmit={(formPayload) => handleCartDiscount(formPayload)}
                     >
@@ -435,8 +510,8 @@ const CartPage = (props: Props) => {
                     <div>
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
-                        <p>{`Tip: ${cartTip.toFixed(2)} €`}</p>
-                        <p>{`Total: ${((totalPrice - cartDiscount) + cartTip).toFixed(2)} €`}</p>
+                        <p>{`Tip: ${appliedTip.toFixed(2)} €`}</p>
+                        <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip).toFixed(2)} €`}</p>
                         <div className={styles.split_checkout}>
                             <Button
                                 onClick={handleCartCheckout}

@@ -367,31 +367,6 @@ namespace POS_System.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("POS_System.Domain.Entities.CardDetails", b =>
-                {
-                    b.Property<DateTime>("Id")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CardDigits")
-                        .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("character varying(4)");
-
-                    b.Property<string>("ExpireDate")
-                        .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("character varying(4)");
-
-                    b.Property<string>("HolderName")
-                        .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("character varying(70)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CardDetails");
-                });
-
             modelBuilder.Entity("POS_System.Domain.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -399,6 +374,9 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CartDiscountId")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp without time zone");
@@ -413,6 +391,8 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CartDiscountId");
 
                     b.HasIndex("EmployeeVersionId");
 
@@ -455,40 +435,14 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartDiscount", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CartDiscountId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartDiscountId"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("CartDiscountId"), 1L, null, null, null, null, null);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<string>("Id")
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("Value")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("Version")
-                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -566,27 +520,6 @@ namespace POS_System.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("POS_System.Domain.Entities.CartOnCartDiscount", b =>
-                {
-                    b.Property<int>("LeftEntityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RightEntityId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
-
-                    b.HasIndex("RightEntityId");
-
-                    b.ToTable("CartOnCartDiscounts");
-                });
-
             modelBuilder.Entity("POS_System.Domain.Entities.EmployeeOnService", b =>
                 {
                     b.Property<int>("EmployeeVersionId")
@@ -610,79 +543,18 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.GiftCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
+                    b.Property<long>("Value")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.ToTable("GiftCards");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "CARD100",
-                            Date = new DateOnly(2024, 1, 1),
-                            Value = 100
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "CARD150",
-                            Date = new DateOnly(2024, 2, 15),
-                            Value = 150
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code = "CARD200",
-                            Date = new DateOnly(2024, 3, 20),
-                            Value = 200
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Code = "CARD050",
-                            Date = new DateOnly(2024, 4, 10),
-                            Value = 50
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Code = "CARD250",
-                            Date = new DateOnly(2024, 5, 5),
-                            Value = 250
-                        });
-                });
-
-            modelBuilder.Entity("POS_System.Domain.Entities.GiftCardDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GiftCardId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GiftCardDetails");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ItemDiscount", b =>
@@ -746,7 +618,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8825)
+                            Version = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6292)
                         },
                         new
                         {
@@ -758,7 +630,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8827)
+                            Version = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6298)
                         },
                         new
                         {
@@ -1316,28 +1188,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8795)
+                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6170)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8799)
+                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6180)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8799)
+                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6183)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8800)
+                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6186)
                         });
                 });
 
@@ -1346,37 +1218,25 @@ namespace POS_System.Data.Migrations
                     b.Property<DateTime>("Id")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CardDetailsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CardId")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int>("CartId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CartItemId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Tip")
+                    b.Property<int?>("Tip")
                         .HasColumnType("integer");
 
                     b.Property<string>("TransactionRef")
                         .IsRequired()
-                        .HasMaxLength(18)
-                        .HasColumnType("character varying(18)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("CartItemId");
 
                     b.ToTable("Transactions");
                 });
@@ -1434,11 +1294,17 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.Cart", b =>
                 {
+                    b.HasOne("POS_System.Domain.Entities.CartDiscount", "CartDiscount")
+                        .WithMany("Carts")
+                        .HasForeignKey("CartDiscountId");
+
                     b.HasOne("POS_System.Data.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("EmployeeVersionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CartDiscount");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartItem", b =>
@@ -1450,25 +1316,6 @@ namespace POS_System.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Cart");
-                });
-
-            modelBuilder.Entity("POS_System.Domain.Entities.CartOnCartDiscount", b =>
-                {
-                    b.HasOne("POS_System.Domain.Entities.Cart", "LeftEntity")
-                        .WithMany("CartOnCartDiscounts")
-                        .HasForeignKey("LeftEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("POS_System.Domain.Entities.CartDiscount", "RightEntity")
-                        .WithMany("CartOnCartDiscounts")
-                        .HasForeignKey("RightEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LeftEntity");
-
-                    b.Navigation("RightEntity");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.EmployeeOnService", b =>
@@ -1630,23 +1477,17 @@ namespace POS_System.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS_System.Domain.Entities.CartItem", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("CartItemId");
-
                     b.Navigation("Cart");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
-
-                    b.Navigation("CartOnCartDiscounts");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartDiscount", b =>
                 {
-                    b.Navigation("CartOnCartDiscounts");
+                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.CartItem", b =>
@@ -1655,8 +1496,6 @@ namespace POS_System.Data.Migrations
 
                     b.Navigation("ServiceReservation")
                         .IsRequired();
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ItemDiscount", b =>
