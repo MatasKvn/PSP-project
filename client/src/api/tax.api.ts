@@ -1,5 +1,8 @@
-import { FetchResponse, PagedResponse } from '@/types/fetch'
+import { apiBaseUrl } from '@/constants/api'
+import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { Tax } from '@/types/models'
+import { getAuthorizedHeaders } from '@/utils/auth'
+import { fetch } from '@/utils/fetch'
 
 const tax: Tax = {
     name: 'PVM',
@@ -11,14 +14,12 @@ const tax: Tax = {
 
 export default class TaxApi {
     static async getAllTaxes(pageNumber: number): Promise<FetchResponse<PagedResponse<Tax>>> {
-        return Promise.resolve({
-            result: {
-                pageNum: pageNumber,
-                pageSize: 35,
-                totalCount: 1,
-                results: [tax]
+        return fetch({
+                url: `${apiBaseUrl}/tax?pageNum=${pageNumber}`,
+                method: HTTPMethod.GET,
+                headers: getAuthorizedHeaders()
             }
-        })
+        )
     }
 
     static async addProductsToTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
@@ -34,26 +35,29 @@ export default class TaxApi {
     }
 
     static async createTax(taxRequest: CreateTaxRequest): Promise<FetchResponse<Tax>> {
-        return Promise.resolve({
-            result: {
-                ...taxRequest,
-                id: new Date().getTime(),
-                dateModified: new Date()
-            }
+        return fetch({
+            url: `${apiBaseUrl}/tax`,
+            method: HTTPMethod.POST,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(taxRequest)
         })
     }
 
     static async updateTax(taxRequest: UpdateTaxRequest): Promise<FetchResponse<Tax>> {
-        return Promise.resolve({
-            result: {
-                ...taxRequest,
-                dateModified: new Date()
-            }
+        return fetch({
+            url: `${apiBaseUrl}/tax/${taxRequest.id}`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(taxRequest)
         })
     }
 
     static async deleteTax(id: number): Promise<FetchResponse<any>> {
-        return Promise.resolve({ result: tax })
+        return fetch({
+            url: `${apiBaseUrl}/tax/${id}`,
+            method: HTTPMethod.DELETE,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async getTaxesByProductId(productId: number): Promise<FetchResponse<Tax[]>> {

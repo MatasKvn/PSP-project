@@ -31,7 +31,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
         productIds,
         serviceIds,
     }: TaxFormPayload) => {
-        const taxResponse = await TaxApi.createTax({ isPercentage, name, rate})
+        const taxResponse = await TaxApi.createTax({ isPercentage, name, rate })
         const { result: tax } = taxResponse
         if (!tax) {
             console.log(taxResponse.error)
