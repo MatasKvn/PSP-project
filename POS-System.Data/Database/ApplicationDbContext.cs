@@ -14,7 +14,6 @@ namespace POS_System.Data.Database
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<EmployeeOnService> EmployeeOnServices { get; set; }
         public DbSet<GiftCard> GiftCards { get; set; }
-        public DbSet<GiftCardDetails> GiftCardDetails { get; set; }
         public DbSet<ItemDiscount> ItemDiscounts { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductOnItemDiscount> ProductOnItemDiscounts { get; set; }

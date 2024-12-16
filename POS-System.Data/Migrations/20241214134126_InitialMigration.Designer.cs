@@ -12,7 +12,7 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241213162136_InitialMigration")]
+    [Migration("20241214134126_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -441,18 +441,8 @@ namespace POS_System.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Value")
                         .HasColumnType("integer");
@@ -556,16 +546,8 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.GiftCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
@@ -576,59 +558,6 @@ namespace POS_System.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GiftCards");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "CARD100",
-                            Date = new DateOnly(2024, 1, 1),
-                            Value = 100
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "CARD150",
-                            Date = new DateOnly(2024, 2, 15),
-                            Value = 150
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code = "CARD200",
-                            Date = new DateOnly(2024, 3, 20),
-                            Value = 200
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Code = "CARD050",
-                            Date = new DateOnly(2024, 4, 10),
-                            Value = 50
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Code = "CARD250",
-                            Date = new DateOnly(2024, 5, 5),
-                            Value = 250
-                        });
-                });
-
-            modelBuilder.Entity("POS_System.Domain.Entities.GiftCardDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GiftCardId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GiftCardDetails");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.ItemDiscount", b =>
@@ -692,7 +621,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9431)
+                            Version = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(477)
                         },
                         new
                         {
@@ -704,7 +633,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9435)
+                            Version = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(480)
                         },
                         new
                         {
@@ -1262,28 +1191,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9355)
+                            StartTime = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(405)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9360)
+                            StartTime = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(411)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9362)
+                            StartTime = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(413)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9364)
+                            StartTime = new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(414)
                         });
                 });
 

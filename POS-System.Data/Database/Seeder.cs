@@ -15,7 +15,6 @@ namespace POS_System.Data.Database
             // SeedProductOnTax(modelBuilder);
             SeedService(modelBuilder);
             // SeedServiceOnTax(modelBuilder);
-            SeedGiftCards(modelBuilder);
             SeedCarts(modelBuilder);
             SeedCartItem(modelBuilder);
             SeedProductModification(modelBuilder);
@@ -125,17 +124,6 @@ namespace POS_System.Data.Database
                 new Cart { Id = 2, EmployeeVersionId = 2, DateCreated = new DateTime(2024, 02, 01), Status = CartStatusEnum.COMPLETED, IsDeleted = false },
                 new Cart { Id = 3, EmployeeVersionId = 3, DateCreated = new DateTime(2024, 03, 01), Status = CartStatusEnum.IN_PROGRESS, IsDeleted = false },
                 new Cart { Id = 4, EmployeeVersionId = 4, DateCreated = new DateTime(2024, 04, 01), Status = CartStatusEnum.PENDING, IsDeleted = false }
-            );
-        }
-
-        public static void SeedGiftCards(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<GiftCard>().HasData(
-                new GiftCard { Id = 1, Date = new DateOnly(2024, 1, 1), Value = 100, Code = "CARD100" },
-                new GiftCard { Id = 2, Date = new DateOnly(2024, 2, 15), Value = 150, Code = "CARD150" },
-                new GiftCard { Id = 3, Date = new DateOnly(2024, 3, 20), Value = 200, Code = "CARD200" },
-                new GiftCard { Id = 4, Date = new DateOnly(2024, 4, 10), Value = 50, Code = "CARD050" },
-                new GiftCard { Id = 5, Date = new DateOnly(2024, 5, 5), Value = 250, Code = "CARD250" }
             );
         }
 

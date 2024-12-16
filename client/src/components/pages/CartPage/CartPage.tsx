@@ -14,8 +14,10 @@ import CreateServiceCartItemView from '@/components/specialized/CreateServiceCar
 import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import CartDiscountApi from '@/api/cartDiscount.api'
-
 import styles from './CartPage.module.scss'
+import PaymentApi from '@/api/payment.api'
+import { FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction } from '@/types/payment'
+import { loadStripe } from '@stripe/stripe-js'
 
 type Props = {
     cartId: number
@@ -57,7 +59,7 @@ const CartPage = (props: Props) => {
 
     const { cart, setCart, isLoading: isCartLoading } = useCart(cartId)
 
-    const isCartOpen = cart?.status === CartStatusEnum.PENDING
+    const isCartOpen = cart?.status === CartStatusEnum.IN_PROGRESS
     const {
         cartItems,
         errorMsg,
@@ -250,8 +252,51 @@ const CartPage = (props: Props) => {
         setCartDiscount(response.result.discount)
     }
 
-    const handleCartCheckout = () => {
-        throw new Error('Checkout not implemented')
+    const handleFullCheckout = async () => {
+        var body: FullCheckoutBody = {
+            cartId: 4,
+            employeeId: 0,
+            tip: 2000,
+            cartItems: [
+                { name: "a", description: "a", price: 30000, quantity: 3, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" },
+                { name: "a", description: "a", price: 10000, quantity: 5, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" },
+                { name: "a", description: "a", price: 10000, quantity: 5, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" }
+            ]
+        };
+
+        let response = await PaymentApi.fullCheckout(body);
+        
+        if (response.result) {
+            const stripe = await loadStripe(response.result.pubKey);
+
+            if (stripe == null)
+                throw new Error("Payment couldn't be started.");
+
+            stripe.redirectToCheckout({ sessionId: response.result.sessionId });    
+        } else {
+            throw new Error(response.error)
+        }
+    }
+    
+    const handlePartialCheckoutInitialization = async (body: InitPartialCheckoutBody): Promise<PartialTransaction[] | undefined> => {
+        let response = await PaymentApi.initializePartialCheckout(body);
+
+        return response.result
+    }
+
+    const handlePartialTransaction = async (body: PartialCheckoutBody) => {
+        let response = await PaymentApi.partialCheckout(body);
+
+        if (response.result) {
+            const stripe = await loadStripe(response.result.pubKey);
+
+            if (stripe == null)
+                throw new Error("Payment couldn't be started.");
+
+            stripe.redirectToCheckout({ sessionId: response.result.sessionId });    
+        } else {
+            throw new Error(response.error)
+        }
     }
 
     const sideDrawerContent = () => {
@@ -326,10 +371,16 @@ const CartPage = (props: Props) => {
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
                         <p>{`Total: ${(totalPrice - cartDiscount).toFixed(2)} €`}</p>
                         <Button
-                            onClick={handleCartCheckout}
+                            onClick={async () => await handleFullCheckout()}
                             disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
                         >
                             Checkout
+                        </Button>
+                        <Button
+                            // onClick={handlePartialCheckoutInitialization()}
+                            disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
+                        >
+                            Split bill
                         </Button>
                     </div>
                 </div>

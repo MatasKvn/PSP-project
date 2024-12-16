@@ -16,6 +16,9 @@ namespace POS_System.Common.Constants
         public const string TAX_NOT_FOUND = "No tax with such id was found!";
         public const string WEB_HOST_NOT_SET = "Web host not set explicitly.";
         public const string INSUFFICIENT_TOTAL_AMOUNT = "Total price of a cart is too little. Partial payment is not allowed.";
-        public const string CLOSED_ORDER = "Order was already closed and payed.";
+        public const string CLOSED_ORDER = "Order was closed or is in either payment or refund phase.";
+        public const string GIFT_CARD_NOT_VALID = "Gift card has expired or does not exist.";
+        public const string TRANSACTION_INNACURACY = "Transaction record does not not exist.";
+        public const string INVALID_REFUND_REQUEST = "Cannot refund non-completed carts";
     }
 }

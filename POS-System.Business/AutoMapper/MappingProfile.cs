@@ -77,6 +77,7 @@ namespace POS_System.Business.AutoMapper
 
             // Transaction
             CreateMap<Transaction, TransactionResponse>();
+            CreateMap<CashRequest, Transaction>();
         }
     }
 }

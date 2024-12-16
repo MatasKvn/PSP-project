@@ -10,7 +10,7 @@ namespace POS_System.Business.Dtos.Response
 
         public DateTime DateCreated { get; set; }
 
-        public required string? DiscountId { get; set; }
+        public required string? CartDiscountId { get; set; }
 
         public required CartStatusEnum Status { get; set; }
     }

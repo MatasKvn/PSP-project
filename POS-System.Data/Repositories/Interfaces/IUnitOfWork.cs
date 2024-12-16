@@ -8,7 +8,6 @@ public interface IUnitOfWork
     ICartRepository CartRepository { get; }
     ICartItemRepository CartItemRepository { get; }
     IEmployeeRepository EmployeeRepository { get; }
-    IGiftCardDetailsRepository GiftCardDetailsRepository { get; }
     IGiftCardRepository GiftCardRepository { get; }
     IItemDiscountRepository ItemDiscountRepository { get; }
     IProductModificationRepository ProductModificationRepository { get; }

@@ -72,10 +72,7 @@ namespace POS_System.Data.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<int>(type: "integer", nullable: false),
-                    IsPercentage = table.Column<bool>(type: "boolean", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    IsPercentage = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,27 +80,12 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GiftCardDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GiftCardId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GiftCardDetails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GiftCards",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Value = table.Column<int>(type: "integer", nullable: false),
-                    Code = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false)
+                    Value = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -622,25 +604,13 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "GiftCards",
-                columns: new[] { "Id", "Code", "Date", "Value" },
-                values: new object[,]
-                {
-                    { 1, "CARD100", new DateOnly(2024, 1, 1), 100 },
-                    { 2, "CARD150", new DateOnly(2024, 2, 15), 150 },
-                    { 3, "CARD200", new DateOnly(2024, 3, 20), 200 },
-                    { 4, "CARD050", new DateOnly(2024, 4, 10), 50 },
-                    { 5, "CARD250", new DateOnly(2024, 5, 5), 250 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "ItemDiscounts",
                 columns: new[] { "Id", "Description", "EndDate", "IsDeleted", "IsPercentage", "ItemDiscountId", "StartDate", "Value", "Version" },
                 values: new object[,]
                 {
                     { 1, "Desc1", null, true, true, 1, null, 12, new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9431) },
-                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9435) },
+                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(477) },
+                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(480) },
                     { 4, "Desc1 Update", null, true, true, 1, null, 18, new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -705,10 +675,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9355) },
-                    { 2, 1, true, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9360) },
-                    { 3, 2, false, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9362) },
-                    { 4, 3, true, new DateTime(2024, 12, 13, 16, 21, 35, 62, DateTimeKind.Utc).AddTicks(9364) }
+                    { 1, 1, true, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(405) },
+                    { 2, 1, true, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(411) },
+                    { 3, 2, false, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(413) },
+                    { 4, 3, true, new DateTime(2024, 12, 14, 13, 41, 25, 594, DateTimeKind.Utc).AddTicks(414) }
                 });
 
             migrationBuilder.InsertData(
@@ -858,9 +828,6 @@ namespace POS_System.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "EmployeeOnServices");
-
-            migrationBuilder.DropTable(
-                name: "GiftCardDetails");
 
             migrationBuilder.DropTable(
                 name: "GiftCards");

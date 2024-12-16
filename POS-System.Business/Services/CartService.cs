@@ -36,7 +36,7 @@ namespace POS_System.Business.Services.Services
         {
             var cart = new Cart {
                 EmployeeVersionId = cartDto.EmployeeVersionId,
-                Status = CartStatusEnum.PENDING,
+                Status = CartStatusEnum.IN_PROGRESS,
                 IsDeleted = false,
                 CartDiscountId = null,
                 DateCreated = DateTime.UtcNow
@@ -56,9 +56,9 @@ namespace POS_System.Business.Services.Services
             {
                 throw new Exception("Cart not found.");
             }
-            if (cart.Status != CartStatusEnum.PENDING)
+            if (cart.Status != CartStatusEnum.IN_PROGRESS)
             {
-                throw new Exception("Cannot delete a non-pending cart.");
+                throw new Exception("Cannot delete a not in progress cart.");
             }
             _unitOfWork.CartRepository.Delete(cart);
             await _unitOfWork.SaveChangesAsync();

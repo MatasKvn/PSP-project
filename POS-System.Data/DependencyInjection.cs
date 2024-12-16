@@ -53,7 +53,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IGiftCardDetailsRepository, GiftCardDetailsRepository>();
             services.AddScoped<IGiftCardRepository, GiftCardRepository>();
             services.AddScoped<IItemDiscountRepository, ItemDiscountRepository>();
             services.AddScoped<IProductModificationRepository, ProductModificationRepository>();

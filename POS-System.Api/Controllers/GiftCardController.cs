@@ -19,9 +19,9 @@ public class GiftCardController(IGiftCardService giftCardService) : ControllerBa
         return Ok(giftCards);
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id}")]
     [Authorize(Policy = "GiftCardRead")]
-    public async Task<IActionResult> GetGiftCardById([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetGiftCardById([FromRoute] string id, CancellationToken cancellationToken)
     {
         var result = await giftCardService.GetGiftCardByIdAsync(id, cancellationToken);
 
@@ -36,18 +36,18 @@ public class GiftCardController(IGiftCardService giftCardService) : ControllerBa
         return Ok(newGiftCard);
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id}")]
     [Authorize(Policy = "GiftCardWrite")]
-    public async Task<IActionResult> UpdateGiftCard([FromRoute] int id, [FromBody] GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateGiftCard([FromRoute] string id, [FromBody] GiftCardRequest giftCardUpdateRequestDto, CancellationToken cancellationToken)
     {
         var updatedGiftCard = await giftCardService.UpdateGiftCardAsync(id, giftCardUpdateRequestDto, cancellationToken);
 
         return Ok(updatedGiftCard);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id}")]
     [Authorize(Policy = "GiftCardWrite")]
-    public async Task<IActionResult> DeleteGiftCard([FromRoute] int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteGiftCard([FromRoute] string id, CancellationToken cancellationToken)
     {
         await giftCardService.DeleteGiftCardAsync(id, cancellationToken);
 

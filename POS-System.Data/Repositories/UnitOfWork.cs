@@ -9,7 +9,6 @@ public class UnitOfWork(ApplicationDbContext dbContext,
                         ICartRepository cartRepository,
                         ICartItemRepository cartItemRepository,
                         IEmployeeRepository employeeRepository,
-                        IGiftCardDetailsRepository giftCardDetailsRepository,
                         IGiftCardRepository giftCardRepository,
                         IItemDiscountRepository itemDiscountRepository,
                         IProductModificationRepository productModificationRepository,
@@ -30,7 +29,6 @@ public class UnitOfWork(ApplicationDbContext dbContext,
     public ICartRepository CartRepository { get; } = cartRepository;
     public ICartItemRepository CartItemRepository { get; } = cartItemRepository;
     public IEmployeeRepository EmployeeRepository { get; } = employeeRepository;
-    public IGiftCardDetailsRepository GiftCardDetailsRepository { get; } = giftCardDetailsRepository;
     public IGiftCardRepository GiftCardRepository { get; } = giftCardRepository;
     public IItemDiscountRepository ItemDiscountRepository { get; } = itemDiscountRepository;
     public IProductModificationRepository ProductModificationRepository { get; } = productModificationRepository;

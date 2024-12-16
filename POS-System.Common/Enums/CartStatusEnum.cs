@@ -4,5 +4,6 @@ public enum CartStatusEnum
 {
     PENDING,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    REFUNDED
 }
