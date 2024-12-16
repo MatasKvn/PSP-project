@@ -97,12 +97,13 @@ export type Employee = {
     id: number
     firstName: string
     lastName: string
+    userName: string
     email: string
     phoneNumber: string
-    birthDate: Date
-    startDate: Date
+    birthDate?: Date
+    startDate?: Date
     endDate?: Date
-    accessibility: AccessibilityEnum
+    //accessibility: number 
 }
 
 export type BusinessDetails = {
@@ -124,6 +125,14 @@ export enum AccessibilityEnum {
     SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
+const accessibilityNumeric = {
+    NONE: 0,
+    SERVICE_PROVIDER: 1,
+    CASHIER: 2,
+    OWNER: 3,
+    SUPER_ADMIN: 4,
+  };
+  
 export type Tax = {
     id: number
     name: string
