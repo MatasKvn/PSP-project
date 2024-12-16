@@ -12,9 +12,9 @@ namespace POS_System.Api.Controllers
     {
         [Authorize("ItemRead")]
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery] bool? onlyActice, CancellationToken cancellationToken, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
+        public async Task<IActionResult> GetAllProducts([FromQuery] bool? onlyActive, CancellationToken cancellationToken, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
         {
-            var products = await _productService.GetProductsAsync(pageSize, pageNumber, onlyActice, cancellationToken);
+            var products = await _productService.GetProductsAsync(pageSize, pageNumber, onlyActive, cancellationToken);
             return Ok(products);
         }
 
@@ -50,8 +50,8 @@ namespace POS_System.Api.Controllers
             return Ok(product);
         }
 
-        [Authorize("ItemWrite")]
         [HttpDelete("{id}")]
+        [Authorize("ItemWrite")]
         public async Task<IActionResult> DeleteProductById(int id, CancellationToken cancellationToken)
         {
             var product = await _productService.DeleteProductByIdAsync(id, cancellationToken);

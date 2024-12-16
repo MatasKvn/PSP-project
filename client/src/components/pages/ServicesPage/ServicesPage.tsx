@@ -122,7 +122,7 @@ const ServicesPage = (props: Props) => {
         } = formPayload
         const price = Number.parseInt(servicePrice)
         const duration = Number.parseInt(serviceDuration)
-        const response = await ServiceApi.udpate({
+        const response = await ServiceApi.update({
             id: selectedService.id,
             name: serviceName || selectedService.name,
             description: serviceDescription || selectedService.description,
