@@ -7,7 +7,7 @@ import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem } from '@/types/models'
+import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction } from '@/types/models'
 import { useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
@@ -15,9 +15,10 @@ import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import CartDiscountApi from '@/api/cartDiscount.api'
 import styles from './CartPage.module.scss'
-import PaymentApi from '@/api/payment.api'
-import { FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction } from '@/types/payment'
+import { useCartTransactions } from '../../../hooks/transactions.hook'
 import { loadStripe } from '@stripe/stripe-js'
+import PaymentApi from '@/api/payment.api'
+import { DateTimeWithMicroseconds, FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, RefundBody } from '@/types/payment'
 
 type Props = {
     cartId: number
@@ -55,9 +56,12 @@ const calculateTaxesValue = (cartItem: RequiredCartItem) => {
 }
 
 const CartPage = (props: Props) => {
+    const splitCountRef = useRef<HTMLInputElement | null>(null);
+
     const { cartId, pageNumber } = props
 
     const { cart, setCart, isLoading: isCartLoading } = useCart(cartId)
+    const { cartTransactions, setCartTransactions, isLoading: isCartTransactionsLoading} = useCartTransactions(cartId)
 
     const isCartOpen = cart?.status === CartStatusEnum.IN_PROGRESS
     const {
@@ -189,7 +193,50 @@ const CartPage = (props: Props) => {
     }
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
 
-    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0)
+    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
+    const [appliedTip, setAppliedTip] = useState<number>(0);
+    const cartTransactionTable = () => {
+        const cartTransactionColumns = [
+            { name: 'Id', key: 'id' },
+            { name: 'Amount', key: 'amount' },
+            { name: 'Tip', key: 'tip' },
+            { name: 'Status', key: 'status' },
+            { name: 'Payment', key: 'payment_action' },
+            { name: 'Refund', key: 'refund_action' }
+        ]
+
+        if (!cartTransactions) {
+            return <div>Loading...</div>;
+        }
+
+        const cartTransactionRows = cartTransactions.map(transaction => ({
+            id: transaction.id,
+            amount: `${transaction.amount.toFixed(2)} €`,
+            tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
+            status: TransactionStatusEnum[transaction.status] || 'Unknown',
+            payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+                <Button onClick={async () => await handlePayment({ cartId: cartId, id: transaction.id })}>
+                    Pay
+                </Button>
+            ) : null,
+            refund_action: ((transaction.status === TransactionStatusEnum.SUCEEDED) && allTransactionsSucceededOrRefunded(cartTransactions)) || transaction.status === TransactionStatusEnum.CASH ? (
+                <Button onClick={async () => await handleRefund(transaction.id, { cartId: cartId, isCard: transaction.status === TransactionStatusEnum.SUCEEDED ? true : false })}>
+                    Refund
+                </Button>
+            ) : null
+        }));
+
+        return (
+            <Table
+                columns={cartTransactionColumns}
+                rows={cartTransactionRows}
+            />
+        )
+    }
+
+    const allTransactionsSucceededOrRefunded = (transactions: Transaction[]): boolean => {
+        return transactions.every(transaction => transaction.status === TransactionStatusEnum.SUCEEDED || transaction.status === TransactionStatusEnum.REFUNDED);
+    };
 
     const handleProductItemCreate = async (formPayload: { productId: number; quantity: string; modificationIds: number[] }) => {
         const { productId, quantity, modificationIds } = formPayload
@@ -238,65 +285,42 @@ const CartPage = (props: Props) => {
     }
 
     const handleCartDiscount = async (formPayload: FormPayload) => {
-        const { discount } = formPayload
-        const discountParsed = parseInt(discount)
-        if (isNaN(discountParsed)) {
-            console.log('Invalid input')
-            return
+        const { code } = formPayload;
+        console.log(code);
+        if (cart === undefined)
+            throw new Error("Cart data could not be loaded.");
+
+        if (cart.status !== CartStatusEnum.IN_PROGRESS) {
+            return Promise.resolve({
+                error: 'Cannot apply discount to not in progress cart.'
+            })
         }
-        const response = await CartDiscountApi.applyDiscount(cart!, discountParsed)
-        if (!response.result?.discount) {
+
+        const response = await CartDiscountApi.applyCartDiscount(cart.id, { discountCode: code });
+        if (response.error) {
             console.log(response.error)
             return
         }
-        setCartDiscount(response.result.discount)
-    }
-
-    const handleFullCheckout = async () => {
-        var body: FullCheckoutBody = {
-            cartId: 4,
-            employeeId: 0,
-            tip: 2000,
-            cartItems: [
-                { name: "a", description: "a", price: 30000, quantity: 3, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" },
-                { name: "a", description: "a", price: 10000, quantity: 5, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" },
-                { name: "a", description: "a", price: 10000, quantity: 5, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl0rLoMFLWEVGdIiykS1awSTF7yA3rB5C_eQ&s" }
-            ]
-        };
-
-        let response = await PaymentApi.fullCheckout(body);
         
         if (response.result) {
-            const stripe = await loadStripe(response.result.pubKey);
+            let discount = response.result.isPercentage
+                ? totalPrice * response.result.value
+                : response.result.value;
 
-            if (stripe == null)
-                throw new Error("Payment couldn't be started.");
-
-            stripe.redirectToCheckout({ sessionId: response.result.sessionId });    
-        } else {
-            throw new Error(response.error)
+            setCartDiscount(discount);
         }
     }
-    
-    const handlePartialCheckoutInitialization = async (body: InitPartialCheckoutBody): Promise<PartialTransaction[] | undefined> => {
-        let response = await PaymentApi.initializePartialCheckout(body);
 
-        return response.result
-    }
+    const handleTip = async (formPayload: FormPayload) => {
+        const { tip } = formPayload;
+        const tipParsed = parseInt(tip);
 
-    const handlePartialTransaction = async (body: PartialCheckoutBody) => {
-        let response = await PaymentApi.partialCheckout(body);
-
-        if (response.result) {
-            const stripe = await loadStripe(response.result.pubKey);
-
-            if (stripe == null)
-                throw new Error("Payment couldn't be started.");
-
-            stripe.redirectToCheckout({ sessionId: response.result.sessionId });    
-        } else {
-            throw new Error(response.error)
+        if (isNaN(tipParsed)) {
+            console.log('Invalid input')
+            return
         }
+
+        setAppliedTip(tipParsed);
     }
 
     const sideDrawerContent = () => {
@@ -345,8 +369,108 @@ const CartPage = (props: Props) => {
                     Add service
                 </Button>
             </div>
+            <div>
+                <h4>Related Transactions</h4>
+                { cartTransactionTable() }
+            </div>
         </div>
     )
+
+    const handleCartCheckout = () => {
+        const splitCountValue = splitCountRef.current?.value.trim();
+        const splitCountParsed = splitCountValue ? parseInt(splitCountValue) : null;
+
+        if (splitCountParsed === null || splitCountParsed < 1) {
+            console.log('Invalid input for split transaction provided');
+            return;
+        }
+
+        if (splitCountParsed > 5) {
+            console.log('Cannot process more than 5 split transactions');
+            return;
+        }
+
+        if (splitCountParsed === 1 || splitCountValue === '') {
+            console.log('Triggering single checkout');
+            let body: FullCheckoutBody = {
+                cartId: 1,
+                employeeId: 6,
+                tip: appliedTip,
+                cartItems: [
+                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
+                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
+                ]
+            };
+            handlePayment(body);
+        } else {
+            if (totalPrice - cartDiscount < 30) {
+                console.log('Cannot process split transaction if the total sum is less than 30 €');
+            } else {
+                console.log('Triggering multiple checkout');
+                let body: InitPartialCheckoutBody = {
+                    cartId: 1,
+                    employeeId: 6,
+                    tip: appliedTip,
+                    paymentCount: splitCountParsed,
+                    cartItems: [
+                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
+                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
+                    ]
+                };
+
+                handleSplitPaymentInit(body);
+            }
+        }
+    }
+
+    const handlePayment = async (body: FullCheckoutBody | PartialCheckoutBody) => {
+        let response = 'employeeId' in body
+            ? await PaymentApi.fullCheckout(body as FullCheckoutBody)
+            : await PaymentApi.partialCheckout(body as PartialCheckoutBody);
+
+        if (response.error) {
+            alert("Payment session was not created.");
+            return;
+        }
+
+        if (response.result) {
+            let stripe = await loadStripe(response.result.pubKey);
+            
+            if (!stripe) {
+                alert("Stripe was not launched.");
+            }
+
+            let result = await stripe?.redirectToCheckout({ sessionId: response.result.sessionId });
+
+            if (!result) {
+                console.log(result);
+                alert("Transaction failed.");
+            }
+        }
+    }
+
+    const handleSplitPaymentInit = async (body: InitPartialCheckoutBody) => {       
+        let response = await PaymentApi.initializePartialCheckout(body);
+
+        if (response.error) {
+            alert("Payments were not initialized.");
+            return;
+        }
+    }
+
+    const handleRefund = async (id: DateTimeWithMicroseconds, body: RefundBody) => {
+        let response = await PaymentApi.refundPayment(id, body);
+
+        if (response.error) {
+            alert("Failed to issue refund.");
+            return;
+        }
+        
+        if (response.result) {
+            let refundedTransaction = response.result;
+            setCartTransactions(cartTransactions?.map((value) => value.id === id ? refundedTransaction : value));
+        }
+    }
 
     return (
         <div className={styles.page}>
@@ -357,11 +481,22 @@ const CartPage = (props: Props) => {
                     <h4>Cart Discount</h4>
                     <DynamicForm
                         inputs={{
-                            discount: { label: 'Discount', placeholder: 'Enter discount amount:', type: 'number' },
+                            code: { label: 'Discount', placeholder: 'Enter discount code:', type: 'string' },
                         }}
                         onSubmit={(formPayload) => handleCartDiscount(formPayload)}
                     >
                         <DynamicForm.Button>Apply Discount</DynamicForm.Button>
+                    </DynamicForm>
+                </div>
+                <div className={styles.discount_container}>
+                    <h4>Apply a tip</h4>
+                    <DynamicForm
+                        inputs={{
+                            tip: { label: 'Tip', placeholder: 'Enter tip amount:', type: 'number' },
+                        }}
+                        onSubmit={(formPayload) => handleTip(formPayload)}
+                    >
+                        <DynamicForm.Button>Apply Tip</DynamicForm.Button>
                     </DynamicForm>
                 </div>
                 <div className={styles.summary_container}>
@@ -370,18 +505,22 @@ const CartPage = (props: Props) => {
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
                         <p>{`Total: ${(totalPrice - cartDiscount).toFixed(2)} €`}</p>
-                        <Button
-                            onClick={async () => await handleFullCheckout()}
-                            disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
-                        >
-                            Checkout
-                        </Button>
-                        <Button
-                            // onClick={handlePartialCheckoutInitialization()}
-                            disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
-                        >
-                            Split bill
-                        </Button>
+                        <div className={styles.split_checkout}>
+                            <Button
+                                onClick={handleCartCheckout}
+                                disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
+                            >
+                                Checkout
+                            </Button>
+                            <input
+                                type="number"
+                                placeholder="Number of people"
+                                min="1"
+                                className={styles.split_input}
+                                disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
+                                ref={splitCountRef}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

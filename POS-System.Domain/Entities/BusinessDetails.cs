@@ -10,6 +10,5 @@
         public required string Street { get; set; }
         public required int HouseNumber { get; set; }
         public required int? FlatNumber { get; set; }
-
     }
 }

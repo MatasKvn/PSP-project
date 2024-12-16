@@ -30,7 +30,7 @@ namespace POS_System.Business.Services
 
             transaction.Id = DateTime.UtcNow;
             transaction.TransactionRef = $"CASH_{cashRequest.TransactionRef}";
-            transaction.Status = TransactionStatusEnum.SUCCEEDED;
+            transaction.Status = TransactionStatusEnum.CASH;
             await unitOfWork.TransactionRepository.CreateAsync(transaction, token);
             await unitOfWork.SaveChangesAsync(token);
 
@@ -55,7 +55,10 @@ namespace POS_System.Business.Services
             if (cart.Status != CartStatusEnum.COMPLETED)
                 throw new BadRequestException(ApplicationMessages.INVALID_REFUND_REQUEST);
 
-            var transaction = await unitOfWork.TransactionRepository.GetByIdDateTimeAsync(transactionId, token)
+            var transactions = await unitOfWork.TransactionRepository.GetAllByExpressionAsync(t => t.CartId == refundRequest.CartId && (t.Status == TransactionStatusEnum.CASH || t.Status == TransactionStatusEnum.SUCCEEDED), token)
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
+
+            var transaction = transactions.FirstOrDefault(t => t.Id == transactionId)
                 ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             if (refundRequest.IsCard)
@@ -70,13 +73,16 @@ namespace POS_System.Business.Services
             }
             
             transaction.Status = TransactionStatusEnum.REFUNDED;
-            cart.Status = CartStatusEnum.REFUNDED;
+
+            if (transactions.Count == 1)
+                cart.Status = CartStatusEnum.REFUNDED;
+            
             await unitOfWork.SaveChangesAsync(token);
 
             return mapper.Map<TransactionResponse>(transaction);
         }
 
-        public async Task<CheckoutResponse> FullCheckoutAsync(CheckoutRequest checkoutRequest, string referer, CancellationToken token)
+        public async Task<CheckoutResponse> FullCheckoutAsync(CheckoutRequest checkoutRequest, CancellationToken token)
         {   
             var cart = await cartService.GetByIdAsync(checkoutRequest.CartId, token);
 
@@ -129,7 +135,7 @@ namespace POS_System.Business.Services
             var options = new SessionCreateOptions
             {
                 SuccessUrl = $"{apiUrl}/api/payments/full-checkout-success?transactionDate={transactionDate:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}&sessionId=" + "{CHECKOUT_SESSION_ID}",
-                CancelUrl = $"{apiUrl}/api/payments/checkout-fail?transactionDate={transactionDate:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}",
+                CancelUrl = $"{apiUrl}/api/payments/checkout-fail?transactionDate={transactionDate:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}&sessionId=" + "{CHECKOUT_SESSION_ID}",
                 PaymentMethodTypes = [ "card" ],
                 Mode = "payment",
                 LineItems = lineItems
@@ -228,7 +234,7 @@ namespace POS_System.Business.Services
             var options = new SessionCreateOptions
             {
                 SuccessUrl = $"{apiUrl}/api/payments/partial-checkout-success?transactionDate={transactionToExec.Id:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}&sessionId=" + "{CHECKOUT_SESSION_ID}",
-                CancelUrl = $"{apiUrl}/api/payments/checkout-fail?transactionDate={transactionToExec.Id:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}",
+                CancelUrl = $"{apiUrl}/api/payments/checkout-fail?transactionDate={transactionToExec.Id:MM/dd/yyyy HH:mm:ss.fffffff}&cartId={checkoutRequest.CartId}&sessionId=" + "{CHECKOUT_SESSION_ID}",
                 PaymentMethodTypes = [ "card" ],
                 Mode = "payment",
                 LineItems = 
@@ -286,7 +292,7 @@ namespace POS_System.Business.Services
 
         public async Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId)
         {
-            var transactionsTask = unitOfWork.TransactionRepository.GetAllByExpressionAsync(t => t.CartId == cartId && t.Status != TransactionStatusEnum.SUCCEEDED);
+            var transactionsTask = unitOfWork.TransactionRepository.GetAllByExpressionAsync(t => t.CartId == cartId && t.Status == TransactionStatusEnum.PENDING);
             var sessionService = new SessionService();
 
             var session = await sessionService.GetAsync(sessionId);
@@ -310,7 +316,7 @@ namespace POS_System.Business.Services
             var transaction = await unitOfWork.TransactionRepository.GetByIdDateTimeAsync(transactionDate);
             
             transaction!.TransactionRef = sessionId;
-            transaction.Status = TransactionStatusEnum.FAILED;
+            transaction.Status = TransactionStatusEnum.PENDING;
 
             var cart = await cartTask;
             cart!.Status = CartStatusEnum.PENDING;

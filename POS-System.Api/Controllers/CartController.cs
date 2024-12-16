@@ -36,5 +36,14 @@ namespace POS_System.Api.Controllers
             await _cartService.DeleteCartAsync(id, cancellationToken);
             return Ok();
         }
+
+        
+        [HttpPatch("{id:int}/discount")]
+        public async Task<IActionResult> ApplyDiscountToCart([FromRoute] int id, [FromBody] ApplyDiscountRequest discountRequest, CancellationToken cancellationToken)
+        {
+            var response = await _cartService.ApplyDiscountForCartAsync(id, discountRequest, cancellationToken);
+            
+            return Ok(response);
+        }
     }
 }

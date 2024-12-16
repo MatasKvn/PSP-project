@@ -35,7 +35,7 @@ namespace POS_System.Api.Controllers
         [HttpPost("full-checkout")]
         public async Task<IActionResult> FullCheckoutAsync([FromBody] CheckoutRequest checkoutRequest, CancellationToken token = default)
         {
-            var response = await paymentService.FullCheckoutAsync(checkoutRequest, Request.Headers.Referer, token);
+            var response = await paymentService.FullCheckoutAsync(checkoutRequest, token);
 
             return Ok(response);
         }

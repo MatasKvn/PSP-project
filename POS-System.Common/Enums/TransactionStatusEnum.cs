@@ -5,5 +5,6 @@ public enum TransactionStatusEnum
     SUCCEEDED,
     FAILED,
     PENDING,
-    REFUNDED
+    REFUNDED,
+    CASH
 }

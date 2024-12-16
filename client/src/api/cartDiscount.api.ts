@@ -1,17 +1,15 @@
-import { FetchResponse } from '@/types/fetch'
-import { Cart, CartStatusEnum } from './../types/models'
+import { FetchResponse, HTTPMethod } from '@/types/fetch'
+import { CartDiscount, CartDiscountBody } from './../types/models'
+import { apiBaseUrl, defaultHeaders } from '@/constants/api';
+import { fetch } from '@/utils/fetch';
+
 export default class CartDiscountApi {
-    static async applyDiscount(cart: Cart, ammout: number): Promise<FetchResponse<Cart>> {
-        if (cart.status !== CartStatusEnum.PENDING) {
-            return Promise.resolve({
-                error: 'Cannot apply discount to non-pending cart.'
-            })
-        }
-        return Promise.resolve({
-            result: {
-                ...cart,
-                discount: ammout
-            }
-        })
+    static async applyCartDiscount(cartId: number, body: CartDiscountBody): Promise<FetchResponse<CartDiscount>> {
+        return await fetch({
+            url: `${apiBaseUrl}/carts/${cartId}/discount`,
+            method: HTTPMethod.PATCH,
+            headers: defaultHeaders,
+            body: JSON.stringify(body)
+        });
     }
 }

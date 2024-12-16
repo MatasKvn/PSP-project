@@ -1,3 +1,11 @@
+
+export type DateTimeWithMicroseconds = string;
+
+export type RefundBody = {
+    cartId: number,
+    isCard: boolean
+}
+
 export type Checkout = {
     sessionId: string,
     pubKey: string
@@ -11,11 +19,10 @@ export type PartialTransaction = {
     status: string
 }
 
-export type FullCheckoutBody = {
+export interface FullCheckoutBody {
     cartId: number,
     employeeId: number,
     tip?: number,
-    giftCardCode?: string,
     cartItems: CheckoutCartItem[],
 }
 
@@ -31,7 +38,7 @@ export type CheckoutCartItem = {
     imageURL: string
 }
 
-export type PartialCheckoutBody = {
+export interface PartialCheckoutBody {
     cartId: number,
-    id: string
+    id: DateTimeWithMicroseconds
 }

@@ -1,16 +1,45 @@
 
+export type DateTimeWithMicroseconds = string;
+
 export type Cart = {
-    id: number
-    dateCreated: Date
-    status: CartStatusEnum
-    employeeVersionId: number
-    discount?: number
+    id: number,
+    dateCreated: Date,
+    status: CartStatusEnum,
+    employeeVersionId: number,
+    discount?: number,
+}
+
+export type CartDiscountBody = {
+    discountCode: string
+};
+
+export type CartDiscount = {
+    id: string,
+    value: number,
+    isPercentage: boolean
 }
 
 export enum CartStatusEnum {
     PENDING,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    REFUNDED
+}
+
+export type Transaction = {
+    id: DateTimeWithMicroseconds,
+    amount: number,
+    tip?: number,
+    transactionRef: string,
+    status: TransactionStatusEnum,
+}
+
+export enum TransactionStatusEnum {
+    SUCEEDED,
+    FAILED,
+    PENDING,
+    REFUNDED,
+    CASH
 }
 
 export const getCartStatusEnumString = (status: CartStatusEnum): string => {
@@ -21,6 +50,8 @@ export const getCartStatusEnumString = (status: CartStatusEnum): string => {
             return 'In Progress'
         case CartStatusEnum.COMPLETED:
             return 'Completed'
+        case CartStatusEnum.REFUNDED:
+            return 'Refunded'
     }
 }
 
@@ -103,6 +134,17 @@ export type Employee = {
     startDate: Date
     endDate?: Date
     accessibility: AccessibilityEnum
+}
+
+export type BusinessDetails = {
+    businessName: string
+    businessEmail: string
+    businessPhone: string
+    country: string
+    city: string
+    street: string
+    houseNumber: number
+    flatNumber?: number
 }
 
 export enum AccessibilityEnum {
