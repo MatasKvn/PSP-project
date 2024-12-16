@@ -1,4 +1,5 @@
 import { FetchParams, FetchResponse } from "@/types/fetch"
+import { defaultHeaders } from '@/constants/api'
 
 async function fetchWrapper({ url, method, headers, body }: FetchParams): Promise<FetchResponse<any>> {
     try {
@@ -28,3 +29,14 @@ async function fetchWrapper({ url, method, headers, body }: FetchParams): Promis
     }
 }
 export { fetchWrapper as fetch }
+
+export const getAuthorizedHeaders = () => {
+    const cookie = document.cookie.split(';').find(x => x.startsWith('jwtToken='))
+    const token = cookie?.slice('jwtToken='.length)
+    return {
+        ...defaultHeaders,
+        Authorization: `Bearer ${token}`
+    }
+}
+
+export const encodeDateToUrlString = (date: Date) => encodeURIComponent(date.toLocaleString('lt'))

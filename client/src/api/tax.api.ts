@@ -1,8 +1,7 @@
 import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { Product, Service, Tax } from '@/types/models'
-import { getAuthorizedHeaders } from '@/utils/auth'
-import { fetch } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders, encodeDateToUrlString } from '@/utils/fetch'
 
 const tax: Tax = {
     name: 'PVM',
@@ -62,14 +61,14 @@ export default class TaxApi {
 
     static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
         return fetch({
-            url: `${apiBaseUrl}/product/tax/${taxId}`,
+            url: `${apiBaseUrl}/product/tax/${taxId}?timeStamp=${encodeDateToUrlString(new Date())}`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
     }
     static async getServicesByTaxId(taxId: number): Promise<FetchResponse<Service[]>> {
         return fetch({
-            url: `${apiBaseUrl}/services/tax/${taxId}`,
+            url: `${apiBaseUrl}/services/tax/${taxId}?timeStamp=${encodeDateToUrlString(new Date())}`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
