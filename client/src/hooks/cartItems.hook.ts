@@ -23,7 +23,7 @@ const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<st
     const discountsReponse = await ItemDiscountApi.getCurrentDiscountsByProductId(cartItem.productId)
     if (!discountsReponse.result) return discountsReponse.error || 'Failed to get discounts'
     const discounts = discountsReponse.result
-    const taxesResponse = await TaxApi.getTaxesByProductId(cartItem.productId)
+    const taxesResponse = await TaxApi.getProductsByTaxId(cartItem.productId)
     if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
     const taxes = taxesResponse.result
 
@@ -50,7 +50,7 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
     const discountsResponse = await ItemDiscountApi.getCurrentDiscountByServiceId(cartItem.serviceId)
     if (!discountsResponse.result) return discountsResponse.error || 'Failed to get discounts'
     const discounts = discountsResponse.result
-    const taxesResponse = await TaxApi.getTaxesByServiceId(cartItem.serviceId)
+    const taxesResponse = await TaxApi.getServicesByTaxId(cartItem.serviceId)
     if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
     const taxes = taxesResponse.result
 

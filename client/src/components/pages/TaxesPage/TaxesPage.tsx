@@ -155,6 +155,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
             </div>
             <SideDrawer ref={sideDrawerRef}>
                 <TaxForm
+                    selectedTax={selectedTax}
                     actionName={actionType}
                     onSubmit={handleSubmit}
                 />

@@ -1,8 +1,10 @@
 import DynamicForm from '@/components/shared/DynamicForm'
 import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import { Product, ProductModification, Service, Tax } from '@/types/models'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AllItemView from '../AllItemView'
+import TaxApi from '@/api/tax.api'
+import ProductApi from '@/api/product.api'
 
 export type TaxFormPayload = {
     name: string,
@@ -18,9 +20,33 @@ type Props = {
     onSubmit: (data: TaxFormPayload) => void
 }
 
-const TaxForm = ({ actionName, onSubmit }: Props) => {
+const TaxForm = ({ selectedTax, actionName, onSubmit }: Props) => {
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
     const [selectedServices, setSelectedServices] = useState<Service[]>([])
+
+    useEffect(() => {
+        if (!selectedTax || actionName === 'Create') return
+        const getSelectedTaxItems = async () => {
+            const productResponse = await Promise.all([
+                TaxApi.getProductsByTaxId(selectedTax.id),
+                TaxApi.getServicesByTaxId(selectedTax.id)
+            ])
+            const { result: products, error: productsErr } = productResponse[0]
+            const { result: services, error: servicesErr } = productResponse[1]
+            if (!products) {
+                console.log(productsErr)
+                return
+            }
+            if (!services) {
+                console.log(servicesErr)
+                return
+            }
+            setSelectedProducts(products)
+            setSelectedServices(services)
+        }
+        getSelectedTaxItems()
+
+    }, [selectedTax, actionName])
 
     const handleTaxUpdate = (formPayload: FormPayload) => {
         const { name, rate, isPercentage } = formPayload

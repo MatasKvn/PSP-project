@@ -1,6 +1,6 @@
 import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
-import { Tax } from '@/types/models'
+import { Product, Service, Tax } from '@/types/models'
 import { getAuthorizedHeaders } from '@/utils/auth'
 import { fetch } from '@/utils/fetch'
 
@@ -60,14 +60,18 @@ export default class TaxApi {
         })
     }
 
-    static async getTaxesByProductId(productId: number): Promise<FetchResponse<Tax[]>> {
-        return Promise.resolve({
-            result: [tax]
+    static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/product/tax/${taxId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
         })
     }
-    static async getTaxesByServiceId(serviceId: number): Promise<FetchResponse<Tax[]>> {
-        return Promise.resolve({
-            result: [tax]
+    static async getServicesByTaxId(taxId: number): Promise<FetchResponse<Service[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/services/tax/${taxId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
         })
     }
 }
