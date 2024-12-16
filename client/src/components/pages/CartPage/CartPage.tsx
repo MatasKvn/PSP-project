@@ -200,7 +200,8 @@ const CartPage = (props: Props) => {
             { name: 'Amount', key: 'amount' },
             { name: 'Tip', key: 'tip' },
             { name: 'Status', key: 'status' },
-            { name: 'Payment', key: 'payment_action' },
+            { name: 'Card payment', key: 'card_payment_action' },
+            { name: 'Cash payment', key: 'cash_payment_action' },
             { name: 'Refund', key: 'refund_action' }
         ]
 
@@ -213,9 +214,14 @@ const CartPage = (props: Props) => {
             amount: transaction.amount,
             tip: transaction.tip,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
-            payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+            card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
                 <Button>
-                    Pay
+                    Pay by card
+                </Button>
+            ) : null,
+            cash_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+                <Button>
+                    Pay by cash
                 </Button>
             ) : null,
             refund_action: transaction.status === TransactionStatusEnum.SUCEEDED && allTransactionsSucceededOrRefunded(cartTransactions) ? (
