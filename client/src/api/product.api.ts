@@ -1,13 +1,13 @@
 import { Product } from './../types/models'
 import { apiBaseUrl, defaultHeaders } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
-import { fetch } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
 export default class ProductApi {
     static async getAllProducts(pageNumber: number, onlyActive?: boolean): Promise<FetchResponse<PagedResponse<Product>>> {
         return await fetch({
              url: `${apiBaseUrl}/product?pageNum=${pageNumber}&onlyActive=${onlyActive}`,
              method: HTTPMethod.GET,
-             headers: defaultHeaders
+             headers: getAuthorizedHeaders()
         })
     }
 
@@ -15,7 +15,7 @@ export default class ProductApi {
         return await fetch({
              url: `${apiBaseUrl}/product/${productId}`,
              method: HTTPMethod.GET,
-             headers: defaultHeaders
+             headers: getAuthorizedHeaders()
         })
     }
 
@@ -23,7 +23,7 @@ export default class ProductApi {
         return await fetch({
              url: `${apiBaseUrl}/product`,
              method: HTTPMethod.POST,
-             headers: defaultHeaders,
+             headers: getAuthorizedHeaders(),
              body: JSON.stringify(product)
         })
     }
@@ -32,7 +32,7 @@ export default class ProductApi {
         return await fetch({
              url: `${apiBaseUrl}/product/${productId}`,
              method: HTTPMethod.DELETE,
-             headers: defaultHeaders
+             headers: getAuthorizedHeaders()
         })
     }
 
@@ -40,7 +40,7 @@ export default class ProductApi {
         return await fetch({
              url: `${apiBaseUrl}/product/${productId}`,
              method: HTTPMethod.PUT,
-             headers: defaultHeaders,
+             headers: getAuthorizedHeaders(),
              body: JSON.stringify(product)
         })
     }

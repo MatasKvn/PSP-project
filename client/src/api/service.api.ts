@@ -1,6 +1,6 @@
 import { HTTPMethod, FetchResponse, PagedResponse } from '@/types/fetch'
 import { Service } from './../types/models'
-import { fetch } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
 import { apiBaseUrl, defaultHeaders } from '../constants/api'
 
 export default class ServiceApi {
@@ -8,7 +8,7 @@ export default class ServiceApi {
         return await fetch({
             url: `${apiBaseUrl}/services?pageNum=${pageNumber}`,
             method: HTTPMethod.GET,
-            headers: defaultHeaders
+            headers: getAuthorizedHeaders()
         })
     }
 
@@ -16,7 +16,7 @@ export default class ServiceApi {
         return await fetch({
             url: `${apiBaseUrl}/services/${id}`,
             method: HTTPMethod.GET,
-            headers: defaultHeaders
+            headers: getAuthorizedHeaders()
         })
     }
 
@@ -24,7 +24,7 @@ export default class ServiceApi {
         return await fetch({
             url: `${apiBaseUrl}/services`,
             method: HTTPMethod.POST,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(serviceDto)
         })
     }
@@ -33,7 +33,7 @@ export default class ServiceApi {
         return await fetch({
             url: `${apiBaseUrl}/services/${serviceDto.id}`,
             method: HTTPMethod.PUT,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(serviceDto)
         })
     }
@@ -42,7 +42,7 @@ export default class ServiceApi {
         return await fetch({
             url: `${apiBaseUrl}/services/${id}`,
             method: HTTPMethod.DELETE,
-            headers: defaultHeaders
+            headers: getAuthorizedHeaders()
         })
     }
 }
