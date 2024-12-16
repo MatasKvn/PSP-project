@@ -7,7 +7,7 @@ import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem } from '@/types/models'
+import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction } from '@/types/models'
 import { useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
@@ -16,6 +16,7 @@ import { FormPayload } from '@/components/shared/DynamicForm/DynamicForm'
 import CartDiscountApi from '@/api/cartDiscount.api'
 
 import styles from './CartPage.module.scss'
+import { useCartTransactions } from '../../../hooks/transactions.hook'
 
 type Props = {
     cartId: number
@@ -53,9 +54,12 @@ const calculateTaxesValue = (cartItem: RequiredCartItem) => {
 }
 
 const CartPage = (props: Props) => {
+    const splitCountRef = useRef<HTMLInputElement | null>(null);
+
     const { cartId, pageNumber } = props
 
     const { cart, setCart, isLoading: isCartLoading } = useCart(cartId)
+    const { cartTransactions, setCartTransactions, isLoading: isCartTransactionsLoading} = useCartTransactions(cartId)
 
     const isCartOpen = cart?.status === CartStatusEnum.PENDING
     const {
@@ -189,6 +193,49 @@ const CartPage = (props: Props) => {
 
     const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0)
 
+    const cartTransactionTable = () => {
+        const cartTransactionColumns = [
+            { name: 'Id', key: 'id' },
+            { name: 'Amount', key: 'amount' },
+            { name: 'Tip', key: 'tip' },
+            { name: 'Status', key: 'status' },
+            { name: 'Payment', key: 'payment_action' },
+            { name: 'Refund', key: 'refund_action' }
+        ]
+
+        if (!cartTransactions) {
+            return <div>Loading...</div>;
+        }
+
+        const cartTransactionRows = cartTransactions.map(transaction => ({
+            id: transaction.id,
+            amount: transaction.amount,
+            tip: transaction.tip,
+            status: TransactionStatusEnum[transaction.status] || 'Unknown',
+            payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
+                <Button>
+                    Pay
+                </Button>
+            ) : null,
+            refund_action: transaction.status === TransactionStatusEnum.SUCEEDED && allTransactionsSucceededOrRefunded(cartTransactions) ? (
+                <Button>
+                    Refund
+                </Button>
+            ) : null
+        }));
+
+        return (
+            <Table
+                columns={cartTransactionColumns}
+                rows={cartTransactionRows}
+            />
+        )
+    }
+
+    const allTransactionsSucceededOrRefunded = (transactions: Transaction[]): boolean => {
+        return transactions.every(transaction => transaction.status === TransactionStatusEnum.SUCEEDED || transaction.status === TransactionStatusEnum.REFUNDED);
+    };
+
     const handleProductItemCreate = async (formPayload: { productId: number; quantity: string; modificationIds: number[] }) => {
         const { productId, quantity, modificationIds } = formPayload
         const quantityParsed = parseInt(quantity)
@@ -250,8 +297,17 @@ const CartPage = (props: Props) => {
         setCartDiscount(response.result.discount)
     }
 
-    const handleCartCheckout = () => {
-        throw new Error('Checkout not implemented')
+    const handleTip = async (formPayload: FormPayload) => {
+        const { tip } = formPayload
+        const tipParsed = parseInt(tip)
+
+        if (isNaN(tipParsed)) {
+            console.log('Invalid input')
+            return
+        }
+
+        console.log('Placeholder for applying tip')
+        //setCartTip() ...
     }
 
     const sideDrawerContent = () => {
@@ -300,8 +356,47 @@ const CartPage = (props: Props) => {
                     Add service
                 </Button>
             </div>
+            <div>
+                <h4>Related Transactions</h4>
+                { cartTransactionTable() }
+            </div>
         </div>
     )
+
+    const handleCartCheckout = () => {
+        const splitCountValue = splitCountRef.current?.value.trim();
+        const splitCountParsed = splitCountValue ? parseInt(splitCountValue) : null;
+
+        if (splitCountParsed === null || splitCountParsed < 1) {
+            console.log('Invalid input for split transaction provided');
+            return;
+        }
+
+        if (splitCountParsed > 5) {
+            console.log('Cannot process more than 5 split transactions');
+            return;
+        }
+
+        if (splitCountParsed === 1 || splitCountValue === '') {
+            console.log('Triggering single checkout');
+            handleSinglePayment();
+        } else {
+            if (totalPrice - cartDiscount < 30) {
+                console.log('Cannot process split transaction if the total sum is less than 30 €');
+            } else {
+                console.log('Triggering multiple checkout');
+                handleSplitPayment(splitCountParsed);
+            }
+        }
+    }
+
+    const handleSinglePayment = () => {
+        throw new Error('Checkout not implemented')
+    }
+
+    const handleSplitPayment = (splitNum: number) => {
+        throw new Error('Split checkout not implemented')
+    }
 
     return (
         <div className={styles.page}>
@@ -319,18 +414,39 @@ const CartPage = (props: Props) => {
                         <DynamicForm.Button>Apply Discount</DynamicForm.Button>
                     </DynamicForm>
                 </div>
+                <div className={styles.discount_container}>
+                    <h4>Apply a tip</h4>
+                    <DynamicForm
+                        inputs={{
+                            tip: { label: 'Tip', placeholder: 'Enter tip amount:', type: 'number' },
+                        }}
+                        onSubmit={(formPayload) => handleTip(formPayload)}
+                    >
+                        <DynamicForm.Button>Apply Tip</DynamicForm.Button>
+                    </DynamicForm>
+                </div>
                 <div className={styles.summary_container}>
                     <h4>Checkout</h4>
                     <div>
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
                         <p>{`Total: ${(totalPrice - cartDiscount).toFixed(2)} €`}</p>
-                        <Button
-                            onClick={handleCartCheckout}
-                            disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
-                        >
-                            Checkout
-                        </Button>
+                        <div className={styles.split_checkout}>
+                            <Button
+                                onClick={handleCartCheckout}
+                                disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
+                            >
+                                Checkout
+                            </Button>
+                            <input
+                                type="number"
+                                placeholder="Number of people"
+                                min="1"
+                                className={styles.split_input}
+                                disabled={isCartLoading || isCartItemsLoading || !isCartOpen}
+                                ref={splitCountRef}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
