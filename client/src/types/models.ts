@@ -150,7 +150,7 @@ export type Tax = {
 
 export type ProductModification = {
     id: number
-    productId: number
+    productVersionId: number
     name: string
     description: string
     price: number

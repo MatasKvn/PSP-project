@@ -66,5 +66,13 @@ namespace POS_System.Api.Controllers
             var productModifications = await _productModificationService.GetProductModificationsLinkedToCartItemId(id, timeStamp, cancellationToken);
             return Ok(productModifications);
         }
+
+        [HttpGet("product/{id}")]
+        [Authorize(Policy = "ItemRead")]
+        public async Task<IActionResult> GetProductModificationsLinkedToProductId(int id, CancellationToken cancellationToken, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 0)
+        {
+            var productModifications = await _productModificationService.GetProductModificationsLinkedToProductId(pageSize, pageNumber, id, cancellationToken);
+            return Ok(productModifications);
+        }
     }
 }
