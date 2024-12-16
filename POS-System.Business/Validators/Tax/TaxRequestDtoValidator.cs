@@ -25,7 +25,7 @@ namespace POS_System.Business.Validators.Tax
                 .WithMessage(TaxValidationMessages.TaxRateFlatValueConstraint);
 
             RuleFor(x => x.IsPercentage)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage(TaxValidationMessages.TaxIsPercentageRequired);
         }
     }
