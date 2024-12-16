@@ -46,7 +46,7 @@ const ProductsPage = (props: Props) => {
                 id={product.id}
                 label={product.name}
                 description={product.description}
-                imageUrl={product.imageUrl}
+                imageUrl={product.imageURL}
                 price={product.price}
                 stock={product.stock}
                 isSelected={selectedProduct?.id === product.id}
@@ -93,7 +93,7 @@ const ProductsPage = (props: Props) => {
             description: productDescription,
             price: Number.parseInt(productPrice),
             stock: Number.parseInt(productStock),
-            imageUrl: productImageUrl,
+            imageURL: productImageUrl,
         })
         if (!response.result) {
             console.log(response.error)
@@ -141,7 +141,7 @@ const ProductsPage = (props: Props) => {
             description: productDescription || selectedProduct.description,
             price: isNaN(price) ? selectedProduct.price : price,
             stock: isNaN(stock) ? selectedProduct.stock : stock,
-            imageUrl: productImageUrl || selectedProduct.imageUrl,
+            imageURL: productImageUrl || selectedProduct.imageURL,
         })
         if (!response.result) {
             console.log(response.error)

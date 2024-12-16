@@ -88,7 +88,7 @@ export type Product = {
     description: string
     price: number
     dateModified: Date
-    imageUrl: string
+    imageURL: string
     stock: number
 }
 
@@ -163,6 +163,6 @@ export type Service = {
     description: string
     duration: number
     price: number
-    imageUrl: string
+    imageURL: string
     employeeId: number
 }
