@@ -74,6 +74,22 @@ export default class TaxApi {
             body: JSON.stringify(serviceIds)
         })
     }
+
+    static async getTaxesByProductId(productId: number): Promise<FetchResponse<Tax[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/item/${productId}?isProduct=true`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
+
+    static async getTaxesByServiceId(serviceId: number): Promise<FetchResponse<Tax[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/item/${serviceId}?isProduct=true`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
 }
 
 type CreateTaxRequest = Omit<Tax, 'id' | 'dateModified'>
