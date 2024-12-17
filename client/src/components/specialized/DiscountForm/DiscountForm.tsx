@@ -73,8 +73,8 @@ const DiscountForm = ({
                     description: { label: 'Description', placeholder: 'Enter description:', type: 'text' },
                     value: { label: 'Value', placeholder: 'Enter value:', type: 'number' },
                     isPercentage: { label: 'Percentage?', type: 'checkbox' },
-                    startDate: { label: 'Start Date', placeholder: 'Enter start date', type: 'date' },
-                    endDate: { label: 'End Date', placeholder: 'Enter end date', type: 'date' },
+                    startDate: { label: 'Start Date', placeholder: 'Enter start date', type: 'date', note: 'Date needs to be in the future.' },
+                    endDate: { label: 'End Date', placeholder: 'Enter end date', type: 'date', note: 'End date must be later than start date.' },
                 }}
                 onSubmit={handleTaxUpdate}
             >
