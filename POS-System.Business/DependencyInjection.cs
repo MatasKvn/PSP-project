@@ -10,9 +10,9 @@ using POS_System.Business.Dtos;
 using POS_System.Business.Logger;
 using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
+using POS_System.Business.Services.Services;
 using POS_System.Business.Utils;
-using POS_System.Data.Repositories;
-using POS_System.Data.Repositories.Interfaces;
+using Stripe;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -20,6 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddBusinessServices(this IServiceCollection services, IConfiguration configuration)
         {
+            StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+
             var secretKey = TryGetConfigValue(configuration, "POSJwtSecretKey");
             var emailConfig = configuration
                 .GetSection("EmailConfiguration")
@@ -73,13 +75,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.AddPolicy("GiftCardRead", policy => policy.RequireClaim("GiftCardRead"));
                 options.AddPolicy("CartItemWrite", policy => policy.RequireClaim("CartItemWrite"));
                 options.AddPolicy("CartItemRead", policy => policy.RequireClaim("CartItemRead"));
+                options.AddPolicy("ItemDiscountRead", policy => policy.RequireClaim("ItemDiscountRead"));
+                options.AddPolicy("ItemDiscountWrite", policy => policy.RequireClaim("ItemDiscountWrite"));
+                options.AddPolicy("BusinessDetailsRead", policy => policy.RequireClaim("BusinessDetailsRead"));
+                options.AddPolicy("BusinessDetailsWrite", policy => policy.RequireClaim("BusinessDetailsWrite"));
             });
 
             services.AddScoped(typeof(IManyToManyService<,,>), typeof(ManyToManyService<,,>));
-            services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<ITaxService, POS_System.Business.Services.TaxService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductModificationService, ProductModificationService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductService, POS_System.Business.Services.ProductService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IGiftCardService, GiftCardService>();
             services.AddScoped<IEmployeeeService, EmployeeService>();
@@ -89,6 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IServiceReservationService, ServiceReservationService>();
             services.AddScoped<IItemDiscountService, ItemDiscountService>();
             services.AddScoped<ICartDiscountService, CartDiscountService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             services.Configure<ApplicationLoggerOptions>(
                 configuration.GetSection("FileProvider"));

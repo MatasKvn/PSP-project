@@ -15,7 +15,7 @@ export const useProducts = (pageNumber: number | undefined, compareFn?: (a: Prod
                 return
             }
             console.log('products fetched')
-            const response = await ProductApi.getAllProducts(pageNumber)
+            const response = await ProductApi.getAllProducts(pageNumber, true)
             if (response.result) {
                 const products = PagedResponseMapper.fromPageResponse(response.result!)
                 if (compareFn) products.sort(compareFn)

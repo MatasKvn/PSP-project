@@ -73,6 +73,10 @@ namespace POS_System.Business.AutoMapper
             //Cart discount
             CreateMap<CartDiscountRequest, CartDiscount>();
             CreateMap<CartDiscount, CartDiscountResponse>();
+
+            // Transaction
+            CreateMap<Transaction, TransactionResponse>();
+            CreateMap<CashRequest, Transaction>();
         }
     }
 }

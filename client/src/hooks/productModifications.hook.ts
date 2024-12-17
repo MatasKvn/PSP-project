@@ -15,7 +15,7 @@ export const useProductModifications = (productId: number | undefined, pageNumbe
                 return
             }
             const response = productId === undefined ?
-                await ProductModificationApi.getAll(pageNumber)
+                await ProductModificationApi.getAll(pageNumber, true)
                 :
                 await ProductModificationApi.getByProductId(productId, pageNumber)
             console.log(response)

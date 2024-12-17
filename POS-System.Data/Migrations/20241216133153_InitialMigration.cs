@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,35 +67,12 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardDetails",
-                columns: table => new
-                {
-                    Id = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    HolderName = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
-                    ExpireDate = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: false),
-                    CardDigits = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardDetails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CartDiscounts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CartDiscountId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:IdentitySequenceOptions", "'1', '1', '', '', 'False', '1'")
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<int>(type: "integer", nullable: false),
-                    IsPercentage = table.Column<bool>(type: "boolean", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Version = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsPercentage = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,27 +80,12 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GiftCardDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GiftCardId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GiftCardDetails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GiftCards",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Value = table.Column<int>(type: "integer", nullable: false),
-                    Code = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false)
+                    Value = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -323,28 +285,6 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EmployeeVersionId = table.Column<int>(type: "integer", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Carts_AspNetUsers_EmployeeVersionId",
-                        column: x => x.EmployeeVersionId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TimeSlots",
                 columns: table => new
                 {
@@ -363,6 +303,34 @@ namespace POS_System.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EmployeeVersionId = table.Column<int>(type: "integer", nullable: false),
+                    CartDiscountId = table.Column<string>(type: "text", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Carts_AspNetUsers_EmployeeVersionId",
+                        column: x => x.EmployeeVersionId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Carts_CartDiscounts_CartDiscountId",
+                        column: x => x.CartDiscountId,
+                        principalTable: "CartDiscounts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -547,26 +515,22 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartOnCartDiscounts",
+                name: "Transactions",
                 columns: table => new
                 {
-                    LeftEntityId = table.Column<int>(type: "integer", nullable: false),
-                    RightEntityId = table.Column<int>(type: "integer", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    Id = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CartId = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    Tip = table.Column<int>(type: "integer", nullable: true),
+                    TransactionRef = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartOnCartDiscounts", x => new { x.LeftEntityId, x.RightEntityId, x.StartDate });
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartOnCartDiscounts_CartDiscounts_RightEntityId",
-                        column: x => x.RightEntityId,
-                        principalTable: "CartDiscounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartOnCartDiscounts_Carts_LeftEntityId",
-                        column: x => x.LeftEntityId,
+                        name: "FK_Transactions_Carts_CartId",
+                        column: x => x.CartId,
                         principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -627,36 +591,6 @@ namespace POS_System.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    Id = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CardId = table.Column<int>(type: "integer", nullable: false),
-                    CardDetailsId = table.Column<int>(type: "integer", nullable: false),
-                    CartId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<int>(type: "integer", nullable: false),
-                    Tip = table.Column<int>(type: "integer", nullable: false),
-                    TransactionRef = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    CartItemId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Transactions_CartItems_CartItemId",
-                        column: x => x.CartItemId,
-                        principalTable: "CartItems",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Transactions_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "BirthDate", "ConcurrencyStamp", "Email", "EmailConfirmed", "EmployeeId", "EndDate", "FirstName", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StartDate", "TwoFactorEnabled", "UserName", "Version" },
@@ -670,25 +604,13 @@ namespace POS_System.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "GiftCards",
-                columns: new[] { "Id", "Code", "Date", "Value" },
-                values: new object[,]
-                {
-                    { 1, "CARD100", new DateOnly(2024, 1, 1), 100 },
-                    { 2, "CARD150", new DateOnly(2024, 2, 15), 150 },
-                    { 3, "CARD200", new DateOnly(2024, 3, 20), 200 },
-                    { 4, "CARD050", new DateOnly(2024, 4, 10), 50 },
-                    { 5, "CARD250", new DateOnly(2024, 5, 5), 250 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "ItemDiscounts",
                 columns: new[] { "Id", "Description", "EndDate", "IsDeleted", "IsPercentage", "ItemDiscountId", "StartDate", "Value", "Version" },
                 values: new object[,]
                 {
                     { 1, "Desc1", null, true, true, 1, null, 12, new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8825) },
-                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8827) },
+                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6292) },
+                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6298) },
                     { 4, "Desc1 Update", null, true, true, 1, null, 18, new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -727,13 +649,13 @@ namespace POS_System.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Carts",
-                columns: new[] { "Id", "DateCreated", "EmployeeVersionId", "IsDeleted", "Status" },
+                columns: new[] { "Id", "CartDiscountId", "DateCreated", "EmployeeVersionId", "IsDeleted", "Status" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, false, 0 },
-                    { 2, new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, false, 2 },
-                    { 3, new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, false, 1 },
-                    { 4, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, false, 0 }
+                    { 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, false, 0 },
+                    { 2, null, new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, false, 2 },
+                    { 3, null, new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, false, 1 },
+                    { 4, null, new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, false, 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -753,10 +675,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8795) },
-                    { 2, 1, true, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8799) },
-                    { 3, 2, false, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8799) },
-                    { 4, 3, true, new DateTime(2024, 12, 10, 21, 4, 14, 623, DateTimeKind.Utc).AddTicks(8800) }
+                    { 1, 1, true, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6170) },
+                    { 2, 1, true, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6180) },
+                    { 3, 2, false, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6183) },
+                    { 4, 3, true, new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6186) }
                 });
 
             migrationBuilder.InsertData(
@@ -813,9 +735,9 @@ namespace POS_System.Data.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartOnCartDiscounts_RightEntityId",
-                table: "CartOnCartDiscounts",
-                column: "RightEntityId");
+                name: "IX_Carts_CartDiscountId",
+                table: "Carts",
+                column: "CartDiscountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_EmployeeVersionId",
@@ -884,11 +806,6 @@ namespace POS_System.Data.Migrations
                 name: "IX_Transactions_CartId",
                 table: "Transactions",
                 column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_CartItemId",
-                table: "Transactions",
-                column: "CartItemId");
         }
 
         /// <inheritdoc />
@@ -910,16 +827,7 @@ namespace POS_System.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CardDetails");
-
-            migrationBuilder.DropTable(
-                name: "CartOnCartDiscounts");
-
-            migrationBuilder.DropTable(
                 name: "EmployeeOnServices");
-
-            migrationBuilder.DropTable(
-                name: "GiftCardDetails");
 
             migrationBuilder.DropTable(
                 name: "GiftCards");
@@ -949,9 +857,6 @@ namespace POS_System.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CartDiscounts");
-
-            migrationBuilder.DropTable(
                 name: "ProductModifications");
 
             migrationBuilder.DropTable(
@@ -964,10 +869,10 @@ namespace POS_System.Data.Migrations
                 name: "Taxes");
 
             migrationBuilder.DropTable(
-                name: "TimeSlots");
+                name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "TimeSlots");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -977,6 +882,9 @@ namespace POS_System.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "CartDiscounts");
         }
     }
 }

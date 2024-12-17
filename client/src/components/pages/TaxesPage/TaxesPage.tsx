@@ -31,7 +31,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
         productIds,
         serviceIds,
     }: TaxFormPayload) => {
-        const taxResponse = await TaxApi.createTax({ isPercentage, name, rate})
+        const taxResponse = await TaxApi.createTax({ isPercentage, name, rate })
         const { result: tax } = taxResponse
         if (!tax) {
             console.log(taxResponse.error)
@@ -118,6 +118,8 @@ const TaxesPage = ({ pageNumber }: Props) => {
             <Table
                 columns={columns}
                 rows={rows}
+                isLoading={isLoading}
+                errorMsg={errorMsg}
             />
         )
     }
@@ -155,6 +157,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
             </div>
             <SideDrawer ref={sideDrawerRef}>
                 <TaxForm
+                    selectedTax={selectedTax}
                     actionName={actionType}
                     onSubmit={handleSubmit}
                 />

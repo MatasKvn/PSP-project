@@ -27,3 +27,18 @@
     display: inline-block;
     margin: 0 auto;
 }
+
+.split_checkout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.split_input {
+    width: 100px;
+    font-size: 1rem;
+    border-color: $light-grey;
+    padding: .5em;
+    border-width: 2px;
+    border-radius: 5px;
+}

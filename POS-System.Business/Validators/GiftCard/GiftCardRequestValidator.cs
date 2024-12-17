@@ -16,12 +16,6 @@ namespace POS_System.Business.Validators.GiftCard
             RuleFor(x => x.Value)
                 .GreaterThan(0)
                 .WithMessage(GiftCardValidationMessages.ValueMustBePositive);
-
-            RuleFor(x => x.Code)
-                .NotEmpty()
-                .WithMessage(GiftCardValidationMessages.CodeRequired)
-                .Length(GiftCardValidationConstants.CodeMinLength, GiftCardValidationConstants.CodeMaxLength)
-                .WithMessage(GiftCardValidationMessages.CodeLengthInvalid);
         }
     }
 }

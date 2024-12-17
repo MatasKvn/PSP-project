@@ -41,7 +41,7 @@ const ServicesView = (props: Props) => {
                         type='service'
                         id={service.id}
                         description={service.description}
-                        imageUrl={service.imageUrl}
+                        imageUrl={service.imageURL}
                         label={service.name}
                         price={service.price}
                         isSelected={selectedServices.some((selectedServices) => selectedServices.id === service.id)}

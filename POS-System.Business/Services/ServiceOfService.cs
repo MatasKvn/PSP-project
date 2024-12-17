@@ -16,7 +16,8 @@ namespace POS_System.Business.Services
     {
         public async Task<PagedResponse<ServiceResponse>> GetAllServicesAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
-            var (services, totalCount) = await _unitOfWork.ServiceRepository.GetAllWithPaginationAsync(
+            var (services, totalCount) = await _unitOfWork.ServiceRepository.GetByExpressionWithIncludesAndPaginationAsync(
+                x => x.IsDeleted == false,
                 pageSize,
                 pageNum,
             cancellationToken

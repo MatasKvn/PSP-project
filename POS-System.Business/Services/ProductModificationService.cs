@@ -146,5 +146,18 @@ namespace POS_System.Business.Services
             var productModificationDtos = _mapper.Map<List<ProductModificationResponse>>(productModifications);
             return productModificationDtos;
         }
+
+        public async Task<PagedResponse<ProductModificationResponse?>> GetProductModificationsLinkedToProductId(int pageSize, int pageNumber, int productId, CancellationToken cancellationToken)
+        {
+            var (prodMods, totalCount) = await _unitOfWork.ProductModificationRepository.GetAllByExpressionWithIncludesAndPaginationAsync(
+                x => x.IsDeleted == false && x.ProductVersionId == productId,
+                pageSize,
+                pageNumber,
+                cancellationToken
+            );
+
+            var prodModDtos = _mapper.Map<List<ProductModificationResponse>>(prodMods);
+            return new PagedResponse<ProductModificationResponse?>(totalCount, pageSize, pageNumber, prodModDtos);
+        }
     }
 }

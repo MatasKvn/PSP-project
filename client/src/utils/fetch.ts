@@ -1,5 +1,6 @@
 import { defaultHeaders } from "@/constants/api";
 import { FetchParams, FetchResponse } from "@/types/fetch"
+import { defaultHeaders } from '@/constants/api'
 
 async function fetchWrapper({ url, method, headers, body }: FetchParams): Promise<FetchResponse<any>> {
     try {

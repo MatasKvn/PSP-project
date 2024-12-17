@@ -24,10 +24,8 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
         return new PagedResponse<GiftCardResponse>(totalCount, pageSize, pageNum, mappedGiftCards);
     }
 
-    public async Task<GiftCardResponse?> GetGiftCardByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<GiftCardResponse?> GetGiftCardByIdAsync(string id, CancellationToken cancellationToken)
     {
-        IdValidator.ValidateId(id);
-
         var giftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(giftcard => giftcard.Id == id && giftcard.Date >= DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken)
             ?? throw new NotFoundException($"Gift card with id {id} does not exist.");
 
@@ -38,13 +36,13 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
     {
         ArgumentNullException.ThrowIfNull(GiftCardRequest, nameof(GiftCardRequest));
 
-        var existingGiftCard = await unitOfWork.GiftCardRepository.GetByExpressionAsync(g => g.Code == GiftCardRequest.Code, cancellationToken);
-        if (existingGiftCard is not null)
-        {
-            throw new BadRequestException("Gift card with this code already exist.", nameof(existingGiftCard.Code));
-        }
-
         var newGiftCard = mapper.Map<GiftCard>(GiftCardRequest);
+
+        var rnd = new Random();
+        do
+        {
+            newGiftCard.Id = rnd.Next(10000000, 99999999).ToString();
+        } while ((await unitOfWork.GiftCardRepository.GetByIdStringAsync(newGiftCard.Id, cancellationToken)) is not null);
 
         await unitOfWork.GiftCardRepository.CreateAsync(newGiftCard, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -52,12 +50,11 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
         return mapper.Map<GiftCardResponse>(newGiftCard);
     }
 
-    public async Task<GiftCardResponse> UpdateGiftCardAsync(int id, GiftCardRequest GiftCardRequest, CancellationToken cancellationToken)
+    public async Task<GiftCardResponse> UpdateGiftCardAsync(string id, GiftCardRequest GiftCardRequest, CancellationToken cancellationToken)
     {
-        IdValidator.ValidateId(id);
         ArgumentNullException.ThrowIfNull(GiftCardRequest, nameof(GiftCardRequest));
 
-        var giftCardToUpdate = await unitOfWork.GiftCardRepository.GetByIdAsync(id, cancellationToken);
+        var giftCardToUpdate = await unitOfWork.GiftCardRepository.GetByIdStringAsync(id, cancellationToken);
         if (giftCardToUpdate is null)
         {
             throw new NotFoundException($"Gift card with id {id} does not exist.", nameof(giftCardToUpdate));
@@ -69,11 +66,9 @@ public class GiftCardService(IUnitOfWork unitOfWork, IMapper mapper) : IGiftCard
         return mapper.Map<GiftCardResponse>(giftCardToUpdate);
     }
 
-    public async Task DeleteGiftCardAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteGiftCardAsync(string id, CancellationToken cancellationToken)
     {
-        IdValidator.ValidateId(id);
-
-        var giftCardToDelete = await unitOfWork.GiftCardRepository.GetByIdAsync(id, cancellationToken);
+        var giftCardToDelete = await unitOfWork.GiftCardRepository.GetByIdStringAsync(id, cancellationToken);
         if (giftCardToDelete is null)
         {
             throw new NotFoundException($"Gift card with id {id} does not exist.", nameof(giftCardToDelete));
