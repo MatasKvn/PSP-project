@@ -32,6 +32,8 @@ namespace POS_System.Api.Controllers
         [HttpPut("{employeeId:int}")]
         public async Task<IActionResult> UpdateEmployeeByIdAsync([FromRoute] int employeeId, [FromBody] EmployeeRequest employeeRequest, CancellationToken cancellationToken)
         {
+            Console.WriteLine($"employeeRequest000BirthDate: {employeeRequest.BirthDate}");
+
             var result = await employeeeService.UpdateEmployeeByIdAsync(employeeId, employeeRequest, cancellationToken);
 
             return Ok(result);

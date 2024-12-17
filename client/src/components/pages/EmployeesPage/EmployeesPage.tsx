@@ -16,21 +16,21 @@ type Props = {
 }
 
 function getNumericValue(roleId: string): number {
-    switch (roleId) {
-      case 'NONE':
-        return 0;
-      case 'SERVICE_PROVIDER':
-        return 1;
-      case 'CASHIER':
-        return 2;
-      case 'OWNER':
-        return 3;
-      case 'SUPER_ADMIN':
-        return 4;
-      default:
-        return 0;  
-    }
+  switch (roleId) {
+    case 'NONE':
+      return 0;
+    case 'SERVICE_PROVIDER':
+      return 1;
+    case 'CASHIER':
+      return 2;
+    case 'OWNER':
+      return 3;
+    case 'SUPER_ADMIN':
+      return 4;
+    default:
+      return 0;  
   }
+}
   
 const roleIdMap: { [key: string]: keyof typeof RoleEnum } = {
     "None": "NONE",
@@ -57,21 +57,16 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             userName,
             email,
             phoneNumber,
-            roleId//,
-            //birthDate
+            password,
+            roleId,
+            birthDate
         } = formPayload;
 
-        // const selectedRole = roleId as keyof typeof roleIdLabelMapping;
-        // const roleIdNum = roleIdLabelMapping[selectedRole]; // Set numeric value
-        // console.log("roleIdNum efasf6:", roleIdNum)
-        //const roleIdEnumValue = RoleEnum[roleId as keyof typeof RoleEnum];
-        //const birthDateParsed = new Date(birthDate);
+        console.log('birthDate123:', birthDate);
+        console.log('role123:', roleId);
 
-        // if (birthDate !== '') {
-        //     console.log('Incorrect Date format')
-        //     return
-        // }
         const roleIdNum = getNumericValue(roleId);
+        console.log('roleIdNUM123:', roleIdNum);
         const response = await EmployeeApi.createEmployee({
             firstName,
             lastName,
@@ -79,30 +74,35 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             email,
             phoneNumber,
             roleId: roleIdNum,
-            //,
-            //birthDate: birthDateParsed,
+            birthDate,
+            password
         });
-
+        console.log('birthDate22222222:', birthDate);
+        console.log('roleIdNUM22222222:', roleIdNum);
         if (!response.result) {
             console.log(response.error)
             return;
         }
 
-        const newEmployees = [...employees, response.result].sort((a, b) => a.firstName.localeCompare(b.firstName));
-        setEmployees(newEmployees);
-        sideDrawerRef.current?.close();
+      const newEmployees = [
+        ...employees.filter((employee) => employee.id !== selectedEmployee?.id),
+        response.result,
+    ];
+    
+    setEmployees(newEmployees);
+    sideDrawerRef.current?.close();
+    window.location.reload();
     };
 
     const handleEmployeeUpdate = async (formPayload: DynamicFormPayload) => {
         if (!selectedEmployee) return;
-        const { firstName, lastName, userName, email, phoneNumber, roleId } = formPayload;
+        const { firstName, lastName, userName, email, phoneNumber, roleId, birthDate, password } = formPayload;
         
-        // const selectedRole = roleId as keyof typeof roleIdLabelMapping;
-        // const roleIdNum = roleIdLabelMapping[selectedRole]; // Set numeric value
-        // console.log("roleIdNum efasf6:", roleIdNum)
+        console.log('birthDate123:', birthDate);
+        console.log('role123:', roleId);
 
-        //const roleIdEnumValue = RoleEnum[roleId as keyof typeof RoleEnum];
         const roleIdNum = getNumericValue(roleId);
+        console.log('roleIdNUM123:', roleIdNum);
         
         const dataToSend = {
             firstName: firstName || selectedEmployee.firstName,
@@ -111,7 +111,8 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             email: email || selectedEmployee.email,
             phoneNumber: phoneNumber || selectedEmployee.phoneNumber,
             roleId: roleIdNum || selectedEmployee.roleId,
-            // birthDate: selectedEmployee.birthDate,
+            birthDate: birthDate || selectedEmployee.birthDate,
+            password: password || selectedEmployee.birthDate
         };
 
         console.log('Data being sent to update employee:', dataToSend);
@@ -130,6 +131,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
 
         setEmployees(newEmployees);
         sideDrawerRef.current?.close();
+        window.location.reload();
     };
 
     const handleEmployeeDelete = async (employee: Employee | undefined) => {
@@ -139,9 +141,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             console.log(response.error)
             return
         }
-        // const newEmployees = employees.filter((emp) => emp.id !== selectedEmployee?.id)
-        //     .sort(compareEmployees)
-        // setEmployees(newEmployees)
+       
         selectEmployee(undefined)
         window.location.reload();
     }
@@ -169,7 +169,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             birthDate: employee.birthDate ? new Date(employee.birthDate).toLocaleDateString() : 'N/A',
             startDate: employee.startDate ? new Date(employee.startDate).toLocaleDateString() : 'N/A',
             endDate: employee.endDate ? new Date(employee.endDate).toLocaleDateString() : 'N/A',
-            roleId: employee.roleId,
+            roleId: getRoleById(employee.roleId), 
             className: selectedEmployee?.id === employee.id ? styles.selected : '',
             onClick: (row: any) => {
                 if (selectedEmployee?.id === row.id) selectEmployee(undefined)
@@ -191,12 +191,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
         const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
             setRole(event.target.value); 
         };
-      
-        const getNumericValue = (value: string): RoleEnum => {
-            const key = roleIdMap[value]; 
-            return RoleEnum[key];
-        };
-      
+
         return (
           <>
             <h4>Create Employee</h4>
@@ -207,7 +202,8 @@ const EmployeesPage = ({ pageNumber }: Props) => {
                 userName: { label: 'User Name', placeholder: 'Enter user name:', type: 'text' },
                 email: { label: 'Email', placeholder: 'Enter email:', type: 'email' },
                 phoneNumber: { label: 'Phone Number', placeholder: 'Enter phone number:', type: 'text' },
-                birthDate: { label: 'Birth Date', type: 'date' }
+                birthDate: { label: 'Birth date', placeholder: 'Enter birth date:', type: 'date' },
+                password: { label: 'Password', placeholder: 'Enter password:', type: 'password' }
               }}
               onSubmit={(data) => {
                 const formData = { ...data }; 
@@ -222,16 +218,20 @@ const EmployeesPage = ({ pageNumber }: Props) => {
                   <select
                     id="roleId"
                     name="roleId"
-                    value={roleId}  
+                    value={roleId} 
                     onChange={handleChange}
                     aria-label="Select roleId option"
                     className="form-control"
                   >
-                    {Object.keys(roleIdMap).map((key) => (
-                      <option key={key} value={key}>
-                        {key}  
-                      </option>
-                    ))}
+                    {Object.keys(RoleEnum)
+                      .filter(key => isNaN(Number(key)))
+                      .map((key) => {
+                        return (
+                          <option key={key} value={key}>
+                            {key}  
+                          </option>
+                        );
+                      })}
                   </select>
                 </div>
               </div>
@@ -243,7 +243,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
     
     
     const editEmployeeForm = () => {
-        const initialEmployeeData = selectedEmployee || { roleId: RoleEnum.NONE };  // Default to NONE if no employee selected
+        const initialEmployeeData = selectedEmployee || { roleId: RoleEnum.NONE };  
       
         const initialRole = Object.keys(RoleEnum)
           .find((key) => RoleEnum[key as keyof typeof RoleEnum] === initialEmployeeData.roleId)
@@ -253,11 +253,6 @@ const EmployeesPage = ({ pageNumber }: Props) => {
       
         const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
           setRole(event.target.value);  
-        };
-      
-        const getNumericValue = (value: string): RoleEnum => {
-          const key = roleIdMap[value];
-          return RoleEnum[key]; 
         };
       
         return (
@@ -270,6 +265,8 @@ const EmployeesPage = ({ pageNumber }: Props) => {
                 userName: { label: 'User Name', placeholder: 'Enter user name:', type: 'text' },
                 email: { label: 'Email', placeholder: 'Enter email:', type: 'email' },
                 phoneNumber: { label: 'Phone Number', placeholder: 'Enter phone number:', type: 'text' },
+                birthDate: { label: 'Birth date', placeholder: 'Enter birth date:', type: 'date' },
+                password: { label: 'Password', placeholder: 'Enter password:', type: 'password' }
               }}
               onSubmit={(data) => {
                 const formData = { ...data };  
@@ -336,5 +333,22 @@ const EmployeesPage = ({ pageNumber }: Props) => {
         </div>
     )
 }
+
+const getRoleById = (roleId: number): string => {
+  switch (roleId) {
+      case 0:
+          return "None";
+      case 1:
+          return "Service provider";
+      case 2:
+          return "Cashier";
+      case 3:
+          return "Owner";
+      case 4:
+          return "Super admin";
+      default:
+          return "Unknown";
+  }
+};
 
 export default EmployeesPage

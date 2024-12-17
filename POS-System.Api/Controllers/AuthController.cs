@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Request;
+using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
@@ -11,7 +12,7 @@ namespace POS_System.Api.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [AllowAnonymous]
-        [HttpPost("api/auth/register")]
+        [HttpPost("api/employees/register")]
         public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegisterRequest userRegisterRequest)
         {
             var response = await authService.RegisterUserAsync(userRegisterRequest);

@@ -26,7 +26,7 @@ export default class EmployeeApi {
         return fetch({
             url: `${apiBaseUrl}/employees?${params.toString()}`,
             method: HTTPMethod.GET,
-            headers: getAuthorizedHeaders(), //defaultHeaders,
+            headers: getAuthorizedHeaders(), 
         });
     }
 
@@ -34,16 +34,16 @@ export default class EmployeeApi {
         return await fetch({
             url: `${apiBaseUrl}/employees/${id}`,
             method: HTTPMethod.GET,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
         });
     }
 
     static async createEmployee(employeeData: CreateEmployeeRequest): Promise<FetchResponse<Employee>> {
         const sanitizedEmployeeData = sanitizeData(employeeData);
         return await fetch({
-            url: `${apiBaseUrl}/employees`,
+            url: `${apiBaseUrl}/employees/register`,
             method: HTTPMethod.POST,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(sanitizedEmployeeData),
         });
     }
@@ -54,7 +54,7 @@ export default class EmployeeApi {
         return await fetch({
             url: `${apiBaseUrl}/employees/${id}`,
             method: HTTPMethod.PUT,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(sanitizedEmployeeData),
         });
     }
@@ -63,7 +63,7 @@ export default class EmployeeApi {
         return await fetch({
             url: `${apiBaseUrl}/employees/${id}`,
             method: HTTPMethod.DELETE,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
         });
     }
 }

@@ -118,8 +118,9 @@ export enum RoleEnum {
     lastName: string
     userName: string
     email: string
+    password: string
     phoneNumber: string
-    birthDate?: Date
+    birthDate?: string
     startDate?: Date
     endDate?: Date
     roleId: number; 

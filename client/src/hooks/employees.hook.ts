@@ -9,7 +9,7 @@ export const useEmployees = (pageNumber: number) => {
 
     useEffect(() => {
         const handleFetch = async () => {
-            const response = await EmployeeApi.getEmployees(10, pageNumber);
+            const response = await EmployeeApi.getEmployees(30, pageNumber);
             if (response.result) {
                 setEmployees(response.result.results);
                 setIsLoading(false);

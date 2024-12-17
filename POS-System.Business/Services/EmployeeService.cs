@@ -110,7 +110,7 @@ namespace POS_System.Business.Services
             return mapper.Map<EmployeeResponse>(employee);
         }
 
-        private int GetRoleId(string role)
+        private static int GetRoleId(string role)
         {
             return role switch
             {
@@ -123,7 +123,7 @@ namespace POS_System.Business.Services
             };
         }
 
-        private string GetRoleById(int roleId)
+        private static string GetRoleById(int roleId)
         {
             return roleId switch
             {

@@ -7,7 +7,7 @@ namespace POS_System.Business.Dtos.Request
         string LastName, 
         string Password,
         string PhoneNumber,
-        DateOnly BirtDate,
+        DateOnly BirthDate,
         int RoleId
     );
 }
