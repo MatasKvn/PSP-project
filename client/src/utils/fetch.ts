@@ -47,3 +47,9 @@ export const getAuthorizedHeaders = () => {
 }
 
 export const encodeDateToUrlString = (date: Date) => encodeURIComponent(date.toLocaleString('lt'))
+
+export const sanitizeData = (data: any) => {
+    return Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [key, value === undefined ? null : value])
+    )
+}

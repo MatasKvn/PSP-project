@@ -18,6 +18,7 @@ const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<st
     if (!productResponse.result) return productResponse.error || 'Failed to get product'
     const product = productResponse.result
     const productModificationsResponse = await ProductModificationApi.getByCartItemId(cartItem.id)
+    console.log(productModificationsResponse)
     if (!productModificationsResponse.result) return productModificationsResponse.error || 'Failed to get product modifications'
     const productModifications = productModificationsResponse.result
     const discountsReponse = await ItemDiscountApi.getCurrentDiscountsByProductId(cartItem.productId)

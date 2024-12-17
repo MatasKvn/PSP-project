@@ -1,7 +1,7 @@
 import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { ItemDiscount } from '@/types/models'
-import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders, sanitizeData } from '@/utils/fetch'
 
 let discounts: ItemDiscount[] = [
     {
@@ -42,20 +42,22 @@ export default class ItemDiscountApi {
     }
 
     static async updateDiscount(dto: UpdateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
+        const sanitizedDto = sanitizeData(dto)
         return fetch({
             url: `${apiBaseUrl}/item-discount/${dto.id}`,
             method: HTTPMethod.PUT,
             headers: getAuthorizedHeaders(),
-            body: JSON.stringify(dto)
+            body: JSON.stringify(sanitizedDto)
         })
     }
 
     static async createDiscount(dto: CreateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
+        const sanitizedDto = sanitizeData(dto)
         return fetch({
             url: `${apiBaseUrl}/item-discount`,
             method: HTTPMethod.POST,
             headers: getAuthorizedHeaders(),
-            body: JSON.stringify(dto)
+            body: JSON.stringify(sanitizedDto)
         })
     }
 

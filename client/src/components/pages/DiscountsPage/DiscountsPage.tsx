@@ -96,7 +96,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
             console.log('Please enter a description')
             return
         }
-        if (!startDate || !endDate) {
+        if ((!startDate && endDate) || (startDate && !endDate)) {
             console.log('Please enter a valid start and end date')
             return
         }
@@ -104,7 +104,9 @@ const DiscountsPage = ({ pageNumber }: Props) => {
             isPercentage,
             value,
             description,
+            // @ts-ignore
             startDate,
+            // @ts-ignore
             endDate
         })
         const { result: discount } = response

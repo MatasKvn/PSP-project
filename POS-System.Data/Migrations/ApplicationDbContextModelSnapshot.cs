@@ -631,7 +631,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6790)
+                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6358)
                         },
                         new
                         {
@@ -643,7 +643,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6793)
+                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6360)
                         },
                         new
                         {
@@ -867,9 +867,6 @@ namespace POS_System.Data.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
-
-                    b.HasIndex("LeftEntityId")
-                        .IsUnique();
 
                     b.HasIndex("RightEntityId");
 
@@ -1201,28 +1198,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6739)
+                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6306)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6744)
+                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6311)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6746)
+                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6313)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6747)
+                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6314)
                         });
                 });
 
@@ -1362,8 +1359,8 @@ namespace POS_System.Data.Migrations
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModificationOnCartItem", b =>
                 {
                     b.HasOne("POS_System.Domain.Entities.ProductModification", "LeftEntity")
-                        .WithOne("ProductModificationOnCartItems")
-                        .HasForeignKey("POS_System.Domain.Entities.ProductModificationOnCartItem", "LeftEntityId")
+                        .WithMany("ProductModificationOnCartItems")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1529,8 +1526,7 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModification", b =>
                 {
-                    b.Navigation("ProductModificationOnCartItems")
-                        .IsRequired();
+                    b.Navigation("ProductModificationOnCartItems");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Service", b =>
