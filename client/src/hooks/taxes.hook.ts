@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Product, Service, Tax } from '@/types/models'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import TaxApi from '@/api/tax.api'
+import ProductApi from '@/api/product.api'
+import ServiceApi from '@/api/service.api'
 
 export const useTaxes = (pageNumber: number) => {
     const [taxes, setTaxes] = useState<Tax[]>([])
@@ -35,8 +37,8 @@ export const useTaxedItems = (selectedTax: Tax | undefined) => {
         if (!selectedTax) return
         const getSelectedTaxItems = async () => {
             const responses = await Promise.all([
-                TaxApi.getProductsByTaxId(selectedTax.id),
-                TaxApi.getServicesByTaxId(selectedTax.id)
+                ProductApi.getProductsByTaxId(selectedTax.id),
+                ServiceApi.getServicesByTaxId(selectedTax.id)
             ])
             const { result: products, error: productsErr } = responses[0]
             const { result: services, error: servicesErr } = responses[1]

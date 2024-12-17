@@ -39,22 +39,6 @@ export default class TaxApi {
         })
     }
 
-    static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
-        return fetch({
-            url: `${apiBaseUrl}/product/tax/${taxId}`,
-            method: HTTPMethod.GET,
-            headers: getAuthorizedHeaders()
-        })
-    }
-
-    static async getServicesByTaxId(taxId: number): Promise<FetchResponse<Service[]>> {
-        return fetch({
-            url: `${apiBaseUrl}/services/tax/${taxId}`,
-            method: HTTPMethod.GET,
-            headers: getAuthorizedHeaders()
-        })
-    }
-
     static async addProductsToTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
         return fetch({
             url: `${apiBaseUrl}/tax/${taxId}/link?itemsAreProducts=true`,

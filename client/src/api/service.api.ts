@@ -45,6 +45,14 @@ export default class ServiceApi {
             headers: getAuthorizedHeaders()
         })
     }
+
+    static async getServicesByTaxId(taxId: number): Promise<FetchResponse<Service[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/services/tax/${taxId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
 }
 
 

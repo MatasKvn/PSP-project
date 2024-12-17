@@ -44,4 +44,12 @@ export default class ProductApi {
              body: JSON.stringify(product)
         })
     }
+
+    static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/product/tax/${taxId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
 }
