@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using POS_System.Data.Database;
@@ -11,9 +12,11 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241217170908_EmployeeSeedUpdate")]
+    partial class EmployeeSeedUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,7 +276,7 @@ namespace POS_System.Data.Migrations
                             PhoneNumberConfirmed = true,
                             RoleId = 0,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(2024, 1, 2),
+                            StartDate = new DateOnly(1, 1, 1),
                             TwoFactorEnabled = false,
                             UserName = "johndoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -298,7 +301,7 @@ namespace POS_System.Data.Migrations
                             PhoneNumberConfirmed = true,
                             RoleId = 1,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(2022, 5, 6),
+                            StartDate = new DateOnly(1, 1, 1),
                             TwoFactorEnabled = false,
                             UserName = "janedoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -323,7 +326,7 @@ namespace POS_System.Data.Migrations
                             PhoneNumberConfirmed = true,
                             RoleId = 2,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(2024, 11, 4),
+                            StartDate = new DateOnly(1, 1, 1),
                             TwoFactorEnabled = false,
                             UserName = "adamsmith",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -348,7 +351,7 @@ namespace POS_System.Data.Migrations
                             PhoneNumberConfirmed = true,
                             RoleId = 3,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(2023, 7, 7),
+                            StartDate = new DateOnly(1, 1, 1),
                             TwoFactorEnabled = false,
                             UserName = "bobjohnson",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -373,7 +376,7 @@ namespace POS_System.Data.Migrations
                             PhoneNumberConfirmed = true,
                             RoleId = 4,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(2009, 8, 14),
+                            StartDate = new DateOnly(1, 1, 1),
                             TwoFactorEnabled = false,
                             UserName = "johnsondoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -631,7 +634,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6790)
+                            Version = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1290)
                         },
                         new
                         {
@@ -643,7 +646,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6793)
+                            Version = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1294)
                         },
                         new
                         {
@@ -1201,28 +1204,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6739)
+                            StartTime = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1217)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6744)
+                            StartTime = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1223)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6746)
+                            StartTime = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1225)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 17, 27, 32, 700, DateTimeKind.Utc).AddTicks(6747)
+                            StartTime = new DateTime(2024, 12, 17, 17, 9, 7, 443, DateTimeKind.Utc).AddTicks(1227)
                         });
                 });
 
