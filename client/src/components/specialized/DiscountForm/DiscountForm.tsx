@@ -9,65 +9,57 @@ export type DiscountFormPayload = {
     description: string,
     value: number,
     isPercentage: boolean,
-    startDate: string,
-    endDate: string,
-    productIds: number[],
-    serviceIds: number[]
+    startDate: Date | undefined,
+    endDate: Date | undefined
 }
 
 type Props = {
+    showAppliedItems?: boolean
     actionName: string
     onSubmit: (data: DiscountFormPayload) => void
+    selectedProducts: Product[]
+    onProductClick: (product: Product) => void
+    selectedServices: Service[]
+    onServiceClick: (service: Service) => void
 }
 
 const DiscountForm = ({
+    showAppliedItems = false,
     actionName,
-    onSubmit
+    onSubmit,
+    selectedProducts,
+    onProductClick,
+    selectedServices,
+    onServiceClick
 }: Props) => {
-    const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
-    const [selectedServices, setSelectedServices] = useState<Service[]>([])
-
     const handleTaxUpdate = (formPayload: FormPayload) => {
         const { description, value, isPercentage, startDate, endDate } = formPayload
         const parsedValue = parseFloat(value)
+        const parsedStartDate = new Date(startDate)
+        const parsedEndDate = new Date(endDate)
         onSubmit({
             description,
             value: isNaN(parsedValue) ? 0 : parsedValue,
             isPercentage: !!isPercentage,
-            startDate,
-            endDate,
-            productIds: selectedProducts.map((product) => product.id),
-            serviceIds: selectedServices.map((service) => service.id),
+            startDate: isNaN(parsedStartDate.getTime()) ? undefined : parsedStartDate,
+            endDate: isNaN(parsedEndDate.getTime()) ? undefined : parsedEndDate
         })
-        setSelectedProducts([])
-        setSelectedServices([])
     }
 
     return (
         <div>
             <h4>{actionName} Discount</h4>
-            <AllItemView
+            {showAppliedItems && <AllItemView
                 style={{ height: '35vh' }}
                 headerText='Select Items'
                 selectedProducts={selectedProducts}
-                onProductClick={(product) => {
-                    if (selectedProducts.some((selectedProduct) => selectedProduct.id === product.id)) {
-                        const newSelectedProducts = selectedProducts.filter((selectedProduct) => selectedProduct.id !== product.id)
-                        setSelectedProducts(newSelectedProducts)
-                        return
-                    }
-                    setSelectedProducts([...selectedProducts, product])
+                onProductClick={(product: Product) => {
+                    console.log('prod click')
+                    onProductClick(product)
                 }}
                 selectedServices={selectedServices}
-                onServiceClick={(service) => {
-                    if (selectedServices.some((selectedService) => selectedService.id === service.id)) {
-                        const newSelectedServices = selectedServices.filter((selectedService) => selectedService.id !== service.id)
-                        setSelectedServices(newSelectedServices)
-                        return
-                    }
-                    setSelectedServices([...selectedServices, service])
-                }}
-            />
+                onServiceClick={onServiceClick}
+            />}
             <DynamicForm
                 inputs={{
                     description: { label: 'Description', placeholder: 'Enter description:', type: 'text' },
