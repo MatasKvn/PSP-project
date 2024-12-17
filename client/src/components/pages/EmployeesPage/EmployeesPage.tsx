@@ -105,7 +105,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             userName: userName || selectedEmployee.userName,
             email: email || selectedEmployee.email,
             phoneNumber: phoneNumber || selectedEmployee.phoneNumber,
-            roleId: roleIdNum || selectedEmployee.roleId,
+            roleId: roleIdNum,
             birthDate: birthDate || selectedEmployee.birthDate,
             password: password || selectedEmployee.birthDate
         };
@@ -237,12 +237,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
     
     const editEmployeeForm = () => {
         const initialEmployeeData = selectedEmployee || { roleId: RoleEnum.NONE };  
-      
-        const initialRole = Object.keys(RoleEnum)
-          .find((key) => RoleEnum[key as keyof typeof RoleEnum] === initialEmployeeData.roleId)
-          ?.toString() || "None"; 
-      
-        const [roleId, setRole] = useState<string>(initialRole);
+        const [roleId, setRole] = useState<string>("None");
       
         const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
           setRole(event.target.value);  
