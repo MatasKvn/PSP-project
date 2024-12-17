@@ -20,7 +20,7 @@ export default class ServiceApi {
         })
     }
 
-    static async create(serviceDto: Service): Promise<FetchResponse<Service>> {
+    static async create(serviceDto: CreateServiceRequest): Promise<FetchResponse<Service>> {
         return await fetch({
             url: `${apiBaseUrl}/services`,
             method: HTTPMethod.POST,
@@ -46,3 +46,6 @@ export default class ServiceApi {
         })
     }
 }
+
+
+type CreateServiceRequest = Omit<Service, 'id'>

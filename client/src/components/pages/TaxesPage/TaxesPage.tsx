@@ -118,6 +118,8 @@ const TaxesPage = ({ pageNumber }: Props) => {
             <Table
                 columns={columns}
                 rows={rows}
+                isLoading={isLoading}
+                errorMsg={errorMsg}
             />
         )
     }

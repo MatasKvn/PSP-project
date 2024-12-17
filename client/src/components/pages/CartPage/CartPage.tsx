@@ -79,8 +79,8 @@ const CartPage = (props: Props) => {
 
     if (!isCartLoading && !cart) return null
 
-    const handleCartItemDelete = async (cartItemId: number) => {
-        const response = await CartItemApi.deleteCartItem(cartItemId)
+    const handleCartItemDeconste = async (cartItemId: number) => {
+        const response = await CartItemApi.deconsteCartItem(cartItemId)
         if (!response.result) {
             console.log(response.error)
             return
@@ -99,7 +99,7 @@ const CartPage = (props: Props) => {
         { name: 'Discounts', key: 'discounts' },
         { name: 'Taxes', key: 'taxes' },
         { name: 'Net price', key: 'netPrice' },
-        { name: 'Delete', key: 'delete' }
+        { name: 'Deconste', key: 'deconste' }
     ]
     const productRows = productItems.map((item) => {
         const { name } = item.product
@@ -114,11 +114,11 @@ const CartPage = (props: Props) => {
             quantity: item.quantity,
             modifications: item.productModifications.map((modification) => modification.id).join(', '),
             modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
-            delete: (
+            deconste: (
                 <Button
-                    onClick={() => handleCartItemDelete(item.id)}
+                    onClick={() => handleCartItemDeconste(item.id)}
                 >
-                    Delete
+                    Deconste
                 </Button>
             )
         }
@@ -152,7 +152,7 @@ const CartPage = (props: Props) => {
             { name: 'Discounts', key: 'discounts' },
             { name: 'Taxes', key: 'taxes' },
             { name: 'Net price', key: 'netPrice' },
-            { name: 'Delete', key: 'delete' },
+            { name: 'Deconste', key: 'deconste' },
         ]
     const serviceRows = serviceItems.map((item) => {
         const startTime = item.timeSlot.startTime
@@ -165,11 +165,11 @@ const CartPage = (props: Props) => {
             discounts: calculateDiscountsValue(item),
             taxes: calculateTaxesValue(item),
             netPrice: (item.quantity * (item.service?.price ? item.service.price : 0)) - calculateDiscountsValue(item) + calculateTaxesValue(item),
-            delete: (
+            deconste: (
                 <Button
-                    onClick={() => handleCartItemDelete(item.id)}
+                    onClick={() => handleCartItemDeconste(item.id)}
                 >
-                    Delete
+                    Deconste
                 </Button>
             )
         }
@@ -195,7 +195,6 @@ const CartPage = (props: Props) => {
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
 
     const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
-    const [appliedTip, setAppliedTip] = useState<number>(0);
     const cartTransactionTable = () => {
         const cartTransactionColumns = [
             { name: 'Id', key: 'id' },
@@ -310,7 +309,7 @@ const CartPage = (props: Props) => {
         }
         
         if (response.result) {
-            let discount = response.result.isPercentage
+            const discount = response.result.isPercentage
                 ? totalPrice * response.result.value
                 : response.result.value;
 
@@ -318,7 +317,7 @@ const CartPage = (props: Props) => {
         }
     }
 
-    const handleTip = async (formPayload: FormPayload) => {
+    const handconstip = async (formPayload: FormPayload) => {
         const { tip } = formPayload;
         const tipParsed = parseInt(tip);
 
@@ -398,7 +397,7 @@ const CartPage = (props: Props) => {
 
         if (splitCountParsed === 1 || splitCountValue === '') {
             console.log('Triggering single checkout');
-            let body: FullCheckoutBody = {
+            const body: FullCheckoutBody = {
                 cartId: 1,
                 employeeId: 6,
                 tip: appliedTip,
@@ -413,7 +412,7 @@ const CartPage = (props: Props) => {
                 console.log('Cannot process split transaction if the total sum is less than 30 €');
             } else {
                 console.log('Triggering multiple checkout');
-                let body: InitPartialCheckoutBody = {
+                const body: InitPartialCheckoutBody = {
                     cartId: 1,
                     employeeId: 6,
                     tip: appliedTip,
@@ -430,7 +429,7 @@ const CartPage = (props: Props) => {
     }
 
     const handlePayment = async (body: FullCheckoutBody | PartialCheckoutBody) => {
-        let response = 'employeeId' in body
+        const response = 'employeeId' in body
             ? await PaymentApi.fullCheckout(body as FullCheckoutBody)
             : await PaymentApi.partialCheckout(body as PartialCheckoutBody);
 
@@ -440,13 +439,13 @@ const CartPage = (props: Props) => {
         }
 
         if (response.result) {
-            let stripe = await loadStripe(response.result.pubKey);
+            const stripe = await loadStripe(response.result.pubKey);
             
             if (!stripe) {
                 alert("Stripe was not launched.");
             }
 
-            let result = await stripe?.redirectToCheckout({ sessionId: response.result.sessionId });
+            const result = await stripe?.redirectToCheckout({ sessionId: response.result.sessionId });
 
             if (!result) {
                 console.log(result);
@@ -456,7 +455,7 @@ const CartPage = (props: Props) => {
     }
 
     const handleSplitPaymentInit = async (body: InitPartialCheckoutBody) => {       
-        let response = await PaymentApi.initializePartialCheckout(body);
+        const response = await PaymentApi.initializePartialCheckout(body);
 
         if (response.error) {
             alert("Payments were not initialized.");
@@ -465,7 +464,7 @@ const CartPage = (props: Props) => {
     }
 
     const handleRefund = async (id: DateTimeWithMicroseconds, body: RefundBody) => {
-        let response = await PaymentApi.refundPayment(id, body);
+        const response = await PaymentApi.refundPayment(id, body);
 
         if (response.error) {
             alert("Failed to issue refund.");
@@ -473,7 +472,7 @@ const CartPage = (props: Props) => {
         }
         
         if (response.result) {
-            let refundedTransaction = response.result;
+            const refundedTransaction = response.result;
             setCartTransactions(cartTransactions?.map((value) => value.id === id ? refundedTransaction : value));
         }
     }
@@ -500,7 +499,7 @@ const CartPage = (props: Props) => {
                         inputs={{
                             tip: { label: 'Tip', placeholder: 'Enter tip amount:', type: 'number' },
                         }}
-                        onSubmit={(formPayload) => handleTip(formPayload)}
+                        onSubmit={(formPayload) => handconstip(formPayload)}
                     >
                         <DynamicForm.Button>Apply Tip</DynamicForm.Button>
                     </DynamicForm>
