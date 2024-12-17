@@ -22,7 +22,7 @@ namespace POS_System.Business.Services
         IEmailSender emailSender
     ) : IAuthService
     {
-        public async Task<IdentityResult> RegisterUserAsync(UserRegisterRequest registerUser)
+        public async Task<EmployeeResponse> RegisterUserAsync(UserRegisterRequest registerUser)
         {
             var user = mapper.Map<ApplicationUser>(registerUser);
 
@@ -38,7 +38,7 @@ namespace POS_System.Business.Services
 
             await userManager.AddToRoleAsync(user!, newRole);
 
-            return response;
+            return mapper.Map<EmployeeResponse>(user); ;
         }
 
         public async Task<UserLoginResponse> LoginUserAsync(UserLoginRequest credentials)

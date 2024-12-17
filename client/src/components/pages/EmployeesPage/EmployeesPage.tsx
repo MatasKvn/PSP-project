@@ -43,8 +43,6 @@ const roleIdMap: { [key: string]: keyof typeof RoleEnum } = {
     "Super Admin": "SUPER_ADMIN"
   };
 
-const compareEmployees = (employee1: Employee, employee2: Employee) => employee1.firstName.localeCompare(employee2.firstName)
-
 const EmployeesPage = ({ pageNumber }: Props) => {
     const { employees, setEmployees, isLoading, isError } = useEmployees(pageNumber)
     const [selectedEmployee, selectEmployee] = useState<Employee | undefined>()
@@ -67,7 +65,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
         } = formPayload;
  
         const roleIdNum = getNumericValue(roleId);
-        const response = await EmployeeApi.createEmployee({
+        const employeeResponse = await EmployeeApi.createEmployee({
             firstName,
             lastName,
             userName,
@@ -77,20 +75,20 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             birthDate,
             password
         });
-
-        if (!response.result) {
-            console.log(response.error)
+        
+        const { result: employee } = employeeResponse
+        if (!employee) {
+            console.log(employeeResponse.error)
             return;
         }
-
+        
       const newEmployees = [
         ...employees.filter((employee) => employee.id !== selectedEmployee?.id),
-        response.result,
+        employee
     ];
-    
+
     setEmployees(newEmployees);
     sideDrawerRef.current?.close();
-    window.location.reload();
     };
 
     const handleEmployeeUpdate = async (formPayload: DynamicFormPayload) => {
@@ -118,13 +116,12 @@ const EmployeesPage = ({ pageNumber }: Props) => {
         }
 
         const newEmployees = [
-            ...employees.filter((employee) => employee.id !== selectedEmployee?.id),
-            response.result,
-        ].sort((a, b) => a.firstName.localeCompare(b.firstName));
-
+          ...employees.filter((employee) => employee.id !== selectedEmployee?.id),
+          response.result,
+      ].sort((a, b) => a.firstName.localeCompare(b.firstName));
+      
         setEmployees(newEmployees);
         sideDrawerRef.current?.close();
-        window.location.reload();
     };
 
     const handleEmployeeDelete = async (employee: Employee | undefined) => {
@@ -136,7 +133,6 @@ const EmployeesPage = ({ pageNumber }: Props) => {
         }
        
         selectEmployee(undefined)
-        window.location.reload();
     }
 
     const employeeTable = () => {

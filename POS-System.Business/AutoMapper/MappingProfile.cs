@@ -11,6 +11,7 @@ namespace POS_System.Business.AutoMapper
         public MappingProfile()
         {
             CreateMap<UserRegisterRequest, ApplicationUser>();
+            CreateMap<EmployeeResponse, ApplicationUser>();
 
             // Cart
             CreateMap<Cart, CartResponse>();

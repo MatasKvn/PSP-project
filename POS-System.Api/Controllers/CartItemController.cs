@@ -12,7 +12,7 @@ namespace POS_System.Api.Controllers;
 
 public class CartItemController(ICartItemService cartItemService) : ControllerBase
 {
-    // [Authorize(Policy = "CartItemRead")]
+    [Authorize(Policy = "CartItemRead")]
     [HttpGet]
     public async Task<IActionResult> GetAllCartItems([FromRoute] int cartid, CancellationToken cancellationToken, int pageNum = 0, int pageSize = 10)
     {
@@ -23,7 +23,7 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
     }
 
     [HttpGet("{id:int}")]
-    // [Authorize(Policy = "CartItemRead")]
+    [Authorize(Policy = "CartItemRead")]
     public async Task<IActionResult> GetCartItemByIdAndCartId([FromRoute] int cartid, [FromRoute] int id, CancellationToken cancellationToken)
     {
         var result = await cartItemService.GetCartItemByIdAndCartIdAsync(cartid, id, cancellationToken);
@@ -32,7 +32,7 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
     }
 
     [HttpPost]
-    // [Authorize(Policy = "CartItemWrite")]
+    [Authorize(Policy = "CartItemWrite")]
     public async Task<IActionResult> CreateCartItem([FromBody] CartItemRequest CartItemRequest, CancellationToken cancellationToken)
     {
         var newcartItem = await cartItemService.CreateCartItemAsync(CartItemRequest, cancellationToken);
@@ -40,7 +40,7 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
     }
 
     [HttpPut("{id:int}")]
-    // [Authorize(Policy = "CartItemWrite")]
+    [Authorize(Policy = "CartItemWrite")]
     public async Task<IActionResult> UpdateCartItem([FromRoute] int cartid, [FromRoute] int id, [FromBody] CartItemRequest cartItemUpdateRequestDto, CancellationToken cancellationToken)
     {
         var updatedcartItem = await cartItemService.UpdateCartItemAsync(cartid, id, cartItemUpdateRequestDto, cancellationToken);
@@ -49,7 +49,7 @@ public class CartItemController(ICartItemService cartItemService) : ControllerBa
     }
 
     [HttpDelete("{id:int}")]
-    // [Authorize(Policy = "CartItemWrite")]
+    [Authorize(Policy = "CartItemWrite")]
     public async Task<IActionResult> DeleteCartItem([FromRoute] int cartid, [FromRoute] int id, CancellationToken cancellationToken)
     {
         await cartItemService.DeleteCartItemAsync(cartid, id, cancellationToken);
