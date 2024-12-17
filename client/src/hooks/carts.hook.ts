@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Cart } from '@/types/models'
+import { Cart, CartStatusEnum } from '@/types/models'
 import CartApi from '@/api/cart.api'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 
@@ -30,6 +30,7 @@ export const useCart = (cartId: number) => {
     const [cart, setCart] = useState<Cart | undefined>(undefined)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isError, setIsError] = useState<boolean>(false)
+    const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const handleFetch = async () => {
@@ -37,13 +38,15 @@ export const useCart = (cartId: number) => {
             if (response.result) {
                 setCart(response.result!)
                 setIsLoading(false)
+                setIsCartOpen(response.result.status === CartStatusEnum.IN_PROGRESS)
                 return
             }
+            
             setIsError(true)
             setIsLoading(false)
         }
         handleFetch()
     }, [cartId])
 
-    return { cart, setCart, isLoading, isError }
+    return { cart, setCart, isLoading, isError, isCartOpen, setIsCartOpen }
 }

@@ -3,7 +3,7 @@ import { Transaction, TransactionStatusEnum } from '@/types/models'
 import CartTransactionApi from '@/api/transaction.api'
 
 export const useCartTransactions = (cartId: number) => {
-    const [cartTransactions, setCartTransactions] = useState<Transaction[] | undefined>(undefined)
+    const [cartTransactions, setCartTransactions] = useState<Transaction[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [errorMsg, setErrorMsg] = useState<string>('')
 

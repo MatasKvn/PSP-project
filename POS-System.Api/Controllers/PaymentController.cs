@@ -73,9 +73,9 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpGet("checkout-fail")]
-        public async Task<IActionResult> CheckoutFailAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId)
+        public async Task<IActionResult> CheckoutFailAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId, [FromQuery] string? giftCardCode, [FromQuery] long? discount)
         {
-            var path = await paymentService.CheckoutFailAsync(transactionDate, sessionId, cartId);
+            var path = await paymentService.CheckoutFailAsync(transactionDate, sessionId, cartId, giftCardCode, discount);
 
             return Redirect(path);
         }
