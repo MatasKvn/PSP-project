@@ -115,6 +115,7 @@ export type ServiceReservation = {
     bookingTime: Date
     customerPhone: string
     customerName: string
+    isCancelled: boolean
 }
 
 export type TimeSlot = {

@@ -26,5 +26,6 @@ namespace POS_System.Domain.Entities
         public required string CustomerName { get; set; }
         [MaxLength(15)]
         public required string CustomerPhone { get; set; }
+        public required bool isCancelled { get; set; }
     }
 }

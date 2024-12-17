@@ -19,7 +19,7 @@ type Props = {
 }
 
 const ServiceReservationsPage = ({ pageNumber }: Props) => {
-    const {serviceReservations, setServiceReservations, isLoading, errorMsg} = useServiceReservations(pageNumber)
+    const { serviceReservations, setServiceReservations, isLoading, errorMsg, refetch } = useServiceReservations(pageNumber)
     const [formattedReservations, setFormattedReservations] = useState<any[]>([])
 
     useEffect(() => {
@@ -30,8 +30,18 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
 
                     return {
                         ...reservation,
-                        timeSlotId: response.result ? new Date(response.result).toLocaleString() : 'N/A',
+                        timeSlotId: response.result
+                            ? new Date(response.result).toLocaleString()
+                            : 'N/A',
                         bookingTime: new Date(reservation.bookingTime).toLocaleString(),
+                        isCancelled: reservation.isCancelled ? 'Yes' : 'No',
+                        actions: reservation.isCancelled ? (
+                            <span>Cancelled</span>
+                        ) : (
+                            <Button onClick={() => cancelReservation(reservation)}>
+                                Cancel
+                            </Button>
+                        ),
                     }
                 })
             )
@@ -43,6 +53,40 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
         }
     }, [serviceReservations])
 
+    const cancelReservation = async (selectedReservation: ServiceReservation) => {
+        if (!selectedReservation) {
+            console.error("No reservation selected")
+            return
+        }
+
+        // Prevent redundant cancellation
+        if (selectedReservation.isCancelled) {
+            console.log("Reservation is already cancelled")
+            return
+        }
+
+        console.log("Cancelling reservation: ", selectedReservation)
+
+        const response = await ServiceReservationApi.update({
+            id: selectedReservation.id,
+            cartItemId: Number(selectedReservation.cartItemId),
+            timeSlotId: selectedReservation.timeSlotId,
+            customerName: selectedReservation.customerName,
+            customerPhone: selectedReservation.customerPhone,
+            bookingTime: selectedReservation.bookingTime,
+            isCancelled: true,
+        })
+
+        if (!response.result) {
+            console.error(response.error || 'Failed to update the reservation')
+            return
+        }
+
+        console.log("Reservation cancelled successfully")
+
+        refetch()
+    }
+
     const columns = [
         { name: 'ID', key: 'id' },
         { name: 'Cart Item', key: 'cartItemId' },
@@ -50,6 +94,8 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
         { name: 'Booking Time', key: 'bookingTime' },
         { name: 'Customer Name', key: 'customerName' },
         { name: 'Customer Phone', key: 'customerPhone' },
+        { name: 'Cancelled', key: 'isCancelled' },
+        { name: 'Actions', key: 'actions' },
     ]
 
     return (

@@ -310,9 +310,9 @@ const CartPage = (props: Props) => {
             timeSlotId: timeSlotId,
             customerName: customerName,
             customerPhone: customerPhone,
-            bookingTime: new Date()
+            bookingTime: new Date(),
+            isCancelled: false
         })
-        console.log("response.result: ", response.result)
         if (!response.result) {
             console.log(response.error)
             return

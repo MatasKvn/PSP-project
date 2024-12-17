@@ -83,6 +83,7 @@ namespace POS_System.Business.Services
             serviceReservation.BookingTime = serviceReservationDto.BookingTime;
             serviceReservation.CustomerName = serviceReservationDto.CustomerName;
             serviceReservation.CustomerPhone = serviceReservationDto.CustomerPhone;
+            serviceReservation.isCancelled = serviceReservationDto.IsCancelled;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
