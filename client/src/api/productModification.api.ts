@@ -23,7 +23,7 @@ export default class ProductModificationApi {
     static async getByCartItemId(cartItemId: number, pageNumber: number): Promise<FetchResponse<PagedResponse<ProductModification>>> {
         return await fetch({
             url: `${apiBaseUrl}/product-modification/cart-item/${cartItemId}?timeStamp=${encodeDateToUrlString(new Date())}`,
-            method: HTTPMethod.POST,
+            method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
     }

@@ -95,6 +95,7 @@ const ProductModificationManagementView = (props: Props) => {
         const newProductModifications = productModifications.filter((pm) => pm.id !== selectedProductModification.id)
         setProductModifications(newProductModifications)
         setSelectedProductModification(undefined)
+        setActionType('create')
     }
 
     return (
