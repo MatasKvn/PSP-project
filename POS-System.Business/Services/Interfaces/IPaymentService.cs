@@ -13,6 +13,6 @@ namespace POS_System.Business.Services.Interfaces
 		Task<CheckoutResponse> PartialCheckoutAsync(PartialCheckoutRequest checkoutRequest, CancellationToken token);
 		Task<string> FullCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId);
 		Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId);
-		Task<string> CheckoutFailAsync(DateTime transactionDate, string sessionId, int cartId);
+		Task<string> CheckoutFailAsync(DateTime transactionDate, string sessionId, int cartId, string? giftCardCode, long? discount);
 	}
 }

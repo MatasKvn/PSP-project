@@ -84,7 +84,8 @@ namespace POS_System.Business.Services
 
         public async Task<CheckoutResponse> FullCheckoutAsync(CheckoutRequest checkoutRequest, CancellationToken token)
         {   
-            var cart = await cartService.GetByIdAsync(checkoutRequest.CartId, token);
+            var cart = await unitOfWork.CartRepository.GetByIdAsync(checkoutRequest.CartId, token)
+                ?? throw new NotFoundException(ApplicationMessages.NOT_FOUND_ERROR);
 
             if (cart.Status != CartStatusEnum.IN_PROGRESS)
                 throw new BadRequestException(ApplicationMessages.CLOSED_ORDER);
@@ -157,6 +158,7 @@ namespace POS_System.Business.Services
             };
 
             await unitOfWork.TransactionRepository.CreateAsync(transaction, token);
+            cart.Status = CartStatusEnum.PENDING;
             await unitOfWork.SaveChangesAsync(token);
 
             return new CheckoutResponse(session.Id, configuration["Stripe:PublicKey"]!); 
@@ -179,8 +181,8 @@ namespace POS_System.Business.Services
                 {
                     totalPrice -= discount.PercentOff is null ? (int)discount.AmountOff! : (int)(totalPrice * ((double)discount.PercentOff!) * 0.01);
 
-                    if (totalPrice < 0)
-                        totalPrice = 0;
+                    if (totalPrice < 100)
+                        totalPrice = 100;
                 }
             }
 
@@ -257,9 +259,10 @@ namespace POS_System.Business.Services
             
             if (checkoutRequest.GiftCard is not null)
             {
-                var giftCardCode = await CreateCouponForGiftCard((long)transactionToExec.Amount, checkoutRequest.GiftCard, token);
+                var (giftCardCode, discount) = await CreateCouponForGiftCard((long)transactionToExec.Amount, checkoutRequest.GiftCard, token);
                 
                 options.Discounts = [ new SessionDiscountOptions { Coupon = giftCardCode }];
+                options.CancelUrl += $"&giftCardCode={checkoutRequest.GiftCard.Code}&discount={discount}";
             }
 
             var session = await sessionService.CreateAsync(options, cancellationToken:token);
@@ -310,23 +313,30 @@ namespace POS_System.Business.Services
             return ApplicationConstants.REDIRECT_URL;
         }
 
-        public async Task<string> CheckoutFailAsync(DateTime transactionDate, string sessionId, int cartId)
+        public async Task<string> CheckoutFailAsync(DateTime transactionDate, string sessionId, int cartId, string? giftCardCode, long? discount)
         {
-            var cartTask = unitOfWork.CartRepository.GetByIdAsync(cartId, CancellationToken.None);
+            var cart = await unitOfWork.CartRepository.GetByIdAsync(cartId, CancellationToken.None);
             var transaction = await unitOfWork.TransactionRepository.GetByIdDateTimeAsync(transactionDate);
             
             transaction!.TransactionRef = sessionId;
             transaction.Status = TransactionStatusEnum.PENDING;
 
-            var cart = await cartTask;
             cart!.Status = CartStatusEnum.PENDING;
             
+            if (giftCardCode is not null && discount is not null)
+            {
+                var giftCard = await unitOfWork.GiftCardRepository.GetByIdStringAsync(giftCardCode);
+
+                if (giftCard is not null)
+                    giftCard.Value += (long)discount;
+            }
+
             await unitOfWork.SaveChangesAsync();
 
             return ApplicationConstants.REDIRECT_URL;
         }
 
-        private async Task<string> CreateCouponForGiftCard(long totalPrice, GiftCardDetails giftCardDetails, CancellationToken token)
+        private async Task<(string, long)> CreateCouponForGiftCard(long totalPrice, GiftCardDetails giftCardDetails, CancellationToken token)
         {
             var couponService = new CouponService();
 
@@ -340,27 +350,30 @@ namespace POS_System.Business.Services
                 : giftCardDetails.ValueToSpend;
             long discount;
 
-            if (toDeduct > totalPrice)
+            if (toDeduct >= totalPrice)
             {
-                giftCard.Value -= totalPrice;
-                discount = totalPrice;
+                giftCard.Value -= totalPrice - 100;
+                discount = totalPrice - 100;
             }
             else
             {
-                giftCard.Value = 0;
                 discount = toDeduct;
+                giftCard.Value -= discount;
             }
 
             var options = new CouponCreateOptions
             {
                 Currency = "EUR",
-                AmountOff = discount 
+                AmountOff = discount,
+                RedeemBy = DateTime.UtcNow.AddMinutes(5)
             };
 
             var coupon = await couponService.CreateAsync(options, cancellationToken: token)
-                ?? throw new InternalServerErrorException(ApplicationMessages.INTERNAL_SERVER_ERROR);    
+                ?? throw new InternalServerErrorException(ApplicationMessages.INTERNAL_SERVER_ERROR); 
+
+            await unitOfWork.SaveChangesAsync(token);   
             
-            return coupon.Id;
+            return (coupon.Id, discount);
         }
 
         private async Task UpdateTransactionStatus(DateTime transactionDate, string paymentId, TransactionStatusEnum status)
