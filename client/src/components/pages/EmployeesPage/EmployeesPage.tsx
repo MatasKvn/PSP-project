@@ -10,6 +10,9 @@ import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm
 import Table from '@/components/shared/Table'
 import styles from './EmployeesPage.module.scss'
 import { userAgent } from 'next/server'
+import PageChanger from '@/components/shared/PageChanger'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -45,6 +48,7 @@ const compareEmployees = (employee1: Employee, employee2: Employee) => employee1
 const EmployeesPage = ({ pageNumber }: Props) => {
     const { employees, setEmployees, isLoading, isError } = useEmployees(pageNumber)
     const [selectedEmployee, selectEmployee] = useState<Employee | undefined>()
+    const router = useRouter()
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
     type SideDrawerContentType = 'create' | 'edit'
@@ -61,12 +65,8 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             roleId,
             birthDate
         } = formPayload;
-
-        console.log('birthDate123:', birthDate);
-        console.log('role123:', roleId);
-
+ 
         const roleIdNum = getNumericValue(roleId);
-        console.log('roleIdNUM123:', roleIdNum);
         const response = await EmployeeApi.createEmployee({
             firstName,
             lastName,
@@ -77,8 +77,7 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             birthDate,
             password
         });
-        console.log('birthDate22222222:', birthDate);
-        console.log('roleIdNUM22222222:', roleIdNum);
+
         if (!response.result) {
             console.log(response.error)
             return;
@@ -96,14 +95,10 @@ const EmployeesPage = ({ pageNumber }: Props) => {
 
     const handleEmployeeUpdate = async (formPayload: DynamicFormPayload) => {
         if (!selectedEmployee) return;
+        
         const { firstName, lastName, userName, email, phoneNumber, roleId, birthDate, password } = formPayload;
         
-        console.log('birthDate123:', birthDate);
-        console.log('role123:', roleId);
-
         const roleIdNum = getNumericValue(roleId);
-        console.log('roleIdNUM123:', roleIdNum);
-        
         const dataToSend = {
             firstName: firstName || selectedEmployee.firstName,
             lastName: lastName || selectedEmployee.lastName,
@@ -114,8 +109,6 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             birthDate: birthDate || selectedEmployee.birthDate,
             password: password || selectedEmployee.birthDate
         };
-
-        console.log('Data being sent to update employee:', dataToSend);
 
         const response = await EmployeeApi.updateEmployeeById(selectedEmployee.id, dataToSend);
 
@@ -329,6 +322,12 @@ const EmployeesPage = ({ pageNumber }: Props) => {
                 >Delete Employee</Button>
             </div>
             <div>{employeeTable()}</div>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.employees(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.employees(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
             <SideDrawer ref={sideDrawerRef}>{sideDrawerContent()}</SideDrawer>
         </div>
     )
