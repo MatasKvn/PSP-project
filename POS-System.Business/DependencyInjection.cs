@@ -75,6 +75,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.AddPolicy("GiftCardRead", policy => policy.RequireClaim("GiftCardRead"));
                 options.AddPolicy("CartItemWrite", policy => policy.RequireClaim("CartItemWrite"));
                 options.AddPolicy("CartItemRead", policy => policy.RequireClaim("CartItemRead"));
+                options.AddPolicy("ItemDiscountRead", policy => policy.RequireClaim("ItemDiscountRead"));
+                options.AddPolicy("ItemDiscountWrite", policy => policy.RequireClaim("ItemDiscountWrite"));
+                options.AddPolicy("BusinessDetailsRead", policy => policy.RequireClaim("BusinessDetailsRead"));
+                options.AddPolicy("BusinessDetailsWrite", policy => policy.RequireClaim("BusinessDetailsWrite"));
             });
 
             services.AddScoped(typeof(IManyToManyService<,,>), typeof(ManyToManyService<,,>));

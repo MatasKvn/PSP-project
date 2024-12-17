@@ -41,7 +41,7 @@ const ProductsView = (props: Props) => {
                         type='product'
                         id={product.id}
                         description={product.description}
-                        imageUrl={product.imageUrl}
+                        imageUrl={product.imageURL}
                         label={product.name}
                         price={product.price}
                         stock={product.stock}

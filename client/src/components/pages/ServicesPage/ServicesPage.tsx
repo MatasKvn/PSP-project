@@ -49,7 +49,7 @@ const ServicesPage = (props: Props) => {
                 id={product.id}
                 label={product.name}
                 description={product.description}
-                imageUrl={product.imageUrl}
+                imageUrl={product.imageURL}
                 price={product.price}
                 isSelected={selectedService?.id === product.id}
                 onClick={(id: number) => {
@@ -97,7 +97,7 @@ const ServicesPage = (props: Props) => {
             name: serviceName,
             description: serviceDescription,
             price: Number.parseInt(servicePrice),
-            imageUrl: serviceImageUrl,
+            imageURL: serviceImageUrl,
             duration: Number.parseInt(serviceDuration),
             employeeId: getEmployeeId()
         })
@@ -122,12 +122,12 @@ const ServicesPage = (props: Props) => {
         } = formPayload
         const price = Number.parseInt(servicePrice)
         const duration = Number.parseInt(serviceDuration)
-        const response = await ServiceApi.udpate({
+        const response = await ServiceApi.update({
             id: selectedService.id,
             name: serviceName || selectedService.name,
             description: serviceDescription || selectedService.description,
             price: isNaN(price) ? selectedService.price : price,
-            imageUrl: serviceImageUrl || selectedService.imageUrl,
+            imageURL: serviceImageUrl || selectedService.imageURL,
             duration: duration || selectedService.duration,
             employeeId: getEmployeeId()
         })
