@@ -45,11 +45,6 @@ export const useDiscountedItems = (discount: ItemDiscount | undefined) => {
             ])
             const { result: products, error: productsErr } = responses[0]
             const { result: services, error: servicesErr } = responses[1]
-            console.log({
-                id: discount.id,
-                products,
-                services
-            })
             if (!products || !services) {
                 setErrorMsg(productsErr || servicesErr || 'Failed to get discounted items')
                 setIsLoading(false)

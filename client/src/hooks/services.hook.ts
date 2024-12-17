@@ -14,9 +14,7 @@ export const useServices = (pageNumber: number | undefined, comparedServices?: (
                 setIsLoading(false)
                 return
             }
-            console.log('services fetched')
             const response = await ServiceApi.getAllServices(pageNumber)
-            console.log(response)
             if (!response.result) {
                 setErrorMsg(response.error!)
                 setIsLoading(false)
