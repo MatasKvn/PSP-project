@@ -21,9 +21,9 @@ async function fetchWrapper({ url, method, headers, body }: FetchParams): Promis
                 }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (e) {
-                console.error('Error parsing JSON response:', e);
+                // console.error('Error parsing JSON response:', e);
                 return {
-                    result: {}
+                    result: response.statusText
                 }
             }
         }

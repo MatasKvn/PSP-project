@@ -45,13 +45,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
             console.log(taxResponse.error)
             return
         }
-        const responses = await Promise.all([
-            await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addServicesToTax(tax.id, serviceIds),
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         setTaxes([...taxes, tax])
     }
 
@@ -75,13 +68,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
             console.log(taxResponse.error)
             return
         }
-        const responses = await Promise.all([
-            await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addServicesToTax(tax.id, serviceIds),
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         const newTaxes = [
             ...taxes.filter((tax) => tax.id !== id),
             tax
