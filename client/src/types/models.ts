@@ -119,7 +119,7 @@ export type ServiceReservation = {
 
 export type TimeSlot = {
     id: number
-    employeeId: number
+    employeeVersionId: number
     startTime: Date
     isAvailable: boolean
 }
@@ -180,9 +180,4 @@ export type Service = {
     price: number
     imageURL: string
     employeeId: number
-}
-
-export type EmployeeService = {
-    serviceId: number,
-    employeeId: number 
 }

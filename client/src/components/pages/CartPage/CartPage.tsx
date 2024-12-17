@@ -19,6 +19,8 @@ import { useCartTransactions } from '../../../hooks/transactions.hook'
 import { loadStripe } from '@stripe/stripe-js'
 import PaymentApi from '@/api/payment.api'
 import { DateTimeWithMicroseconds, FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, RefundBody } from '@/types/payment'
+import ServiceReservationApi from '@/api/serviceReservation.api'
+import TimeSlotApi from '@/api/timeSlot.api'
 
 type Props = {
     cartId: number
@@ -155,7 +157,7 @@ const CartPage = (props: Props) => {
             { name: 'Deconste', key: 'deconste' },
         ]
     const serviceRows = serviceItems.map((item) => {
-        const startTime = item.timeSlot.startTime
+        const startTime = new Date(item.timeSlot.startTime)
         return {
             name: item.service.name,
             quantity: item.quantity,
@@ -269,8 +271,10 @@ const CartPage = (props: Props) => {
         sideDrawerRef.current?.close()
     }
 
-    const handleServiceCartItemCreate = async ({ serviceId }: { serviceId: number | undefined }) => {
-        if (!serviceId) {
+    const handleServiceCartItemCreate = async (formPayload: { serviceId: any; timeSlotId: any; customerName: any; customerPhone: any }) => {
+        const { serviceId, timeSlotId, customerName, customerPhone} = formPayload
+
+        if (!serviceId || !timeSlotId || !customerName || !customerPhone) {
             console.log('Invalid input')
             return
         }
@@ -286,8 +290,62 @@ const CartPage = (props: Props) => {
             console.log(response.error)
             return
         }
+        
+        const cartItemResponse = await CartItemApi.getHighestCartItemIdByCartId(cartId)
+        if (!cartItemResponse.result) {
+            console.log(cartItemResponse.error);
+            return;
+        }
+
+        const cartItemId = cartItemResponse.result;
+        handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
+        handleTimeSlotUpdate(timeSlotId)
         refetchCartItems()
         sideDrawerRef.current?.close()
+    }
+
+    const handleServiceReservationCreate = async (cartItemId: number, timeSlotId: number, customerName: string, customerPhone: string) => {
+        const response = await ServiceReservationApi.create({
+            cartItemId: Number(cartItemId),
+            timeSlotId: timeSlotId,
+            customerName: customerName,
+            customerPhone: customerPhone,
+            bookingTime: new Date()
+        })
+        console.log("response.result: ", response.result)
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+    }
+
+    const handleTimeSlotUpdate = async (timeSlotId: number) => {
+        const response = await TimeSlotApi.getTimeSlotById(timeSlotId);
+        if (!response.result) {
+            console.log(response.error);
+            return;
+        }
+
+        const timeSlot = response.result;
+        console.log("timeSlot: ", response.result)
+        if (!timeSlot) {
+            console.error("TimeSlot not found");
+            return;
+        }
+    
+        const updateResponse = await TimeSlotApi.update({
+            id: Number(timeSlot.id),
+            employeeVersionId: Number(timeSlot.employeeVersionId),
+            startTime: timeSlot.startTime,
+            isAvailable: false,
+        })
+        console.log("updatedResp: ", updateResponse.result)
+
+        if (updateResponse.result) {
+            console.log("TimeSlot updated successfully")
+        } else {
+            console.error("Failed to update TimeSlot:", updateResponse.error)
+        }
     }
 
     const handleCartDiscount = async (formPayload: FormPayload) => {

@@ -1,7 +1,7 @@
 'use client'
 
 import Button from '@/components/shared/Button'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
@@ -12,6 +12,7 @@ import { useServiceReservations } from '@/hooks/serviceReservations.hook'
 import Table from '@/components/shared/Table'
 import ServiceReservationApi from '@/api/serviceReservation.api'
 import { ServiceReservation } from '@/types/models'
+import TimeSlotApi from '@/api/timeSlot.api'
 
 type Props = {
     pageNumber: number
@@ -19,42 +20,44 @@ type Props = {
 
 const ServiceReservationsPage = ({ pageNumber }: Props) => {
     const {serviceReservations, setServiceReservations, isLoading, errorMsg} = useServiceReservations(pageNumber)
-    const sideDrawerRef = useRef<SideDrawerRef | null>(null)
-    const [selectedReservation, setSelectedReservation] = useState<ServiceReservation | null>(null);
-    type ActionType = 'create' | 'edit'
-    const [actionType, setActionType] = useState<ActionType>()
+    const [formattedReservations, setFormattedReservations] = useState<any[]>([])
 
-    const handleReservationCreate = async (formPayload: DynamicFormPayload) => {
+    useEffect(() => {
+        const fetchRows = async () => {
+            const updatedReservations = await Promise.all(
+                serviceReservations.map(async (reservation) => {
+                    const response = await TimeSlotApi.getTimeSlotStartTime(reservation.timeSlotId)
 
-    }
+                    return {
+                        ...reservation,
+                        timeSlotId: response.result ? new Date(response.result).toLocaleString() : 'N/A',
+                        bookingTime: new Date(reservation.bookingTime).toLocaleString(),
+                    }
+                })
+            )
+            setFormattedReservations(updatedReservations)
+        }
 
-    const handleReservationUpdate = async (formPayload: DynamicFormPayload) => {
-        
-    }
+        if (serviceReservations.length > 0) {
+            fetchRows()
+        }
+    }, [serviceReservations])
 
-    const dummyReservationRow = {
-        id: 0,
-        cartItemId: 0,
-        timeSlotId: 0,
-        bookingTime: new Date(),
-        customerName: '',
-        customerPhone: ''
-    }
-    const rows = serviceReservations.map((reservation) => ({
-        ...reservation,
-        bookingTime: new Date(reservation.bookingTime).toLocaleString(),
-    }))
-    const columns = Object.keys(dummyReservationRow).map((key) => ({
-        name: key,
-        key
-    }))
+    const columns = [
+        { name: 'ID', key: 'id' },
+        { name: 'Cart Item', key: 'cartItemId' },
+        { name: 'Time Slot', key: 'timeSlotId' },
+        { name: 'Booking Time', key: 'bookingTime' },
+        { name: 'Customer Name', key: 'customerName' },
+        { name: 'Customer Phone', key: 'customerPhone' },
+    ]
 
     return (
         <>
             <h1>Reservations</h1>
             <Table
                 columns={columns}
-                rows={rows}
+                rows={formattedReservations}
                 isLoading={isLoading}
                 errorMsg={errorMsg}
             />
@@ -63,3 +66,7 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
 }
 
 export default ServiceReservationsPage
+
+function setFormattedReservations(updatedReservations: { timeSlotId: string; bookingTime: string; id: number; cartItemId: number; timeSlot?: import("@/types/models").TimeSlot; customerPhone: string; customerName: string }[]) {
+    throw new Error('Function not implemented.')
+}

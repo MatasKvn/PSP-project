@@ -52,6 +52,11 @@ export default class CartItemApi {
         return Promise.resolve({ result })
     }
 
+    static async getHighestCartItemIdByCartId(cartId: number): Promise<FetchResponse<number>> {
+        const maxId = Math.max(...cartItems.map((cartItem) => cartItem.id))
+        return Promise.resolve({ result: maxId })
+    }
+
     static async createCartItem(cartId: number, dto: CreateCartItemDto): Promise<FetchResponse<CartItem>> {
         const maxId = Math.max(...cartItems.map((cartItem) => cartItem.id))
 
