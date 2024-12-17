@@ -17,13 +17,13 @@ const getProductCartItemSubItems = async (cartItem: ProductCartItem): Promise<st
     const productResponse = await ProductApi.getProductById(cartItem.productId)
     if (!productResponse.result) return productResponse.error || 'Failed to get product'
     const product = productResponse.result
-    const productModificationsResponse = await ProductModificationApi.getByCartItemId(cartItem.id, 0)
+    const productModificationsResponse = await ProductModificationApi.getByCartItemId(cartItem.id)
     if (!productModificationsResponse.result) return productModificationsResponse.error || 'Failed to get product modifications'
-    const productModifications = PagedResponseMapper.fromPageResponse(productModificationsResponse.result)
+    const productModifications = productModificationsResponse.result
     const discountsReponse = await ItemDiscountApi.getCurrentDiscountsByProductId(cartItem.productId)
     if (!discountsReponse.result) return discountsReponse.error || 'Failed to get discounts'
     const discounts = discountsReponse.result
-    const taxesResponse = await TaxApi.getProductsByTaxId(cartItem.productId)
+    const taxesResponse = await TaxApi.getTaxesByProductId(cartItem.productId)
     if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
     const taxes = taxesResponse.result
 
@@ -50,7 +50,7 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
     const discountsResponse = await ItemDiscountApi.getCurrentDiscountByServiceId(cartItem.serviceId)
     if (!discountsResponse.result) return discountsResponse.error || 'Failed to get discounts'
     const discounts = discountsResponse.result
-    const taxesResponse = await TaxApi.getServicesByTaxId(cartItem.serviceId)
+    const taxesResponse = await TaxApi.getTaxesByServiceId(cartItem.serviceId)
     if (!taxesResponse.result) return taxesResponse.error || 'Failed to get taxes'
     const taxes = taxesResponse.result
 

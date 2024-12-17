@@ -3,14 +3,13 @@
 import Button from '@/components/shared/Button'
 import PageChanger from '@/components/shared/PageChanger'
 import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
-import { useDiscounts } from '@/hooks/discounts.hook'
-import { ItemDiscount } from '@/types/models'
+import { useDiscountedItems, useDiscounts } from '@/hooks/discounts.hook'
+import { ItemDiscount, Product, Service } from '@/types/models'
 import React, { useState } from 'react'
 
 import styles from './DiscountsPage.module.scss'
 import { useRouter } from 'next/navigation'
 import { GetPageUrl } from '@/constants/route'
-import ItemCard from '@/components/shared/ItemCard'
 import DiscountCard from '@/components/shared/DiscountCard'
 import DiscountForm from '@/components/specialized/DiscountForm'
 import { DiscountFormPayload } from '@/components/specialized/DiscountForm/DiscountForm'
@@ -23,6 +22,14 @@ type Props = {
 const DiscountsPage = ({ pageNumber }: Props) => {
     const { discounts, setDiscounts, isLoading, errorMsg } = useDiscounts(pageNumber)
     const [selectedDiscount, selectDiscount] = useState<ItemDiscount | undefined>(undefined)
+    const {
+        selectedProducts,
+        selectedServices,
+        errorMsg: discountedItemsErrorMsg,
+        isLoading: discountedItemsLoading,
+        setSelectedProducts,
+        setSelectedServices
+    } = useDiscountedItems(selectedDiscount)
     const router = useRouter()
 
     type DrawerContentType = 'Create' | 'Edit' | 'none'
@@ -56,32 +63,21 @@ const DiscountsPage = ({ pageNumber }: Props) => {
         description,
         value,
         startDate,
-        endDate,
-        productIds,
-        serviceIds
+        endDate
     }: DiscountFormPayload) => {
         if (!selectedDiscount) return
-        const startDateParsed = new Date(startDate)
-        const endDateParsed = new Date(endDate)
         const response = await ItemDiscountApi.updateDiscount({
             id: selectedDiscount.id,
             isPercentage,
-            value: isNaN(value) ? selectedDiscount.value : value,
+            value: isNaN(value) || value <= 0 ? selectedDiscount.value : value,
             description: description.length > 0 ? description : selectedDiscount.description,
-            startDate: isNaN(endDateParsed.getTime()) ? selectedDiscount.startDate : startDateParsed,
-            endDate: isNaN(endDateParsed.getTime()) ? selectedDiscount.endDate : endDateParsed
+            startDate: startDate || selectedDiscount.startDate,
+            endDate: endDate || selectedDiscount.endDate
         })
         if (!response.result) {
             console.log(response.error)
             return
         }
-        const responses = await Promise.all([
-            await ItemDiscountApi.addProductsToDiscount(selectedDiscount.id, productIds),
-            await ItemDiscountApi.addServicesToDiscount(selectedDiscount.id, serviceIds)
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         const newDiscounts = [
             ...discounts.filter((discount) => discount.id !== selectedDiscount!.id),
             response.result
@@ -94,39 +90,28 @@ const DiscountsPage = ({ pageNumber }: Props) => {
         description,
         value,
         startDate,
-        endDate,
-        productIds,
-        serviceIds
+        endDate
     }: DiscountFormPayload) => {
-        const startDateParsed = new Date(startDate)
-        const endDateParsed = new Date(endDate)
-        if (isNaN(startDateParsed.getTime()) && startDate !== '' || isNaN(endDateParsed.getTime()) && endDate !== '') {
-            console.log('Incorrect Date format')
-            return
-        }
         if (!description) {
             console.log('Please enter a description')
+            return
+        }
+        if (!startDate || !endDate) {
+            console.log('Please enter a valid start and end date')
             return
         }
         const response = await ItemDiscountApi.createDiscount({
             isPercentage,
             value,
             description,
-            startDate: startDateParsed,
-            endDate: endDateParsed
+            startDate,
+            endDate
         })
         const { result: discount } = response
         if (!discount) {
             console.log(response.error)
             return
         }
-        const responses = await Promise.all([
-            await ItemDiscountApi.addProductsToDiscount(discount.id, productIds),
-            await ItemDiscountApi.addServicesToDiscount(discount.id, serviceIds)
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         const newDiscounts = [
             ...discounts,
             discount
@@ -146,9 +131,48 @@ const DiscountsPage = ({ pageNumber }: Props) => {
     }
 
     const handleFormSubmit = (discountFormPayload: DiscountFormPayload) => {
-        console.log(discountFormPayload)
         if (actionType === 'Edit') handleUpdate(discountFormPayload)
         if (actionType === 'Create') handleCreate(discountFormPayload)
+    }
+
+    const handleProductClick = async (product: Product) => {
+        if (!selectedDiscount) return
+        if (selectedProducts.some((selectedProduct) => selectedProduct.id === product.id)) {
+            const response = await ItemDiscountApi.removeProductsFromDiscount(selectedDiscount.id, [product.id])
+            if (!response.result) {
+                console.log(response.error)
+                return
+            }
+            const newSelectedProducts = selectedProducts.filter((selectedProduct) => selectedProduct.id !== product.id)
+            setSelectedProducts(newSelectedProducts)
+            return
+        }
+        const response =  await ItemDiscountApi.addProductsToDiscount(selectedDiscount.id, [product.id])
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        setSelectedProducts([...selectedProducts, product])
+    }
+
+    const handleServiceClick = async (service: Service) => {
+        if (!selectedDiscount) return
+        if (selectedProducts.some((selectedProduct) => selectedProduct.id === service.id)) {
+            const response = await ItemDiscountApi.removeServicesFromDiscount(selectedDiscount.id, [service.id])
+            if (!response.result) {
+                console.log(response.error)
+                return
+            }
+            const newSelectedServices = selectedServices.filter((selectedService) => selectedService.id !== service.id)
+            setSelectedServices(newSelectedServices)
+            return
+        }
+        const response =  await ItemDiscountApi.addServicesToDiscount(selectedDiscount.id, [service.id])
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        setSelectedServices([...selectedServices, service])
     }
 
     return (
@@ -159,6 +183,7 @@ const DiscountsPage = ({ pageNumber }: Props) => {
                     disabled={isLoading || !!errorMsg}
                     onClick={() => {
                         setActionType('Create')
+                        selectDiscount(undefined)
                         sideDrawerRef.current?.open()
                     }}
                 >
@@ -192,8 +217,13 @@ const DiscountsPage = ({ pageNumber }: Props) => {
             />
             <SideDrawer ref={sideDrawerRef}>
                 <DiscountForm
+                    showAppliedItems={selectedDiscount !== undefined}
                     actionName={actionType}
                     onSubmit={handleFormSubmit}
+                    onProductClick={handleProductClick}
+                    onServiceClick={handleServiceClick}
+                    selectedProducts={selectedProducts}
+                    selectedServices={selectedServices}
                 />
             </SideDrawer>
         </div>

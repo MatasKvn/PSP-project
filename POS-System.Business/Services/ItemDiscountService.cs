@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
@@ -12,7 +14,7 @@ namespace POS_System.Business.Services
     public class ItemDiscountService(IUnitOfWork _unitOfWork, IManyToManyService<Product, ItemDiscount, ProductOnItemDiscount> _productOnItemDiscountService,
         IManyToManyService<Service, ItemDiscount, ServiceOnItemDiscount> _serviceOnItemDiscountService, IMapper _mapper) : IItemDiscountService
     {
-        public async Task<IEnumerable<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken)
+        public async Task<PagedResponse<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
             var itemDiscounts = await _unitOfWork.ItemDiscountRepository.GetAllByExpressionAsync(x => x.IsDeleted == false);
 
@@ -29,8 +31,10 @@ namespace POS_System.Business.Services
                 }
             }
 
+            itemDiscounts.Skip(pageNum * pageSize).Take(pageSize);
+
             var itemDiscountDtos = _mapper.Map<List<ItemDiscountResponse>>(itemDiscounts);
-            return itemDiscountDtos;
+            return new PagedResponse<ItemDiscountResponse>(itemDiscountDtos.Count, pageSize, pageNum, itemDiscountDtos);
         }
 
         public async Task<ItemDiscountResponse> CreateItemDiscountAsync(ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken)

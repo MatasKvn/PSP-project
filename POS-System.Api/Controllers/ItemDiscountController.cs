@@ -11,9 +11,9 @@ namespace POS_System.Api.Controllers
     {
         [HttpGet]
         [Authorize("ItemDiscountRead")]
-        public async Task<IActionResult> GetAllItemDiscounts(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllItemDiscounts(CancellationToken cancellationToken, int pageNum = 0, int pageSize = 35)
         {
-            var itemDiscounts = await _itemDiscountService.GetAllItemDiscountsAsync(cancellationToken);
+            var itemDiscounts = await _itemDiscountService.GetAllItemDiscountsAsync(cancellationToken, pageNum, pageSize);
             return Ok(itemDiscounts);
         }
 

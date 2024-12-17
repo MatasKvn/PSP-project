@@ -1,11 +1,12 @@
-﻿using POS_System.Business.Dtos.Request;
+﻿using POS_System.Business.Dtos;
+using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 
 namespace POS_System.Business.Services.Interfaces
 {
     public interface IItemDiscountService
     {
-        public Task<IEnumerable<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken);
+        public Task<PagedResponse<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken, int pageNum, int pageSize);
         public Task<ItemDiscountResponse> CreateItemDiscountAsync(ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken);
         public Task DeleteItemDiscountAsync(int id, CancellationToken cancellationToken);
         public Task<ItemDiscountResponse> UpdateItemDiscountAsync(int id, ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken);
