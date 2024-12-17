@@ -3,14 +3,6 @@ import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { Product, Service, Tax } from '@/types/models'
 import { fetch, getAuthorizedHeaders, encodeDateToUrlString } from '@/utils/fetch'
 
-const tax: Tax = {
-    name: 'PVM',
-    dateModified: new Date(),
-    id: 1,
-    isPercentage: true,
-    rate: 13
-}
-
 export default class TaxApi {
     static async getAllTaxes(pageNumber: number): Promise<FetchResponse<PagedResponse<Tax>>> {
         return fetch({
@@ -19,18 +11,6 @@ export default class TaxApi {
                 headers: getAuthorizedHeaders()
             }
         )
-    }
-
-    static async addProductsToTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
-        return Promise.resolve({ result: tax })
-    }
-
-    static async addServicesToTax(taxId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
-        return Promise.resolve({ result: tax })
-    }
-
-    static async addProductModificationsToTax(taxId: number, productModificationIds: number[]): Promise<FetchResponse<any>> {
-        return Promise.resolve({ result: tax })
     }
 
     static async createTax(taxRequest: CreateTaxRequest): Promise<FetchResponse<Tax>> {
@@ -61,16 +41,53 @@ export default class TaxApi {
 
     static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
         return fetch({
-            url: `${apiBaseUrl}/product/tax/${taxId}?timeStamp=${encodeDateToUrlString(new Date())}`,
+            url: `${apiBaseUrl}/product/tax/${taxId}`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
     }
+
     static async getServicesByTaxId(taxId: number): Promise<FetchResponse<Service[]>> {
         return fetch({
-            url: `${apiBaseUrl}/services/tax/${taxId}?timeStamp=${encodeDateToUrlString(new Date())}`,
+            url: `${apiBaseUrl}/services/tax/${taxId}`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
+        })
+    }
+
+    static async addProductsToTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/${taxId}/link?itemsAreProducts=true`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(productIds)
+        })
+    }
+
+    static async addServicesToTax(taxId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/${taxId}/link?itemsAreProducts=false`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(serviceIds)
+        })
+    }
+
+    static async removeProductsFromTax(taxId: number, productIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/${taxId}/unlink?itemsAreProducts=true`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(productIds)
+        })
+    }
+
+    static async removeServicesFromTax(taxId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/tax/${taxId}/unlink?itemsAreProducts=false`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(serviceIds)
         })
     }
 }
