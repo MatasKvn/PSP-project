@@ -9,7 +9,7 @@ namespace POS_System.Api.Controllers
     [Route("api/employees")] 
     public class EmployeeController(IEmployeeeService employeeeService) : ControllerBase
     {
-        //[Authorize("EmployeesRead")]
+        [Authorize("EmployeesRead")]
         [HttpGet]
         public async Task<IActionResult> GetEmployeesAsync([FromQuery] bool? onlyActive, CancellationToken cancellationToken, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
         {
@@ -18,7 +18,7 @@ namespace POS_System.Api.Controllers
             return Ok(result);
         }
 
-        //[Authorize("EmployeesRead")]
+        [Authorize("EmployeesRead")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetEmployeeByIdAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -28,7 +28,7 @@ namespace POS_System.Api.Controllers
             return Ok(result);
         }
 
-        //[Authorize("EmployeesWrite")]
+        [Authorize("EmployeesWrite")]
         [HttpPut("{employeeId:int}")]
         public async Task<IActionResult> UpdateEmployeeByIdAsync([FromRoute] int employeeId, [FromBody] EmployeeRequest employeeRequest, CancellationToken cancellationToken)
         {
@@ -39,7 +39,7 @@ namespace POS_System.Api.Controllers
             return Ok(result);
         }
 
-        //[Authorize("EmployeesWrite")]
+        [Authorize("EmployeesWrite")]
         [HttpDelete("{employeeId:int}")]
         public async Task<IActionResult> DeleteEmployeeByIdAsync([FromRoute] int employeeId, CancellationToken cancellationToken)
         {
