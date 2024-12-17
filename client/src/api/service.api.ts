@@ -53,6 +53,13 @@ export default class ServiceApi {
             headers: getAuthorizedHeaders()
         })
     }
+    static async getServicesByDiscountId(discountId: number): Promise<FetchResponse<Service[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/services/item-discount/${discountId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
 }
 
 

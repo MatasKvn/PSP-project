@@ -52,4 +52,12 @@ export default class ProductApi {
             headers: getAuthorizedHeaders()
         })
     }
+
+    static async getProductsByDiscountId(discountId: number): Promise<FetchResponse<Product[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/product/item-discount/${discountId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
 }
