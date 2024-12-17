@@ -8,7 +8,7 @@ namespace POS_System.Business.Dtos.Request
         //DateOnly BirthDate,
         string UserName,
         string Email,
-        string PhoneNumber
-        //AccesibilityEnum Accessibility
+        string PhoneNumber,
+        int RoleId
     );
 }

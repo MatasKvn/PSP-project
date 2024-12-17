@@ -1,5 +1,5 @@
 import { apiBaseUrl, defaultHeaders } from '@/constants/api';
-import { Employee, AccessibilityEnum } from '@/types/models';
+import { Employee, RoleEnum } from '@/types/models';
 import { fetch } from '@/utils/fetch';
 import { getAuthorizedHeaders } from '@/utils/auth'
 import { HTTPMethod, FetchResponse, PagedResponse } from '@/types/fetch';

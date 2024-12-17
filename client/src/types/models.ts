@@ -93,19 +93,6 @@ export type TimeSlot = {
     isAvailable: boolean
 }
 
-export type Employee = {
-    id: number
-    firstName: string
-    lastName: string
-    userName: string
-    email: string
-    phoneNumber: string
-    birthDate?: Date
-    startDate?: Date
-    endDate?: Date
-    //accessibility: number 
-}
-
 export type BusinessDetails = {
     businessName: string
     businessEmail: string
@@ -117,22 +104,27 @@ export type BusinessDetails = {
     flatNumber?: number
 }
 
-export enum AccessibilityEnum {
-    NONE = 'NONE',
-    SERVICE_PROVIDER = 'SERVICE_PROVIDER',
-    CASHIER = 'CASHIER',
-    OWNER = 'OWNER',
-    SUPER_ADMIN = 'SUPER_ADMIN',
+export enum RoleEnum {
+    NONE = 0,               
+    SERVICE_PROVIDER = 1,    
+    CASHIER = 2,            
+    OWNER = 3,               
+    SUPER_ADMIN = 4,         
+  }
+
+  export type Employee = {
+    id: number
+    firstName: string
+    lastName: string
+    userName: string
+    email: string
+    phoneNumber: string
+    birthDate?: Date
+    startDate?: Date
+    endDate?: Date
+    roleId: number; 
 }
 
-const accessibilityNumeric = {
-    NONE: 0,
-    SERVICE_PROVIDER: 1,
-    CASHIER: 2,
-    OWNER: 3,
-    SUPER_ADMIN: 4,
-  };
-  
 export type Tax = {
     id: number
     name: string

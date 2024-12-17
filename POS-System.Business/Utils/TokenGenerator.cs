@@ -22,7 +22,7 @@ namespace POS_System.Business.Utils
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddMinutes(300),
                 signingCredentials: creds
             );
 

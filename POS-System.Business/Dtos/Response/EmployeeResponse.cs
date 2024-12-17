@@ -14,7 +14,7 @@ namespace POS_System.Business.Dtos.Response
         string Email,
         string PhoneNumber,
         DateTime Version,
-        bool IsDeleted
-        //AccesibilityEnum Accessibility
+        bool IsDeleted,
+        int RoleId
     );
 }
