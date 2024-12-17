@@ -1,6 +1,6 @@
 import { apiBaseUrl, defaultHeaders } from '@/constants/api'
 import { BusinessDetails } from '@/types/models'
-import { fetch } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
 import { HTTPMethod, FetchResponse } from '@/types/fetch'
 
 const sanitizeData = (data: any) => {
@@ -14,7 +14,7 @@ export default class BusinessDetailsApi {
         return await fetch({
             url: `${apiBaseUrl}/business-details`,
             method: HTTPMethod.GET,
-            headers: defaultHeaders
+            headers: getAuthorizedHeaders()
         })
     }
 
@@ -24,7 +24,7 @@ export default class BusinessDetailsApi {
         return await fetch({
             url: `${apiBaseUrl}/business-details`,
             method: HTTPMethod.POST,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(sanitizedBusinessDetails)
         })
     }
@@ -35,7 +35,7 @@ export default class BusinessDetailsApi {
         return await fetch({
             url: `${apiBaseUrl}/business-details`,
             method: HTTPMethod.PUT,
-            headers: defaultHeaders,
+            headers: getAuthorizedHeaders(),
             body: JSON.stringify(businessDetails)
         })
     }

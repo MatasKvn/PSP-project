@@ -26,17 +26,29 @@ const ProductModificationManagementView = (props: Props) => {
     } = useProductModifications(productId, 0)
 
     const [selectedProductModification, setSelectedProductModification] = useState<ProductModification | undefined>(undefined)
+    type ActionType = 'create' | 'edit'
+    const [actionType, setActionType] = useState<ActionType>('create')
 
-    const handleCreate = async () => {
+    const handleCreate = async (payload: DynamicFormPayload) => {
         if (!productId) {
             console.log('No product id found.')
             return
         }
-        const response = await ProductModificationApi.createProductModification(productId, {
-            productId,
-            name: 'Name',
-            description: 'Description',
-            price: 0
+
+        const {
+            name,
+            description,
+            price,
+        } = payload
+
+        const parsedPrice = Number.parseInt(price);
+        if (isNaN(parsedPrice)) return
+
+        const response = await ProductModificationApi.createProductModification({
+            productVersionId: productId,
+            name: name,
+            description: description,
+            price: parsedPrice
         })
         if(!response.result) {
             console.log(response.error)
@@ -56,6 +68,7 @@ const ProductModificationManagementView = (props: Props) => {
         } = payload
         const price = parseInt(pmPrice)
         const response = await ProductModificationApi.updateProductModification(selectedProductModification.id, {
+            productVersionId: selectedProductModification.productVersionId,
             name: name || selectedProductModification.name,
             description: description || selectedProductModification.description,
             price: isNaN(price) ? selectedProductModification.price : price
@@ -82,6 +95,7 @@ const ProductModificationManagementView = (props: Props) => {
         const newProductModifications = productModifications.filter((pm) => pm.id !== selectedProductModification.id)
         setProductModifications(newProductModifications)
         setSelectedProductModification(undefined)
+        setActionType('create')
     }
 
     return (
@@ -98,9 +112,11 @@ const ProductModificationManagementView = (props: Props) => {
                             onClick={() => {
                                 if (selectedProductModification?.id === productModification.id) {
                                     setSelectedProductModification(undefined)
+                                    setActionType('create')
                                     return
                                 }
                                 setSelectedProductModification(productModification)
+                                setActionType('edit')
                             }}
                         />
                     </div>
@@ -108,7 +124,6 @@ const ProductModificationManagementView = (props: Props) => {
             }
             </div>
             <div className={styles.toolbar}>
-                <Button onClick={handleCreate}>Create New</Button>
                 <Button onClick={() => handleDelete()}>Delete</Button>
                 <br />
                 <br />
@@ -120,7 +135,7 @@ const ProductModificationManagementView = (props: Props) => {
                     description: { label: 'Description', placeholder: 'Enter description:', type: 'text' },
                     price: { label: 'Price', placeholder: 'Enter price:', type: 'number' },
                 }}
-                onSubmit={handleUpdate}
+                onSubmit={actionType === 'create' ? handleCreate : handleUpdate}
             >
                 <DynamicForm.Button>Submit</DynamicForm.Button>
             </DynamicForm>
