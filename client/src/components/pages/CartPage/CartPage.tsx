@@ -32,27 +32,31 @@ const calculateProductModificationsValue = (cartItem: RequiredCartItem) => {
     return 0
 }
 
-const calculateDiscountsValue = (cartItem: RequiredCartItem) => {
-    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
-    const productModificaitonValue = calculateProductModificationsValue(cartItem)
-    const netPrice = (value + productModificaitonValue) * cartItem.quantity
-    return cartItem.discounts.reduce((acc, discount) => {
-        if (!discount.isPercentage) {
-            return acc + discount.value
-        }
-        return acc + netPrice * discount.value / 100
-    }, 0)
+const calculateDiscountsValue = (cartItem: RequiredCartItem, discountableValue: number) => {
+    const percentageDiscount = cartItem.discounts.reduce((acc, discount) => (
+        discount.isPercentage ? acc + discount.value : acc
+    ), 0)
+    const flatDiscount = cartItem.discounts.reduce((acc, discount) => (
+        discount.isPercentage ? acc : acc + discount.value
+    ), 0)
+
+    const discountValue = flatDiscount + ((discountableValue - flatDiscount) * percentageDiscount / 10000)
+    if (discountValue < 0) return 0
+    return discountValue
+
 }
 
-const calculateTaxesValue = (cartItem: RequiredCartItem) => {
-    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
-    const taxableValue = (value + calculateProductModificationsValue(cartItem)) * cartItem.quantity
-    return cartItem.taxes.reduce((acc, tax) => {
-        if (tax.isPercentage) {
-            return acc + taxableValue * tax.rate / 100
-        }
-        return acc + tax.rate
-    }, 0)
+const calculateTaxesValue = (cartItem: RequiredCartItem, discountedValue: number) => {
+    const percentageTax = cartItem.taxes.reduce((acc, discount) => (
+        discount.isPercentage ? acc + discount.rate : acc
+    ), 0)
+    const flatTax = cartItem.taxes.reduce((acc, discount) => (
+        discount.isPercentage ? acc : acc + discount.rate
+    ), 0)
+
+    const taxValue = flatTax + ((discountedValue - flatTax) * percentageTax / 10000)
+    if (taxValue < 0) return 0
+    return taxValue
 }
 
 const CartPage = (props: Props) => {
@@ -102,11 +106,11 @@ const CartPage = (props: Props) => {
     const productRows = productItems.map((item) => {
         const { name } = item.product
         const price = item.product.price / 100
-        const modificationsPrice = calculateProductModificationsValue(item) / 100 * item.quantity
-        const totalVal = item.quantity * (item.product.price + modificationsPrice) / 100
-        const discounts = calculateDiscountsValue(item) / 100
-        const taxes = calculateTaxesValue(item) / 100
-        const netPrice = totalVal - discounts + taxes
+        const modificationsPrice = calculateProductModificationsValue(item) / 100
+        const totalVal = item.quantity * (price + modificationsPrice)
+        const discounts = calculateDiscountsValue(item, (item.product.price + calculateProductModificationsValue(item)) * item.quantity) / 100
+        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100
+        const netPrice = totalVal - discounts - taxes
         return {
             name: name,
             quantity: item.quantity,
@@ -153,16 +157,21 @@ const CartPage = (props: Props) => {
             { name: 'Deconste', key: 'deconste' },
         ]
     const serviceRows = serviceItems.map((item) => {
-        const startTime = item.timeSlot.startTime
+        const price = item.service.price / 100;
+        const startTime = item.timeSlot.startTime;
+        const totalVal = item.quantity * price;
+        const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;
+        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100;
+        const netPrice = totalVal - discounts - taxes;
         return {
-            name: item.service.name,
+            name: item.service?.name || '',
             quantity: item.quantity,
-            price: item.service?.price,
-            time: `${startTime.getMonth() + 1} ${startTime.getDay()} ${startTime.toLocaleTimeString()}`,
-            totalVal: item.quantity * (item.service?.price ? item.service.price : 0),
-            discounts: calculateDiscountsValue(item),
-            taxes: calculateTaxesValue(item),
-            netPrice: (item.quantity * (item.service?.price ? item.service.price : 0)) - calculateDiscountsValue(item) + calculateTaxesValue(item),
+            price,
+            time: `${startTime.getMonth() + 1}/${startTime.getDate()} ${startTime.toLocaleTimeString()}`,
+            totalVal,
+            discounts,
+            taxes,
+            netPrice,
             deconste: (
                 <Button
                     onClick={() => handleCartItemDeconste(item.id)}

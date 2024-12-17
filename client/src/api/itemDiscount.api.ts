@@ -1,36 +1,23 @@
 import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { ItemDiscount } from '@/types/models'
-import { fetch, getAuthorizedHeaders, sanitizeData } from '@/utils/fetch'
-
-let discounts: ItemDiscount[] = [
-    {
-        id: 1,
-        value: 10,
-        isPercentage: true,
-        description: '10% off',
-        startDate: new Date('2022-01-01 00:00:00'),
-        endDate: new Date('2025-12-31 23:59:59')
-    },
-    {
-        id: 2,
-        value: 20,
-        isPercentage: true,
-        description: '20% off',
-        startDate: new Date('2022-01-01 00:00:00'),
-        endDate: new Date('2022-12-31 23:59:59')
-    }
-]
+import { encodeDateToUrlString, fetch, getAuthorizedHeaders, sanitizeData } from '@/utils/fetch'
 
 export default class ItemDiscountApi {
     static async getCurrentDiscountsByProductId(productId: number): Promise<FetchResponse<ItemDiscount[]>> {
-        const result = discounts.filter(discount => discount.startDate <= new Date() && discount.endDate >= new Date() && discount.id === productId)
-        return Promise.resolve({ result })
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/item/${productId}?isProduct=true&timeStamp=${encodeDateToUrlString(new Date())}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async getCurrentDiscountByServiceId(serviceId: number): Promise<FetchResponse<ItemDiscount[]>> {
-        const result = discounts.filter(discount => discount.startDate <= new Date() && discount.endDate >= new Date() && discount.id === serviceId)
-        return Promise.resolve({ result })
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/item/${serviceId}?isProduct=true&timeStamp=${encodeDateToUrlString(new Date())}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async getAllDiscounts(pageNumber: number): Promise<FetchResponse<PagedResponse<ItemDiscount>>> {

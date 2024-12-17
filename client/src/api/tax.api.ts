@@ -85,7 +85,7 @@ export default class TaxApi {
 
     static async getTaxesByServiceId(serviceId: number): Promise<FetchResponse<Tax[]>> {
         return fetch({
-            url: `${apiBaseUrl}/tax/item/${serviceId}?isProduct=true`,
+            url: `${apiBaseUrl}/tax/item/${serviceId}?isProduct=false`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })

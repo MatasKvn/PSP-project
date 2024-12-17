@@ -64,7 +64,6 @@ export default class CartItemApi {
             return cartItemResponse
         }
         const cartItem = cartItemResponse.result
-        console.log('xddd',dto.variationIds)
         if (dto.type === 'product') {
             const res = await fetch({
                 url: `${apiBaseUrl}/carts/${dto.cartId}/items/${cartItem.id}/link`,
