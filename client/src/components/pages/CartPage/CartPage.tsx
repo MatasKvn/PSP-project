@@ -93,7 +93,7 @@ const CartPage = (props: Props) => {
         { name: 'Name', key: 'name' },
         { name: 'Quantity', key: 'quantity' },
         { name: 'Price', key: 'price' },
-        { name: 'Modification Ids', key: 'modifications' },
+        { name: 'Modifications', key: 'modifications' },
         { name: 'Modifications Total', key: 'modificationTotal' },
         { name: 'Total Value', key: 'totalVal' },
         { name: 'Discounts', key: 'discounts' },
@@ -104,7 +104,7 @@ const CartPage = (props: Props) => {
     const productRows = productItems.map((item) => {
         const { name } = item.product
         const price = item.product.price / 100
-        const modificationsPrice = calculateProductModificationsValue(item)
+        const modificationsPrice = calculateProductModificationsValue(item) / 100 * item.quantity
         const totalVal = item.quantity * (item.product.price + modificationsPrice) / 100
         const discounts = calculateDiscountsValue(item) / 100
         const taxes = calculateTaxesValue(item) / 100
@@ -112,7 +112,7 @@ const CartPage = (props: Props) => {
         return {
             name: name,
             quantity: item.quantity,
-            modifications: item.productModifications.map((modification) => modification.id).join(', '),
+            modifications: item.productModifications.map((modification) => modification.name).join(', '),
             modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
             deconste: (
                 <Button
@@ -252,15 +252,13 @@ const CartPage = (props: Props) => {
             return
         }
 
-        const response = await CartItemApi.createCartItem(
-            cartId,
-            {
+        const response = await CartItemApi.createCartItem({
                 type: 'product',
+                cartId,
                 quantity: quantityParsed,
                 productVersionId: productId,
                 variationIds: modificationIds,
-            }
-        )
+            })
         if (!response.result) {
             console.log(response.error)
             return
@@ -274,14 +272,12 @@ const CartPage = (props: Props) => {
             console.log('Invalid input')
             return
         }
-        const response = await CartItemApi.createCartItem(
-            cartId,
-            {
+        const response = await CartItemApi.createCartItem({
+                cartId,
                 type: 'service',
                 quantity: 1,
                 serviceVersionId: serviceId,
-            }
-        )
+            })
         if (!response.result) {
             console.log(response.error)
             return
