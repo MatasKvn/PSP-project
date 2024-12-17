@@ -159,9 +159,12 @@ const EmployeesPage = ({ pageNumber }: Props) => {
             userName: employee.userName,
             email: employee.email,
             phoneNumber: employee.phoneNumber,
-            birthDate: employee.birthDate ? new Date(employee.birthDate).toLocaleDateString() : 'N/A',
-            startDate: employee.startDate ? new Date(employee.startDate).toLocaleDateString() : 'N/A',
-            endDate: employee.endDate ? new Date(employee.endDate).toLocaleDateString() : 'N/A',
+            birthDate: employee.birthDate && new Date(employee.birthDate).getFullYear() >= 1900
+            ? new Date(employee.birthDate).toLocaleDateString() : '',
+            startDate: employee.startDate && new Date(employee.startDate).getFullYear() >= 1900
+            ? new Date(employee.startDate).toLocaleDateString() : '',
+            endDate: employee.endDate && new Date(employee.endDate).getFullYear() >= 1900
+            ? new Date(employee.endDate).toLocaleDateString() : '',
             roleId: getRoleById(employee.roleId), 
             className: selectedEmployee?.id === employee.id ? styles.selected : '',
             onClick: (row: any) => {

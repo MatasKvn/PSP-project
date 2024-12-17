@@ -34,7 +34,6 @@ namespace POS_System.Business.Services
             if (!response.Succeeded)
                 throw new BadRequestException(JsonConvert.SerializeObject(response.Errors));
 
-            var createdUser = await userManager.FindByNameAsync(registerUser.UserName);
             string newRole = GetRoleById(registerUser.RoleId);
 
             await userManager.AddToRoleAsync(user!, newRole);

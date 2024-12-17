@@ -10,8 +10,6 @@ using POS_System.Common.Enums;
 using POS_System.Common.Exceptions;
 using POS_System.Data.Identity;
 using POS_System.Data.Repositories.Interfaces;
-using System.Data;
-using System.Linq.Expressions;
 
 namespace POS_System.Business.Services
 {
