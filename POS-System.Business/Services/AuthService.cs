@@ -7,6 +7,7 @@ using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
 using POS_System.Business.Utils;
 using POS_System.Common.Constants;
+using POS_System.Common.Enums;
 using POS_System.Common.Exceptions;
 using POS_System.Data.Identity;
 
@@ -24,7 +25,7 @@ namespace POS_System.Business.Services
         public async Task<IdentityResult> RegisterUserAsync(UserRegisterRequest registerUser)
         {
             var user = mapper.Map<ApplicationUser>(registerUser);
-            
+
             user.StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
             user.Version = DateTime.UtcNow;
 
@@ -34,8 +35,10 @@ namespace POS_System.Business.Services
                 throw new BadRequestException(JsonConvert.SerializeObject(response.Errors));
 
             var createdUser = await userManager.FindByNameAsync(registerUser.UserName);
-            await userManager.AddToRoleAsync(createdUser!, "None");
-            
+            string newRole = GetRoleById(registerUser.RoleId);
+
+            await userManager.AddToRoleAsync(user!, newRole);
+
             return response;
         }
 
@@ -87,6 +90,19 @@ namespace POS_System.Business.Services
                 throw new BadRequestException(JsonConvert.SerializeObject(response.Errors));
 
             return new PasswordRecoveryResponse(ApplicationMessages.SUCCESSFUL_ACTION);
+        }
+
+        private static string GetRoleById(int roleId)
+        {
+            return roleId switch
+            {
+                (int)AccesibilityEnum.SUPER_ADMIN => "Super admin",
+                (int)AccesibilityEnum.SERVICE_PROVIDER => "Service provider",
+                (int)AccesibilityEnum.CASHIER => "Cashier",
+                (int)AccesibilityEnum.OWNER => "Owner",
+                (int)AccesibilityEnum.NONE => "None",
+                _ => "None"
+            };
         }
     }
 }

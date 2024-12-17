@@ -6,12 +6,12 @@ using POS_System.Business.Services.Interfaces;
 namespace POS_System.Api.Controllers
 {
     [ApiController]
-    [Route("/v1/employee")] 
+    [Route("api/employees")] 
     public class EmployeeController(IEmployeeeService employeeeService) : ControllerBase
     {
         [Authorize("EmployeesRead")]
         [HttpGet]
-        public async Task<IActionResult> GetEmployeesAsync([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] bool? onlyActive, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEmployeesAsync([FromQuery] bool? onlyActive, CancellationToken cancellationToken, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
         {
             var result = await employeeeService.GetEmployeesAsync(pageSize, pageNumber, onlyActive, cancellationToken);
 
@@ -24,6 +24,7 @@ namespace POS_System.Api.Controllers
         {
             var result = await employeeeService.GetEmployeeByIdAsync(id, cancellationToken);
 
+            Console.WriteLine($"Employee Retrieved: ID: {id}, First Name: {result.FirstName}, Last Name: {result.LastName}, Username: {result.UserName}, Email: {result.Email}, Phone: {result.PhoneNumber}, Birth Date: {result.BirthDate}");
             return Ok(result);
         }
 
@@ -31,6 +32,8 @@ namespace POS_System.Api.Controllers
         [HttpPut("{employeeId:int}")]
         public async Task<IActionResult> UpdateEmployeeByIdAsync([FromRoute] int employeeId, [FromBody] EmployeeRequest employeeRequest, CancellationToken cancellationToken)
         {
+            Console.WriteLine($"employeeRequest000BirthDate: {employeeRequest.BirthDate}");
+
             var result = await employeeeService.UpdateEmployeeByIdAsync(employeeId, employeeRequest, cancellationToken);
 
             return Ok(result);

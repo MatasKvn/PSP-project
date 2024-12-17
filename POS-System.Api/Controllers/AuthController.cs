@@ -2,16 +2,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using POS_System.Business.Dtos.Request;
+using POS_System.Business.Services;
 using POS_System.Business.Services.Interfaces;
 
 namespace POS_System.Api.Controllers
 {
     [ApiController]
-    [Route("/v1/auth")]   
+    [Route("/")]   
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("api/employees/register")]
         public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegisterRequest userRegisterRequest)
         {
             var response = await authService.RegisterUserAsync(userRegisterRequest);
@@ -20,7 +21,7 @@ namespace POS_System.Api.Controllers
         }   
         
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("v1/auth/login")]
         public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginRequest credentials)
         {
             var response = await authService.LoginUserAsync(credentials);

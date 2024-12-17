@@ -1,8 +1,15 @@
+import { defaultHeaders } from "@/constants/api";
 import { FetchParams, FetchResponse } from "@/types/fetch"
 import { defaultHeaders } from '@/constants/api'
 
 async function fetchWrapper({ url, method, headers, body }: FetchParams): Promise<FetchResponse<any>> {
     try {
+
+        console.log('Request URL:', url);
+        console.log('Request Method:', method);
+        console.log('Request Headers:', headers);
+        console.log('Request Body:', body);  
+
         const response = await fetch(url, {
             method,
             body,
@@ -15,6 +22,7 @@ async function fetchWrapper({ url, method, headers, body }: FetchParams): Promis
                 }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (e) {
+                console.error('Error parsing JSON response:', e);
                 return {
                     result: {}
                 }
