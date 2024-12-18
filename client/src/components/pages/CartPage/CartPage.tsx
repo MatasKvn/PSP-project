@@ -458,6 +458,7 @@ const CartPage = (props: Props) => {
             cartId: cartId,
             amount: 10000,
             tip: appliedTip, // sita palikt ir kai sujungta bus
+            phoneNumber: "37062217551",
             transactionRef: new Date().toISOString() // sita palikt ir kai sujungta bus
         };
 

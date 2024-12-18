@@ -4,6 +4,7 @@ namespace POS_System.Business.Dtos.Request
         int CartId, 
         int EmployeeId,
         int? Tip,
+        string? PhoneNumber,
         List<CheckoutCartItem> CartItems
     );
 }

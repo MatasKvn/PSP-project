@@ -11,8 +11,8 @@ namespace POS_System.Business.Services.Interfaces
 		Task<CheckoutResponse> FullCheckoutAsync(CheckoutRequest checkoutRequest, CancellationToken token);
 		Task<PartialCheckoutResponse> InitializePartialCheckoutAsync(InitPartialCheckoutRequest checkoutRequest, CancellationToken token);
 		Task<CheckoutResponse> PartialCheckoutAsync(PartialCheckoutRequest checkoutRequest, CancellationToken token);
-		Task<string> FullCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId);
-		Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId);
+		Task<string> FullCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId, string? phoneNumber);
+		Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId, string? phoneNumber);
 		Task<string> CheckoutFailAsync(DateTime transactionDate, string sessionId, int cartId, string? giftCardCode, long? discount);
 	}
 }
