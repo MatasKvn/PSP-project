@@ -45,9 +45,13 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
     const reservationResponse = await ServiceReservationApi.getReservationById(cartItem.serviceReservationId)
     if (!reservationResponse.result) return reservationResponse.error || 'Failed to get reservation'
     const reservation = reservationResponse.result
-    const timeSlotResponse = await TimeSlotApi.getTimeSlotById(cartItem.timeSlotId)
-    if (!timeSlotResponse.result) return timeSlotResponse.error || 'Failed to get time slot'
-    const timeSlot = timeSlotResponse.result
+    let multivalueTimeSlot = null
+    if (cartItem.timeSlotId) {
+        const timeSlotResponse = await TimeSlotApi.getTimeSlotById(cartItem.timeSlotId)
+        if (!timeSlotResponse.result) return timeSlotResponse.error || 'Failed to get time slot'
+        multivalueTimeSlot = timeSlotResponse.result
+    }
+    const timeSlot = multivalueTimeSlot
     const discountsResponse = await ItemDiscountApi.getCurrentDiscountByServiceId(cartItem.serviceId)
     if (!discountsResponse.result) return discountsResponse.error || 'Failed to get discounts'
     const discounts = discountsResponse.result

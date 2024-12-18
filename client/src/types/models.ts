@@ -92,7 +92,7 @@ export type ServiceCartItem = {
     serviceReservationId: number
     serviceReservation?: ServiceReservation
     timeSlotId: number
-    timeSlot?: TimeSlot
+    timeSlot?: TimeSlot | null
     discounts?: ItemDiscount[]
     taxes: Tax[]
 }

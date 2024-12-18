@@ -160,8 +160,13 @@ const CartPage = (props: Props) => {
             { name: 'Net price', key: 'netPrice' },
             { name: 'Deconste', key: 'deconste' },
         ]
+
     const serviceRows = serviceItems.map((item) => {
-        const startTime = new Date(item.timeSlot.startTime).toLocaleDateString()
+        let timeSlotStartTime = 'Cancelled'
+        if (item.timeSlot) {
+            timeSlotStartTime = new Date(item.timeSlot.startTime).toLocaleDateString()
+        }
+        const startTime = timeSlotStartTime
         const price = item.service.price / 100;
         const totalVal = item.quantity * price;
         const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;

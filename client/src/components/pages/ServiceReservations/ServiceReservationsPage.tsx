@@ -11,7 +11,7 @@ import styles from './ServiceReservationsPage.module.scss'
 import { useServiceReservations } from '@/hooks/serviceReservations.hook'
 import Table from '@/components/shared/Table'
 import ServiceReservationApi from '@/api/serviceReservation.api'
-import { ServiceReservation } from '@/types/models'
+import { ServiceReservation, TimeSlot } from '@/types/models'
 import TimeSlotApi from '@/api/timeSlot.api'
 
 type Props = {
@@ -83,11 +83,12 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
             bookingTime: selectedReservation.bookingTime,
             isCancelled: true,
         })
-        console.log(response)
         if (!response.result) {
             console.error(response.error || 'Failed to update the reservation')
             return
         }
+
+        enableTimeSlot(selectedReservation.timeSlotId)
 
         console.log("Reservation cancelled successfully")
 
@@ -95,6 +96,27 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
             ...serviceReservations.filter((reservation) => reservation.id !== response.result?.id),
             response.result
         ])
+    }
+
+    const enableTimeSlot = async (timeSlotId: number) => {
+        const response  = await TimeSlotApi.getTimeSlotById(timeSlotId)
+
+        if (!response.result) {
+            console.error(response.error || 'Failed to update time slot')
+            return
+        }
+
+        const update = await TimeSlotApi.update({
+            id: response.result.id,
+            employeeVersionId: response.result.employeeVersionId,
+            startTime: response.result.startTime,
+            isAvailable: true
+        })
+
+        if (!update.result) {
+            console.error(update.error || 'Failed to update time slot')
+            return
+        }
     }
 
     const columns = [
