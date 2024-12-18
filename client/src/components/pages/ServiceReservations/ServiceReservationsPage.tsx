@@ -1,18 +1,15 @@
 'use client'
 
 import Button from '@/components/shared/Button'
-import React, { useEffect, useRef, useState } from 'react'
-import SideDrawer from '@/components/shared/SideDrawer'
-import { SideDrawerRef } from '@/components/shared/SideDrawer'
-import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
-import { useRouter } from 'next/navigation'
-
-import styles from './ServiceReservationsPage.module.scss'
+import React, { useEffect, useState } from 'react'
 import { useServiceReservations } from '@/hooks/serviceReservations.hook'
 import Table from '@/components/shared/Table'
 import ServiceReservationApi from '@/api/serviceReservation.api'
-import { ServiceReservation, TimeSlot } from '@/types/models'
+import { ServiceReservation } from '@/types/models'
 import TimeSlotApi from '@/api/timeSlot.api'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
+import PageChanger from '@/components/shared/PageChanger'
 
 type Props = {
     pageNumber: number
@@ -21,6 +18,7 @@ type Props = {
 const ServiceReservationsPage = ({ pageNumber }: Props) => {
     const { serviceReservations, setServiceReservations, isLoading, errorMsg, refetch } = useServiceReservations(pageNumber)
     const [formattedReservations, setFormattedReservations] = useState<any[]>([])
+    const router = useRouter()
 
     useEffect(() => {
         const fetchRows = async () => {
@@ -138,12 +136,14 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
                 isLoading={isLoading}
                 errorMsg={errorMsg}
             />
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.serviceReservations(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.serviceReservations(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </>
     )
 }
 
 export default ServiceReservationsPage
-
-function setFormattedReservations(updatedReservations: { timeSlotId: string; bookingTime: string; id: number; cartItemId: number; timeSlot?: import("@/types/models").TimeSlot; customerPhone: string; customerName: string }[]) {
-    throw new Error('Function not implemented.')
-}

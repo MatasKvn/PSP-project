@@ -14,7 +14,7 @@ export default class ServiceReservationApi {
 
     static async getAllReservations(pageNumber: number): Promise<FetchResponse<PagedResponse<ServiceReservation>>> {
         return await fetch({
-            url: `${apiBaseUrl}/service-reservation?pageNum=${pageNumber}`,
+            url: `${apiBaseUrl}/service-reservation?pageNumber=${pageNumber}`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
