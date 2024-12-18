@@ -19,7 +19,7 @@ export default class ProductApi {
         })
     }
 
-    static async createProduct(product: Product): Promise<FetchResponse<Product>> {
+    static async createProduct(product: CreateProductRequest): Promise<FetchResponse<Product>> {
         return await fetch({
              url: `${apiBaseUrl}/product`,
              method: HTTPMethod.POST,
@@ -36,12 +36,12 @@ export default class ProductApi {
         })
     }
 
-    static async updateProductById(productId: number, product: Product): Promise<FetchResponse<Product>> {
+    static async updateProductById(dto: UpdateProductRequest): Promise<FetchResponse<Product>> {
         return await fetch({
-             url: `${apiBaseUrl}/product/${productId}`,
+             url: `${apiBaseUrl}/product/${dto.id}`,
              method: HTTPMethod.PUT,
              headers: getAuthorizedHeaders(),
-             body: JSON.stringify(product)
+             body: JSON.stringify(dto)
         })
     }
 
@@ -61,3 +61,6 @@ export default class ProductApi {
         })
     }
 }
+
+type CreateProductRequest = Omit<Product, 'id' | 'dateModified'>
+type UpdateProductRequest = Omit<Product, 'dateModified'>

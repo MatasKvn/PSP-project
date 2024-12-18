@@ -93,7 +93,7 @@ const ProductsPage = (props: Props) => {
             description: productDescription,
             price: Number.parseInt(productPrice),
             stock: Number.parseInt(productStock),
-            imageURL: productImageUrl,
+            imageURL: productImageUrl || '',
         })
         if (!response.result) {
             console.log(response.error)
@@ -136,7 +136,8 @@ const ProductsPage = (props: Props) => {
         } = formPayload
         const price = Number.parseInt(productPrice)
         const stock = Number.parseInt(productStock)
-        const response = await ProductApi.updateProductById(selectedProduct.id, {
+        const response = await ProductApi.updateProductById({
+            id: selectedProduct.id,
             name: productName || selectedProduct.name,
             description: productDescription || selectedProduct.description,
             price: isNaN(price) ? selectedProduct.price : price,
@@ -199,11 +200,13 @@ const ProductsPage = (props: Props) => {
                         setSideDrawerContentType('edit')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={!selectedProduct}
                 >
                     Edit Product
                 </Button>
                 <Button
                     onClick={() => handleProductDelete(selectedProduct)}
+                    disabled={!selectedProduct}
                 >
                     Delete Product
                 </Button>
@@ -214,6 +217,7 @@ const ProductsPage = (props: Props) => {
                         setSideDrawerContentType('productModifications')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={!selectedProduct}
                 >
                     Manage Modifications
                 </Button>
