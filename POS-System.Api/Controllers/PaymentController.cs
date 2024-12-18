@@ -57,17 +57,17 @@ namespace POS_System.Api.Controllers
         }
 
         [HttpGet("full-checkout-success")]
-        public async Task<IActionResult> FullCheckoutSuccessAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId)
+        public async Task<IActionResult> FullCheckoutSuccessAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId, [FromQuery] string? phoneNumber)
         {
-            var path = await paymentService.FullCheckoutSuccessAsync(transactionDate, sessionId, cartId);
+            var path = await paymentService.FullCheckoutSuccessAsync(transactionDate, sessionId, cartId, phoneNumber);
 
             return Redirect(path);
         }
 
         [HttpGet("partial-checkout-success")]
-        public async Task<IActionResult> PartialCheckoutSuccessAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId)
+        public async Task<IActionResult> PartialCheckoutSuccessAsync([FromQuery] DateTime transactionDate, [FromQuery] int cartId, [FromQuery] string sessionId, [FromQuery] string? phoneNumber)
         {
-            var path = await paymentService.PartialCheckoutSuccessAsync(transactionDate, sessionId, cartId);
+            var path = await paymentService.PartialCheckoutSuccessAsync(transactionDate, sessionId, cartId, phoneNumber);
 
             return Redirect(path);
         }

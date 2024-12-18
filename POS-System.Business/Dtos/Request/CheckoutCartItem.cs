@@ -5,6 +5,6 @@ namespace POS_System.Business.Dtos.Request
         string Description, 
         int Price, 
         int Quantity, 
-        string ImageURL
+        string? ImageURL
     );
 }

@@ -6,6 +6,7 @@ export type CashCheckoutBody = {
     cartId: number,
     amount: number,
     tip?: number,
+    phoneNumber?: string,
     transactionRef: string
 }
 
@@ -35,6 +36,7 @@ export interface FullCheckoutBody {
     cartId: number,
     employeeId: number,
     tip?: number,
+    phoneNumber?: string,
     cartItems: CheckoutCartItem[],
 }
 

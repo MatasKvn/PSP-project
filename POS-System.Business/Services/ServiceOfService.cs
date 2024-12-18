@@ -6,8 +6,7 @@ using POS_System.Domain.Entities;
 using POS_System.Common.Exceptions;
 using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Response;
-using POS_System.Business.Dtos.Request;
-using POS_System.Data.Repositories;
+using POS_System.Business.Dtos.Request; 
 using POS_System.Common.Constants;
 
 namespace POS_System.Business.Services

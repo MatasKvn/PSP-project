@@ -6,6 +6,7 @@ namespace POS_System.Business.Dtos.Request
         int CartId,
         ulong Amount,
         int? Tip,
-        string TransactionRef
+        string TransactionRef,
+        string? PhoneNumber
     );
 }

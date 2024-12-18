@@ -192,7 +192,7 @@ const CartPage = (props: Props) => {
     }
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
 
-    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
+    const totalPrice = 123455;// productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
     const cartTransactionTable = () => {
         const cartTransactionColumns = [
             { name: 'Id', key: 'id' },
@@ -387,6 +387,7 @@ const CartPage = (props: Props) => {
             cartId: cartId,
             amount: 10000,
             tip: appliedTip, // sita palikt ir kai sujungta bus
+            phoneNumber: "37062217551",
             transactionRef: new Date().toISOString() // sita palikt ir kai sujungta bus
         };
 
@@ -428,6 +429,7 @@ const CartPage = (props: Props) => {
                 cartId: 1,
                 employeeId: 6,
                 tip: appliedTip,
+                phoneNumber: "37062217551",
                 cartItems: [
                     { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
                     { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
