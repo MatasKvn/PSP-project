@@ -2,14 +2,17 @@
 
 import Button from '@/components/shared/Button'
 import SideDrawer, { SideDrawerRef } from '@/components/shared/SideDrawer'
-import { useTaxes } from '@/hooks/taxes.hook'
+import { useTaxedItems, useTaxes } from '@/hooks/taxes.hook'
 import React, { useRef, useState } from 'react'
 import TaxForm, { TaxFormPayload } from '../../specialized/TaxForm/TaxForm'
 import TaxApi from '@/api/tax.api'
-import { Tax } from '@/types/models'
+import { Product, Service, Tax } from '@/types/models'
 import Table from '@/components/shared/Table'
 
 import styles from './TaxesPage.module.scss'
+import PageChanger from '@/components/shared/PageChanger'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -18,8 +21,17 @@ type Props = {
 const TaxesPage = ({ pageNumber }: Props) => {
     const { errorMsg, isLoading, taxes, setTaxes } = useTaxes(pageNumber)
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
+    const router = useRouter()
 
     const [selectedTax, setSelectedTax] = useState<Tax | undefined>()
+    const {
+        errorMsg: itemsError,
+        isLoading: itemsIsLoading,
+        appliedProducts,
+        appliedServices,
+        setAppliedProducts,
+        setAppliedServices,
+    } = useTaxedItems(selectedTax)
 
     type ActionType = 'Create' | 'Edit'
     const [actionType, setActionType] = useState<ActionType>('Create')
@@ -37,13 +49,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
             console.log(taxResponse.error)
             return
         }
-        const responses = await Promise.all([
-            await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addServicesToTax(tax.id, serviceIds),
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         setTaxes([...taxes, tax])
     }
 
@@ -67,13 +72,6 @@ const TaxesPage = ({ pageNumber }: Props) => {
             console.log(taxResponse.error)
             return
         }
-        const responses = await Promise.all([
-            await TaxApi.addProductsToTax(tax.id, productIds),
-            await TaxApi.addServicesToTax(tax.id, serviceIds),
-        ])
-        responses.forEach((response) => {
-            if (!response.result) console.log(response.error)
-        })
         const newTaxes = [
             ...taxes.filter((tax) => tax.id !== id),
             tax
@@ -97,6 +95,50 @@ const TaxesPage = ({ pageNumber }: Props) => {
         setTaxes(newTaxes)
     }
 
+    const handleProductClick = async (product: Product) => {
+        if (!appliedProducts || !selectedTax) return
+        if (appliedProducts.some((selectedProduct) => selectedProduct.id === product.id)) {
+            const response = await TaxApi.removeProductsFromTax(selectedTax.id, [product.id])
+            if (!response.result) {
+                console.log(response.error)
+                return
+            }
+            const newSelectedProducts = appliedProducts.filter((selectedProduct) => selectedProduct.id !== product.id)
+            setAppliedProducts(newSelectedProducts)
+            return
+        }
+        console.log({
+            selectedTax,
+            product
+        })
+        const response = await TaxApi.addProductsToTax(selectedTax.id, [product.id])
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        setAppliedProducts([...appliedProducts, product])
+    }
+
+    const handleServiceClick = async (service: Service) => {
+        if (!appliedServices || !selectedTax) return
+        if (appliedServices.some((selectedService) => selectedService.id === service.id)) {
+            const response = await TaxApi.removeServicesFromTax(selectedTax.id, [service.id])
+            if (!response.result) {
+                console.log(response.error)
+                return
+            }
+            const newSelectedServices = appliedServices.filter((selectedService) => selectedService.id !== service.id)
+            setAppliedServices(newSelectedServices)
+            return
+        }
+        const response = await TaxApi.addServicesToTax(selectedTax.id, [service.id])
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+        setAppliedServices([...appliedServices, service])
+    }
+
     const taxTable = () => {
         const columns = [
             { name: 'Name', key: 'name' },
@@ -107,7 +149,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
             id: tax.id,
             name: tax.name,
             isPercentage: tax.isPercentage ? 'Yes' : 'No',
-            rate: `${tax.rate/100}${tax.isPercentage ? ' %' : ' €'}`,
+            rate: `${tax.rate / 100}${tax.isPercentage ? ' %' : ' €'}`,
             className: selectedTax?.id === tax.id ? styles.selected : '',
             onClick: (row: any) => {
                 if (selectedTax?.id === row.id) setSelectedTax(undefined)
@@ -131,15 +173,21 @@ const TaxesPage = ({ pageNumber }: Props) => {
                 <div className={styles.toolbar}>
                     <Button onClick={() => {
                         setActionType('Create')
+                        setSelectedTax(undefined)
+                        setAppliedProducts([])
+                        setAppliedServices([])
                         sideDrawerRef.current?.open()
                     }}>
                         Create New Tax
                     </Button>
-                    <Button onClick={() => {
-                        if (!selectedTax) return
-                        setActionType('Edit')
-                        sideDrawerRef.current?.open()
-                    }}>
+                    <Button
+                        onClick={() => {
+                            if (!selectedTax) return
+                            setActionType('Edit')
+                            sideDrawerRef.current?.open()
+                        }}
+                        disabled={!selectedTax}
+                    >
                         Edit Tax
                     </Button>
                     <Button
@@ -147,6 +195,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
                             if (!selectedTax) return
                             handleTaxDelete(selectedTax)
                         }}
+                        disabled={!selectedTax}
                     >
                         Delete Tax
                     </Button>
@@ -157,11 +206,21 @@ const TaxesPage = ({ pageNumber }: Props) => {
             </div>
             <SideDrawer ref={sideDrawerRef}>
                 <TaxForm
-                    selectedTax={selectedTax}
+                    showAppliedItems={selectedTax !== undefined}
                     actionName={actionType}
                     onSubmit={handleSubmit}
+                    selectedProducts={appliedProducts}
+                    onProductClick={handleProductClick}
+                    selectedServices={appliedServices}
+                    onServiceClick={handleServiceClick}
                 />
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.taxes(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.taxes(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </div>
     )
 }

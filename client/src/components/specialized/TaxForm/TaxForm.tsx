@@ -15,40 +15,17 @@ export type TaxFormPayload = {
 }
 
 type Props = {
-    selectedTax?: Tax // TODO: get already applied items for this tax, and preselect them
+    showAppliedItems?: boolean
+    selectedProducts: Product[],
+    onProductClick: (product: Product) => void
+    onServiceClick: (service: Service) => void
+    selectedServices: Service[],
     actionName: string
     onSubmit: (data: TaxFormPayload) => void
 }
 
-const TaxForm = ({ selectedTax, actionName, onSubmit }: Props) => {
-    const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
-    const [selectedServices, setSelectedServices] = useState<Service[]>([])
-
-    useEffect(() => {
-        if (!selectedTax || actionName === 'Create') return
-        const getSelectedTaxItems = async () => {
-            const productResponse = await Promise.all([
-                TaxApi.getProductsByTaxId(selectedTax.id),
-                TaxApi.getServicesByTaxId(selectedTax.id)
-            ])
-            const { result: products, error: productsErr } = productResponse[0]
-            const { result: services, error: servicesErr } = productResponse[1]
-            if (!products) {
-                console.log(productsErr)
-                return
-            }
-            if (!services) {
-                console.log(servicesErr)
-                return
-            }
-            setSelectedProducts(products)
-            setSelectedServices(services)
-        }
-        getSelectedTaxItems()
-
-    }, [selectedTax, actionName])
-
-    const handleTaxUpdate = (formPayload: FormPayload) => {
+const TaxForm = ({ showAppliedItems = false, selectedProducts, onProductClick, selectedServices, onServiceClick, actionName, onSubmit }: Props) => {
+    const returnValues = (formPayload: FormPayload) => {
         const { name, rate, isPercentage } = formPayload
         const parsedRate = parseFloat(rate)
         onSubmit({
@@ -58,41 +35,25 @@ const TaxForm = ({ selectedTax, actionName, onSubmit }: Props) => {
             productIds: selectedProducts.map((product) => product.id),
             serviceIds: selectedServices.map((service) => service.id),
         })
-        setSelectedProducts([])
-        setSelectedServices([])
     }
 
     return (
         <div>
             <h4>{actionName} Tax</h4>
-            <AllItemView
+            {showAppliedItems && <AllItemView
                 headerText='Select Items'
                 selectedProducts={selectedProducts}
-                onProductClick={(product) => {
-                    if (selectedProducts.some((selectedProduct) => selectedProduct.id === product.id)) {
-                        const newSelectedProducts = selectedProducts.filter((selectedProduct) => selectedProduct.id !== product.id)
-                        setSelectedProducts(newSelectedProducts)
-                        return
-                    }
-                    setSelectedProducts([...selectedProducts, product])
-                }}
+                onProductClick={onProductClick}
                 selectedServices={selectedServices}
-                onServiceClick={(service) => {
-                    if (selectedServices.some((selectedService) => selectedService.id === service.id)) {
-                        const newSelectedServices = selectedServices.filter((selectedService) => selectedService.id !== service.id)
-                        setSelectedServices(newSelectedServices)
-                        return
-                    }
-                    setSelectedServices([...selectedServices, service])
-                }}
-            />
+                onServiceClick={onServiceClick}
+            />}
             <DynamicForm
                 inputs={{
                     name: { label: 'Name', placeholder: 'Enter name:', type: 'text' },
                     rate: { label: 'Rate', placeholder: 'Enter rate:', type: 'number' },
                     isPercentage: { label: 'Percentage?', type: 'checkbox' }
                 }}
-                onSubmit={handleTaxUpdate}
+                onSubmit={returnValues}
             >
                 <DynamicForm.Button>{actionName}</DynamicForm.Button>
             </DynamicForm>

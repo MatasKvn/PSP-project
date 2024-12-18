@@ -222,6 +222,9 @@ namespace POS_System.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -254,7 +257,7 @@ namespace POS_System.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            BirthDate = new DateOnly(1, 1, 1),
+                            BirthDate = new DateOnly(2000, 1, 2),
                             ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
                             Email = "johndoe@example.com",
                             EmailConfirmed = true,
@@ -266,9 +269,11 @@ namespace POS_System.Data.Migrations
                             NormalizedEmail = "johndoe@example.com",
                             NormalizedUserName = "johndoe",
                             PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
+                            PhoneNumber = "3463466346",
                             PhoneNumberConfirmed = true,
+                            RoleId = 0,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(1, 1, 1),
+                            StartDate = new DateOnly(2024, 1, 2),
                             TwoFactorEnabled = false,
                             UserName = "johndoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -277,7 +282,7 @@ namespace POS_System.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            BirthDate = new DateOnly(1, 1, 1),
+                            BirthDate = new DateOnly(1996, 11, 12),
                             ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
                             Email = "janedoe@example.com",
                             EmailConfirmed = true,
@@ -289,9 +294,11 @@ namespace POS_System.Data.Migrations
                             NormalizedEmail = "janedoe@example.com",
                             NormalizedUserName = "janedoe",
                             PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
+                            PhoneNumber = "77567455",
                             PhoneNumberConfirmed = true,
+                            RoleId = 1,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(1, 1, 1),
+                            StartDate = new DateOnly(2022, 5, 6),
                             TwoFactorEnabled = false,
                             UserName = "janedoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -300,7 +307,7 @@ namespace POS_System.Data.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            BirthDate = new DateOnly(1, 1, 1),
+                            BirthDate = new DateOnly(2003, 1, 29),
                             ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
                             Email = "adamsmith@example.com",
                             EmailConfirmed = true,
@@ -312,9 +319,11 @@ namespace POS_System.Data.Migrations
                             NormalizedEmail = "adamsmith@example.com",
                             NormalizedUserName = "adamsmith",
                             PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
+                            PhoneNumber = "4352335255",
                             PhoneNumberConfirmed = true,
+                            RoleId = 2,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(1, 1, 1),
+                            StartDate = new DateOnly(2024, 11, 4),
                             TwoFactorEnabled = false,
                             UserName = "adamsmith",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -323,7 +332,7 @@ namespace POS_System.Data.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            BirthDate = new DateOnly(1, 1, 1),
+                            BirthDate = new DateOnly(2002, 5, 6),
                             ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
                             Email = "bobjohnson@example.com",
                             EmailConfirmed = true,
@@ -335,9 +344,11 @@ namespace POS_System.Data.Migrations
                             NormalizedEmail = "bobjohnson@example.com",
                             NormalizedUserName = "bobjohnson",
                             PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
+                            PhoneNumber = "24142141241",
                             PhoneNumberConfirmed = true,
+                            RoleId = 3,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(1, 1, 1),
+                            StartDate = new DateOnly(2023, 7, 7),
                             TwoFactorEnabled = false,
                             UserName = "bobjohnson",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -346,7 +357,7 @@ namespace POS_System.Data.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            BirthDate = new DateOnly(1, 1, 1),
+                            BirthDate = new DateOnly(1990, 7, 7),
                             ConcurrencyStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
                             Email = "johndoe@example.com",
                             EmailConfirmed = true,
@@ -358,9 +369,11 @@ namespace POS_System.Data.Migrations
                             NormalizedEmail = "johndoe@example.com",
                             NormalizedUserName = "johnsondoe",
                             PasswordHash = "AQAAAAEAACcQAAAAEL7rWl6+6gQmXvT4XvH8z9FV3WzQX1lKoHkxJ7F5oF+U4T5RrH3RrQbV9T8M2Q1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
+                            PhoneNumber = "546646564",
                             PhoneNumberConfirmed = true,
+                            RoleId = 4,
                             SecurityStamp = "N3J7G6F5D4C3B2A1O0N3P2L1K0J9I8H7G6F5D4C3B2A1",
-                            StartDate = new DateOnly(1, 1, 1),
+                            StartDate = new DateOnly(2009, 8, 14),
                             TwoFactorEnabled = false,
                             UserName = "johnsondoe",
                             Version = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -618,7 +631,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6292)
+                            Version = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3318)
                         },
                         new
                         {
@@ -630,7 +643,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6298)
+                            Version = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3320)
                         },
                         new
                         {
@@ -855,9 +868,6 @@ namespace POS_System.Data.Migrations
 
                     b.HasKey("LeftEntityId", "RightEntityId", "StartDate");
 
-                    b.HasIndex("LeftEntityId")
-                        .IsUnique();
-
                     b.HasIndex("RightEntityId");
 
                     b.ToTable("ProductModificationOnCartItems");
@@ -920,6 +930,9 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("integer");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ImageURL")
                         .IsRequired()
                         .HasColumnType("text");
@@ -955,6 +968,7 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             Description = "S1 desc",
                             Duration = 45,
+                            EmployeeId = 1,
                             ImageURL = "",
                             IsDeleted = false,
                             Name = "Service1",
@@ -967,6 +981,7 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             Description = "S2 desc",
                             Duration = 25,
+                            EmployeeId = 2,
                             ImageURL = "",
                             IsDeleted = true,
                             Name = "Service2",
@@ -979,6 +994,7 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             Description = "S3 desc",
                             Duration = 10,
+                            EmployeeId = 2,
                             ImageURL = "",
                             IsDeleted = true,
                             Name = "Service3",
@@ -991,6 +1007,7 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             Description = "S2 v2 desc",
                             Duration = 40,
+                            EmployeeId = 3,
                             ImageURL = "",
                             IsDeleted = false,
                             Name = "Service2 v2",
@@ -1066,8 +1083,11 @@ namespace POS_System.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
-                    b.Property<int>("TimeSlotId")
+                    b.Property<int?>("TimeSlotId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("isCancelled")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -1188,28 +1208,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6170)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3241)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6180)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3244)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6183)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3245)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 16, 13, 31, 49, 459, DateTimeKind.Utc).AddTicks(6186)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3246)
                         });
                 });
 
@@ -1349,8 +1369,8 @@ namespace POS_System.Data.Migrations
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModificationOnCartItem", b =>
                 {
                     b.HasOne("POS_System.Domain.Entities.ProductModification", "LeftEntity")
-                        .WithOne("ProductModificationOnCartItems")
-                        .HasForeignKey("POS_System.Domain.Entities.ProductModificationOnCartItem", "LeftEntityId")
+                        .WithMany("ProductModificationOnCartItems")
+                        .HasForeignKey("LeftEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1451,9 +1471,7 @@ namespace POS_System.Data.Migrations
 
                     b.HasOne("POS_System.Domain.Entities.TimeSlot", "TimeSlot")
                         .WithOne("ServiceReservation")
-                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId");
 
                     b.Navigation("CartItem");
 
@@ -1516,8 +1534,7 @@ namespace POS_System.Data.Migrations
 
             modelBuilder.Entity("POS_System.Domain.Entities.ProductModification", b =>
                 {
-                    b.Navigation("ProductModificationOnCartItems")
-                        .IsRequired();
+                    b.Navigation("ProductModificationOnCartItems");
                 });
 
             modelBuilder.Entity("POS_System.Domain.Entities.Service", b =>

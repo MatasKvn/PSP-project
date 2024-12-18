@@ -77,7 +77,8 @@ namespace POS_System.Business.Services
                 Price = serviceRequest.Price,
                 ImageURL = serviceRequest.ImageURL,
                 Version = DateTime.UtcNow,
-                IsDeleted = false
+                IsDeleted = false,
+                EmployeeId = serviceRequest.EmployeeId,
             };
 
             await _unitOfWork.ServiceRepository.CreateAsync(newService, cancellationToken);

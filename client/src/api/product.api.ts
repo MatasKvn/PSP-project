@@ -1,13 +1,13 @@
 import { Product } from './../types/models'
-import { apiBaseUrl, defaultHeaders } from '@/constants/api'
+import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
 export default class ProductApi {
     static async getAllProducts(pageNumber: number, onlyActive?: boolean): Promise<FetchResponse<PagedResponse<Product>>> {
         return await fetch({
-             url: `${apiBaseUrl}/product?pageNum=${pageNumber}&onlyActive=${onlyActive}`,
-             method: HTTPMethod.GET,
-             headers: getAuthorizedHeaders()
+            url: `${apiBaseUrl}/product?pageNumber=${pageNumber}&onlyActive=${onlyActive}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
         })
     }
 
@@ -19,7 +19,7 @@ export default class ProductApi {
         })
     }
 
-    static async createProduct(product: Product): Promise<FetchResponse<Product>> {
+    static async createProduct(product: CreateProductRequest): Promise<FetchResponse<Product>> {
         return await fetch({
              url: `${apiBaseUrl}/product`,
              method: HTTPMethod.POST,
@@ -36,12 +36,31 @@ export default class ProductApi {
         })
     }
 
-    static async updateProductById(productId: number, product: Product): Promise<FetchResponse<Product>> {
+    static async updateProductById(dto: UpdateProductRequest): Promise<FetchResponse<Product>> {
         return await fetch({
-             url: `${apiBaseUrl}/product/${productId}`,
+             url: `${apiBaseUrl}/product/${dto.id}`,
              method: HTTPMethod.PUT,
              headers: getAuthorizedHeaders(),
-             body: JSON.stringify(product)
+             body: JSON.stringify(dto)
+        })
+    }
+
+    static async getProductsByTaxId(taxId: number): Promise<FetchResponse<Product[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/product/tax/${taxId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
+
+    static async getProductsByDiscountId(discountId: number): Promise<FetchResponse<Product[]>> {
+        return fetch({
+            url: `${apiBaseUrl}/product/item-discount/${discountId}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
         })
     }
 }
+
+type CreateProductRequest = Omit<Product, 'id' | 'dateModified'>
+type UpdateProductRequest = Omit<Product, 'dateModified'>

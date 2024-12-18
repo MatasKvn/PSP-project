@@ -12,6 +12,8 @@ import styles from './TimeSlotsPage.module.scss'
 import { useTimeSlots } from '@/hooks/timeSlots.hook'
 import Table from '@/components/shared/Table'
 import TimeSlotApi from '@/api/timeSlot.api'
+import { GetPageUrl } from '@/constants/route'
+import PageChanger from '@/components/shared/PageChanger'
 
 type Props = {
     pageNumber: number
@@ -27,20 +29,20 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
     const [actionType, setActionType] = useState<ActionType>()
 
     const handleTimeSlotCreate = async (formPayload: DynamicFormPayload) => {
-        const { employeeId, startTime, isAvailable } = formPayload
+        const { employeeVersionId, startTime, isAvailable } = formPayload
 
-        if (Number(employeeId) < 1) {
+        if (Number(employeeVersionId) < 1) {
             console.error('Invalid ID provided:', formPayload.id);
             return;
         }
-
         const isAvailableValue = isAvailable === 'on' ? true : false
 
         const response = await TimeSlotApi.create({
-            employeeId: Number.parseInt(employeeId),
+            employeeVersionId: Number.parseInt(employeeVersionId),
             startTime: new Date(startTime),
             isAvailable: isAvailableValue
         })
+
         if (!response.result) {
             console.log(response.error)
             return
@@ -51,23 +53,23 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
     }
 
     const handleTimeSlotUpdate = async (formPayload: DynamicFormPayload) => {
-        const { employeeId, startTime, isAvailable } = formPayload
+        const { employeeVersionId, startTime, isAvailable } = formPayload
 
         const isAvailableValue = isAvailable === 'on' ? true : false
         const id = Number(formPayload.id);
-        
-        if (isNaN(id) || Number(employeeId) < 1) {
+
+        if (isNaN(id) || Number(employeeVersionId) < 1) {
             console.error('Invalid ID provided:', formPayload.id);
             return;
         }
 
         const response = await TimeSlotApi.update({
             id: Number(id),
-            employeeId: Number(employeeId),
+            employeeVersionId: Number(employeeVersionId),
             startTime: new Date(startTime),
             isAvailable: isAvailableValue,
         })
-    
+        console.log("slot resp: ", response.result)
         if (!response.result) {
             console.error(response.error || 'Failed to update the TimeSlot');
             return;
@@ -81,8 +83,6 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
         sideDrawerRef.current?.close()
     }
     
-    
-
     const UpdateTimeSlotForm = (selectedTimeSlot?: TimeSlot) => {
         const id = selectedTimeSlot?.id
         const readOnly = true
@@ -92,7 +92,7 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
                 <DynamicForm
                     inputs={{
                         id: { label: `Time Slot ID`, placeholder: `${id}`, type: 'text', readOnly, value: id},
-                        employeeId: { label: 'Employee ID', placeholder: 'employee ID', type: 'number' },
+                        employeeVersionId: { label: 'Employee ID', placeholder: 'employee ID', type: 'number' },
                         startTime: { label: 'Start time', placeholder: 'YYYY-MM-DD HH:mm', type: 'datetime-local' },
                         isAvailable: { label: 'Is Time Slot Available?', placeholder: '', type: 'checkbox' }
                     }}
@@ -115,43 +115,11 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
         const formPayload: DynamicFormPayload = {
             id: selectedTimeSlot.id.toString(),
             startTime: selectedTimeSlot.startTime.toString(),
-            employeeId: selectedTimeSlot.employeeId.toString(),
+            employeeVersionId: selectedTimeSlot.employeeVersionId.toString(),
             isAvailable: isAvailableValue
         }
         return handleTimeSlotUpdate(formPayload)
     }
-    
-    // const CreateTimeSlotsForm = (formPayload: DynamicFormPayload) => {
-    //     const { employeeId, startTimesAmount, isAvailable } = formPayload;
-    //     const count = Number(startTimesAmount);
-    
-    //     const inputs: {
-    //         [key: string]: { label: string; placeholder: string; type: string;}
-    //     } = {
-    //         employeeId: { label: 'Employee ID', placeholder: `${employeeId}`, type: 'text'},
-    //         isAvailable: { label: 'Is time slot available?', placeholder: `${isAvailable}`, type: 'checkbox'},
-    //     }
-    
-    //     for (let i = 1; i <= count; i++) {
-    //         inputs[`startTime${i}`] = {
-    //             label: `Start time`,
-    //             placeholder: 'YYYY-MM-DD HH:mm',
-    //             type: 'text',
-    //         }
-    //     }
-
-    //     return (
-    //         <>
-    //             <h4>{'Create Time Slot'}</h4>
-    //             <DynamicForm
-    //                 inputs={inputs}
-    //                 onSubmit={handleTimeSlotCreate}
-    //             >
-    //                 <DynamicForm.Button>Submit</DynamicForm.Button>
-    //             </DynamicForm>
-    //         </>
-    //     )
-    // }
 
     const CreateTimeSlotForm = () => {
         return (
@@ -159,9 +127,9 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
                 <h4>{'Create Time Slot'}</h4>
                 <DynamicForm
                     inputs={{
-                        employeeId: { label: 'Employee ID', placeholder: 'employee ID', type: 'number' },
+                        employeeVersionId: { label: 'Employee ID', placeholder: 'employee ID', type: 'number' },
                         startTime: { label: 'Start time', placeholder: 'YYYY-MM-DD HH:mm', type: 'datetime-local' },
-                        sAvailable: { label: 'Is Time Slot Available?', placeholder: '', type: 'checkbox' }
+                        isAvailable: { label: 'Is Time Slot Available?', placeholder: '', type: 'checkbox' }
                     }}
                     onSubmit={handleTimeSlotCreate}
                 >
@@ -171,13 +139,6 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
         )
     }
 
-    const dummyTimeSlotRow = {
-        id: 0,
-        employeeId: 0,
-        startTime: new Date(),
-        isAvailable: '',
-        edit: ''
-    }
     const rows = timeSlots.map((timeSlot) => ({
         ...timeSlot,
         startTime: new Date(timeSlot.startTime).toLocaleString(),
@@ -200,11 +161,12 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
             </Button>
     }))
     
-
-    const columns = Object.keys(dummyTimeSlotRow).map((key) => ({
-        name: key,
-        key
-    }))
+    const columns = [
+        { name: 'Employee', key: 'employeeVersionId' },
+        { name: 'Start Time', key: 'startTime' },
+        { name: 'Availability', key: 'isAvailable' },
+        { name: 'Edit', key: 'edit' },
+    ]
     
     return (
         <>
@@ -219,15 +181,6 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
                 >
                     Create Time Slot
                 </Button>
-                {/* <Button
-                    disabled={isLoading || !!errorMsg}
-                    onClick={() => {
-                        setActionType('create-multiple')
-                        sideDrawerRef.current?.open()
-                    }}
-                >
-                    Create Many Time Slots
-                </Button> */}
             </div>
             <Table
                 columns={columns}
@@ -239,6 +192,12 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
                 {actionType === 'create' && CreateTimeSlotForm()}
                 {actionType === 'edit' && selectedTimeSlot && UpdateTimeSlotForm(selectedTimeSlot)}
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.timeSlots(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.timeSlots(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </>
     )
 }

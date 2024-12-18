@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using POS_System.Business.Dtos;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
@@ -12,25 +14,31 @@ namespace POS_System.Business.Services
     public class ItemDiscountService(IUnitOfWork _unitOfWork, IManyToManyService<Product, ItemDiscount, ProductOnItemDiscount> _productOnItemDiscountService,
         IManyToManyService<Service, ItemDiscount, ServiceOnItemDiscount> _serviceOnItemDiscountService, IMapper _mapper) : IItemDiscountService
     {
-        public async Task<IEnumerable<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken)
+        public async Task<PagedResponse<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
-            var itemDiscounts = await _unitOfWork.ItemDiscountRepository.GetAllByExpressionAsync(x => x.IsDeleted == false);
+            var (discounts, totalCount) = await _unitOfWork.ItemDiscountRepository.GetAllByExpressionWithIncludesAndPaginationAsync(
+                x => !x.IsDeleted && (x.EndDate >= DateTime.UtcNow || x.EndDate == null),
+                pageSize,
+                pageNum,
+                cancellationToken
+            );
 
             //If item discount is past expiration date
             //We do not show it and mark as deleted
             //Only way to do it without periodic checking is to do it when we do a call
-            for (var i = itemDiscounts.Count - 1; i >= 0; --i)
-            {
-                var itemDiscount = itemDiscounts[i];
-                if (itemDiscount.EndDate <= DateTime.UtcNow)
-                {
-                    await DeleteItemDiscountAsync(itemDiscount.Id, cancellationToken);
-                    itemDiscounts.Remove(itemDiscount);
-                }
-            }
+            var discountsToReturn = new List<ItemDiscount>();
 
-            var itemDiscountDtos = _mapper.Map<List<ItemDiscountResponse>>(itemDiscounts);
-            return itemDiscountDtos;
+            foreach (var discount in discounts)
+            {
+                if (discount.EndDate <= DateTime.UtcNow)
+                {
+                    await DeleteItemDiscountAsync(discount.Id, cancellationToken);
+                    continue;
+                }
+                discountsToReturn.Add(discount);
+            }
+            var itemDiscountDtos = _mapper.Map<List<ItemDiscountResponse>>(discountsToReturn);
+            return new PagedResponse<ItemDiscountResponse>(totalCount, pageSize, pageNum, itemDiscountDtos);
         }
 
         public async Task<ItemDiscountResponse> CreateItemDiscountAsync(ItemDiscountRequest itemDiscountDto, CancellationToken cancellationToken)

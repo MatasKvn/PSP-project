@@ -10,8 +10,8 @@ namespace POS_System.Business.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<UserRegisterRequest, ApplicationUser>()
-                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirtDate)));
+            CreateMap<UserRegisterRequest, ApplicationUser>();
+            CreateMap<EmployeeResponse, ApplicationUser>();
 
             // Cart
             CreateMap<Cart, CartResponse>();

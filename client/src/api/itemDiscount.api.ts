@@ -1,72 +1,95 @@
-import { FetchResponse, PagedResponse } from '@/types/fetch'
+import { apiBaseUrl } from '@/constants/api'
+import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { ItemDiscount } from '@/types/models'
-
-let discounts: ItemDiscount[] = [
-    {
-        id: 1,
-        value: 10,
-        isPercentage: true,
-        description: '10% off',
-        startDate: new Date('2022-01-01 00:00:00'),
-        endDate: new Date('2025-12-31 23:59:59')
-    },
-    {
-        id: 2,
-        value: 20,
-        isPercentage: true,
-        description: '20% off',
-        startDate: new Date('2022-01-01 00:00:00'),
-        endDate: new Date('2022-12-31 23:59:59')
-    }
-]
+import { encodeDateToUrlString, fetch, getAuthorizedHeaders, sanitizeData } from '@/utils/fetch'
 
 export default class ItemDiscountApi {
     static async getCurrentDiscountsByProductId(productId: number): Promise<FetchResponse<ItemDiscount[]>> {
-        const result = discounts.filter(discount => discount.startDate <= new Date() && discount.endDate >= new Date() && discount.id === productId)
-        return Promise.resolve({ result })
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/item/${productId}?isProduct=true&timeStamp=${encodeDateToUrlString(new Date())}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async getCurrentDiscountByServiceId(serviceId: number): Promise<FetchResponse<ItemDiscount[]>> {
-        const result = discounts.filter(discount => discount.startDate <= new Date() && discount.endDate >= new Date() && discount.id === serviceId)
-        return Promise.resolve({ result })
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/item/${serviceId}?isProduct=true&timeStamp=${encodeDateToUrlString(new Date())}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async getAllDiscounts(pageNumber: number): Promise<FetchResponse<PagedResponse<ItemDiscount>>> {
-        return { result: { pageNum: pageNumber, pageSize: 10, totalCount: discounts.length, results: discounts } }
+        return fetch({
+            url: `${apiBaseUrl}/item-discount?pageNum=${pageNumber}&onlyActive=true`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async updateDiscount(dto: UpdateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
-        const discount = discounts.find(d => d.id === dto.id)
-        if (!discount) return { error: 'Discount not found' }
-        return { result: { ...discount, ...dto } }
+        const sanitizedDto = sanitizeData(dto)
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${dto.id}`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(sanitizedDto)
+        })
     }
 
     static async createDiscount(dto: CreateDiscountRequest): Promise<FetchResponse<ItemDiscount>> {
-        const discount = {
-            ...dto,
-            id: Math.max(...discounts.map((discount) => discount.id)) + 1
-        }
-        discounts = [...discounts, discount]
-        return { result: discount }
+        const sanitizedDto = sanitizeData(dto)
+        return fetch({
+            url: `${apiBaseUrl}/item-discount`,
+            method: HTTPMethod.POST,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(sanitizedDto)
+        })
     }
 
     static async deleteDiscount(id: number): Promise<FetchResponse<any>> {
-        const discount = discounts.find(d => d.id === id)
-        if (!discount) return { error: 'Discount not found' }
-        discounts = discounts.filter((discount) => discount.id !== id)
-        return { result: discount }
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${id}`,
+            method: HTTPMethod.DELETE,
+            headers: getAuthorizedHeaders()
+        })
     }
 
     static async addProductsToDiscount(discountId: number, productIds: number[]): Promise<FetchResponse<any>> {
-        const discount = discounts.find(d => d.id === discountId)
-        if (!discount) return { error: 'Discount not found' }
-        return { result: discount }
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${discountId}/link?itemsAreProducts=true`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(productIds)
+        })
     }
 
     static async addServicesToDiscount(discountId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
-        const discount = discounts.find(d => d.id === discountId)
-        if (!discount) return { error: 'Discount not found' }
-        return { result: discount }
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${discountId}/link?itemsAreProducts=false`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(serviceIds)
+        })
+    }
+
+    static async removeProductsFromDiscount(discountId: number, productIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${discountId}/unlink?itemsAreProducts=true`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(productIds)
+        })
+    }
+
+    static async removeServicesFromDiscount(discountId: number, serviceIds: number[]): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/item-discount/${discountId}/unlink?itemsAreProducts=false`,
+            method: HTTPMethod.PUT,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(serviceIds)
+        })
     }
 }
 

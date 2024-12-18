@@ -12,6 +12,9 @@ import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
 import ProductModificationsView from '@/components/specialized/ProductModificationManagementView'
+import PageChanger from '@/components/shared/PageChanger'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -21,6 +24,7 @@ const compareProducts = (product1: Product, product2: Product) => product1.name.
 
 const ProductsPage = (props: Props) => {
     const { pageNumber } = props
+    const router = useRouter()
 
     const { products, setProducts, isLoading, isError } = useProducts(pageNumber, compareProducts)
     const [selectedProduct, selectProduct] = useState<Product | undefined>(undefined)
@@ -93,7 +97,7 @@ const ProductsPage = (props: Props) => {
             description: productDescription,
             price: Number.parseInt(productPrice),
             stock: Number.parseInt(productStock),
-            imageURL: productImageUrl,
+            imageURL: productImageUrl || '',
         })
         if (!response.result) {
             console.log(response.error)
@@ -136,7 +140,8 @@ const ProductsPage = (props: Props) => {
         } = formPayload
         const price = Number.parseInt(productPrice)
         const stock = Number.parseInt(productStock)
-        const response = await ProductApi.updateProductById(selectedProduct.id, {
+        const response = await ProductApi.updateProductById({
+            id: selectedProduct.id,
             name: productName || selectedProduct.name,
             description: productDescription || selectedProduct.description,
             price: isNaN(price) ? selectedProduct.price : price,
@@ -199,11 +204,13 @@ const ProductsPage = (props: Props) => {
                         setSideDrawerContentType('edit')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={!selectedProduct}
                 >
                     Edit Product
                 </Button>
                 <Button
                     onClick={() => handleProductDelete(selectedProduct)}
+                    disabled={!selectedProduct}
                 >
                     Delete Product
                 </Button>
@@ -214,6 +221,7 @@ const ProductsPage = (props: Props) => {
                         setSideDrawerContentType('productModifications')
                         sideDrawerRef.current?.open()
                     }}
+                    disabled={!selectedProduct}
                 >
                     Manage Modifications
                 </Button>
@@ -225,6 +233,12 @@ const ProductsPage = (props: Props) => {
             <SideDrawer ref={sideDrawerRef}>
                 {sideDrawerContent()}
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.products(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.products(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </div>
     )
 }

@@ -89,10 +89,10 @@ export type ServiceCartItem = {
     quantity: number
     serviceId: number
     service?: Service
-    serviceReservationId: number
-    serviceReservation?: ServiceReservation
+    serviceReservationId: number | null
+    serviceReservation?: ServiceReservation | null
     timeSlotId: number
-    timeSlot?: TimeSlot
+    timeSlot?: TimeSlot | null
     discounts?: ItemDiscount[]
     taxes: Tax[]
 }
@@ -115,25 +115,14 @@ export type ServiceReservation = {
     bookingTime: Date
     customerPhone: string
     customerName: string
+    isCancelled: boolean
 }
 
 export type TimeSlot = {
     id: number
-    employeeId: number
+    employeeVersionId: number
     startTime: Date
     isAvailable: boolean
-}
-
-export type Employee = {
-    id: number
-    firstName: string
-    lastName: string
-    email: string
-    phoneNumber: string
-    birthDate: Date
-    startDate: Date
-    endDate?: Date
-    accessibility: AccessibilityEnum
 }
 
 export type BusinessDetails = {
@@ -147,12 +136,26 @@ export type BusinessDetails = {
     flatNumber?: number
 }
 
-export enum AccessibilityEnum {
-    NONE = 'NONE',
-    SERVICE_PROVIDER = 'SERVICE_PROVIDER',
-    CASHIER = 'CASHIER',
-    OWNER = 'OWNER',
-    SUPER_ADMIN = 'SUPER_ADMIN',
+export enum RoleEnum {
+    NONE = 0,               
+    SERVICE_PROVIDER = 1,    
+    CASHIER = 2,            
+    OWNER = 3,               
+    SUPER_ADMIN = 4,         
+  }
+
+  export type Employee = {
+    id: number
+    firstName: string
+    lastName: string
+    userName: string
+    email: string
+    password: string
+    phoneNumber: string
+    birthDate?: string
+    startDate?: Date
+    endDate?: Date
+    roleId: number; 
 }
 
 export type Tax = {
