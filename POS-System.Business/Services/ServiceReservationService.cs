@@ -23,7 +23,12 @@ namespace POS_System.Business.Services
 
             await _unitOfWork.ServiceReservationRepository.CreateAsync(serviceReservation, cancellationToken);
 
-            var timeslot = await _unitOfWork.TimeSlotRepository.GetByIdAsync(serviceReservationDto.TimeSlotId, cancellationToken)
+            var timeSlotId = serviceReservationDto.TimeSlotId;
+
+            if (timeSlotId is null)
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+
+            var timeslot = await _unitOfWork.TimeSlotRepository.GetByIdAsync((int)timeSlotId, cancellationToken)
                 ?? throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
 
             timeslot.IsAvailable = false;
@@ -83,6 +88,7 @@ namespace POS_System.Business.Services
             serviceReservation.BookingTime = serviceReservationDto.BookingTime;
             serviceReservation.CustomerName = serviceReservationDto.CustomerName;
             serviceReservation.CustomerPhone = serviceReservationDto.CustomerPhone;
+            serviceReservation.isCancelled = serviceReservationDto.IsCancelled;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

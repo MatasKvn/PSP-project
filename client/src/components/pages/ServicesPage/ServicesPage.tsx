@@ -74,6 +74,7 @@ const ServicesPage = (props: Props) => {
                         servicePrice: { label: 'Service Price', placeholder: 'Enter service price:', type: 'number' },
                         serviceDuration: { label: 'Service Duration', placeholder: 'Enter service duration:', type: 'number' },
                         serviceImageUrl: { label: 'Service Image URL', placeholder: 'Enter service image url:', type: 'text' },
+                        serviceEmployeeId: {label: 'EmplyeeId', placeholder: 'Enter employeeId:', type: 'number'}
                     }}
                     onSubmit={actionType === 'create' ? handleServiceCreate : handleServiceUpdate}
                 >
