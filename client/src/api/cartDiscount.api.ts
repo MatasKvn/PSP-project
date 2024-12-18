@@ -12,4 +12,12 @@ export default class CartDiscountApi {
             body: JSON.stringify(body)
         });
     }
+
+    static async getCartDiscount(cartId: number): Promise<FetchResponse<CartDiscount>> {
+        return await fetch({
+            url: `${apiBaseUrl}/carts/${cartId}/discount`,
+            method: HTTPMethod.GET,
+            headers: defaultHeaders,
+        });
+    }
 }

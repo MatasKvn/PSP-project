@@ -101,5 +101,25 @@ namespace POS_System.Business.Services.Services
                 IsPercentage = coupon.AmountOff is null,
             };
         }
+
+        public async Task<CartDiscountResponse?> GetCartDiscountAsync(int id, CancellationToken cancellationToken)
+        {
+            var cart = await _unitOfWork.CartRepository.GetByIdAsync(id, cancellationToken);
+            
+            if (cart is not null && cart.CartDiscountId is not null)
+            {
+                var cartDiscount = await _unitOfWork.CartDiscountRepository.GetByIdStringAsync(cart.CartDiscountId, cancellationToken);
+
+                if (cartDiscount is not null)
+                    return new CartDiscountResponse
+                    {
+                        Id = cartDiscount.Id,
+                        Value = cartDiscount.Value,
+                        IsPercentage = cartDiscount.IsPercentage
+                    };
+            }
+
+            return null;
+        }
     }
 }

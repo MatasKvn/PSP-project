@@ -101,7 +101,9 @@ namespace POS_System.Business.Services
                         {
                             Name = item.Name,
                             Description = item.Description,
-                            Images = [ item.ImageURL ]
+                            Images = string.IsNullOrEmpty(item.ImageURL) 
+                                ? [ ApplicationConstants.PLACE_HOLDER_IMAGE_URL ] 
+                                : [ item.ImageURL ]
                         }
                     },
                     Quantity = item.Quantity
