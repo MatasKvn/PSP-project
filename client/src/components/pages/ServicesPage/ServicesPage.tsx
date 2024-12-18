@@ -39,7 +39,7 @@ const ServicesPage = (props: Props) => {
             return <div>Loading...</div>
         }
         if (errorMsg) {
-            return <div>Error</div>
+            return <div>{errorMsg}</div>
         }
 
         return services.map((product) => (

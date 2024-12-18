@@ -1,13 +1,13 @@
 import { Product } from './../types/models'
-import { apiBaseUrl, defaultHeaders } from '@/constants/api'
+import { apiBaseUrl } from '@/constants/api'
 import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
 export default class ProductApi {
     static async getAllProducts(pageNumber: number, onlyActive?: boolean): Promise<FetchResponse<PagedResponse<Product>>> {
         return await fetch({
-             url: `${apiBaseUrl}/product?pageNum=${pageNumber}&onlyActive=${onlyActive}`,
-             method: HTTPMethod.GET,
-             headers: getAuthorizedHeaders()
+            url: `${apiBaseUrl}/product?pageNumber=${pageNumber}&onlyActive=${onlyActive}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
         })
     }
 

@@ -12,6 +12,8 @@ import styles from './TimeSlotsPage.module.scss'
 import { useTimeSlots } from '@/hooks/timeSlots.hook'
 import Table from '@/components/shared/Table'
 import TimeSlotApi from '@/api/timeSlot.api'
+import { GetPageUrl } from '@/constants/route'
+import PageChanger from '@/components/shared/PageChanger'
 
 type Props = {
     pageNumber: number
@@ -239,6 +241,12 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
                 {actionType === 'create' && CreateTimeSlotForm()}
                 {actionType === 'edit' && selectedTimeSlot && UpdateTimeSlotForm(selectedTimeSlot)}
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.timeSlots(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.timeSlots(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </>
     )
 }

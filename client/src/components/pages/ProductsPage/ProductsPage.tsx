@@ -12,6 +12,9 @@ import SideDrawer from '@/components/shared/SideDrawer'
 import { SideDrawerRef } from '@/components/shared/SideDrawer'
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm'
 import ProductModificationsView from '@/components/specialized/ProductModificationManagementView'
+import PageChanger from '@/components/shared/PageChanger'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -21,6 +24,7 @@ const compareProducts = (product1: Product, product2: Product) => product1.name.
 
 const ProductsPage = (props: Props) => {
     const { pageNumber } = props
+    const router = useRouter()
 
     const { products, setProducts, isLoading, isError } = useProducts(pageNumber, compareProducts)
     const [selectedProduct, selectProduct] = useState<Product | undefined>(undefined)
@@ -229,6 +233,12 @@ const ProductsPage = (props: Props) => {
             <SideDrawer ref={sideDrawerRef}>
                 {sideDrawerContent()}
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.products(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.products(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </div>
     )
 }

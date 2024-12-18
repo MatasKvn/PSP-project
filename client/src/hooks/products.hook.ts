@@ -15,18 +15,18 @@ export const useProducts = (pageNumber: number | undefined, compareFn?: (a: Prod
                 return
             }
             const response = await ProductApi.getAllProducts(pageNumber, true)
-            if (response.result) {
-                const products = PagedResponseMapper.fromPageResponse(response.result!)
-                if (compareFn) products.sort(compareFn)
-                setProducts(products)
+            if (!response.result) {
+                setIsError(true)
                 setIsLoading(false)
                 return
             }
-            setIsError(true)
+            const products = PagedResponseMapper.fromPageResponse(response.result!)
+            if (compareFn) products.sort(compareFn)
+            setProducts(products)
             setIsLoading(false)
         }
         handleFetch()
-    }, [pageNumber])
+    }, [pageNumber, compareFn])
     
     return { products, setProducts, isLoading, isError }
 }

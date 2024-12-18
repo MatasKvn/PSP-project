@@ -10,6 +10,9 @@ import { Product, Service, Tax } from '@/types/models'
 import Table from '@/components/shared/Table'
 
 import styles from './TaxesPage.module.scss'
+import PageChanger from '@/components/shared/PageChanger'
+import { useRouter } from 'next/navigation'
+import { GetPageUrl } from '@/constants/route'
 
 type Props = {
     pageNumber: number
@@ -18,6 +21,7 @@ type Props = {
 const TaxesPage = ({ pageNumber }: Props) => {
     const { errorMsg, isLoading, taxes, setTaxes } = useTaxes(pageNumber)
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
+    const router = useRouter()
 
     const [selectedTax, setSelectedTax] = useState<Tax | undefined>()
     const {
@@ -176,11 +180,14 @@ const TaxesPage = ({ pageNumber }: Props) => {
                     }}>
                         Create New Tax
                     </Button>
-                    <Button onClick={() => {
-                        if (!selectedTax) return
-                        setActionType('Edit')
-                        sideDrawerRef.current?.open()
-                    }}>
+                    <Button
+                        onClick={() => {
+                            if (!selectedTax) return
+                            setActionType('Edit')
+                            sideDrawerRef.current?.open()
+                        }}
+                        disabled={!selectedTax}
+                    >
                         Edit Tax
                     </Button>
                     <Button
@@ -188,6 +195,7 @@ const TaxesPage = ({ pageNumber }: Props) => {
                             if (!selectedTax) return
                             handleTaxDelete(selectedTax)
                         }}
+                        disabled={!selectedTax}
                     >
                         Delete Tax
                     </Button>
@@ -207,6 +215,12 @@ const TaxesPage = ({ pageNumber }: Props) => {
                     onServiceClick={handleServiceClick}
                 />
             </SideDrawer>
+            <PageChanger
+                onClickNext={() => router.push(GetPageUrl.taxes(parseInt(pageNumber as unknown as string) + 1))}
+                onClickPrevious={() => router.push(GetPageUrl.taxes(pageNumber - 1))}
+                disabledPrevious={pageNumber <= 0}
+                pageNumber={pageNumber}
+            />
         </div>
     )
 }
