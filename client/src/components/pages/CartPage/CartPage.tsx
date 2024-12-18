@@ -7,7 +7,7 @@ import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction } from '@/types/models'
+import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction, TimeSlot } from '@/types/models'
 import { useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
@@ -18,6 +18,8 @@ import styles from './CartPage.module.scss'
 import { useCartTransactions } from '../../../hooks/transactions.hook'
 import { loadStripe } from '@stripe/stripe-js'
 import PaymentApi from '@/api/payment.api'
+import ServiceReservationApi from '@/api/serviceReservation.api'
+import TimeSlotApi from '@/api/timeSlot.api'
 import { CashCheckoutBody, DateTimeWithMicroseconds, FullCheckoutBody, GiftCardDetails, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction, RefundBody } from '@/types/payment'
 
 type Props = {
@@ -70,7 +72,8 @@ const CartPage = (props: Props) => {
         cartItems,
         errorMsg,
         isLoading: isCartItemsLoading,
-        refetchCartItems
+        refetchCartItems,
+        setCartItems
     } = useCartItems(cartId, pageNumber)
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
@@ -78,6 +81,7 @@ const CartPage = (props: Props) => {
     const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('none')
     const [cartDiscount, setCartDiscount] = useState<number>(0)
     const [appliedTip, setAppliedTip] = useState<number>(0);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>()
 
     if (!isCartLoading && !cart) return null
 
@@ -156,9 +160,14 @@ const CartPage = (props: Props) => {
             { name: 'Net price', key: 'netPrice' },
             { name: 'Deconste', key: 'deconste' },
         ]
+
     const serviceRows = serviceItems.map((item) => {
+        let timeSlotStartTime = 'Cancelled'
+        if (item.timeSlot) {
+            timeSlotStartTime = new Date(item.timeSlot.startTime).toLocaleDateString()
+        }
+        const startTime = timeSlotStartTime
         const price = item.service.price / 100;
-        const startTime = item.timeSlot.startTime;
         const totalVal = item.quantity * price;
         const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;
         const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100;
@@ -167,7 +176,7 @@ const CartPage = (props: Props) => {
             name: item.service?.name || '',
             quantity: item.quantity,
             price,
-            time: `${startTime.getMonth() + 1}/${startTime.getDate()} ${startTime.toLocaleTimeString()}`,
+            time: startTime,
             totalVal,
             discounts,
             taxes,
@@ -277,23 +286,74 @@ const CartPage = (props: Props) => {
         sideDrawerRef.current?.close()
     }
 
-    const handleServiceCartItemCreate = async ({ serviceId }: { serviceId: number | undefined }) => {
-        if (!serviceId) {
+    const handleServiceCartItemCreate = async (formPayload: { serviceId: any; timeSlotId: any; customerName: any; customerPhone: any }) => {
+        const { serviceId, timeSlotId, customerName, customerPhone} = formPayload
+
+        if (!serviceId || !timeSlotId || !customerName || !customerPhone) {
             console.log('Invalid input')
             return
         }
         const response = await CartItemApi.createCartItem({
-                cartId,
-                type: 'service',
-                quantity: 1,
-                serviceVersionId: serviceId,
-            })
+            cartId,
+            type: 'service',
+            quantity: 1,
+            serviceVersionId: Number(serviceId)
+        })
+        console.log("serviceCreate resp: ", response.result)
         if (!response.result) {
             console.log(response.error)
             return
         }
+        const cartItemId = response.result.id
+        handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
+        handleTimeSlotUpdate(timeSlotId)
         refetchCartItems()
         sideDrawerRef.current?.close()
+    }
+
+    const handleServiceReservationCreate = async (cartItemId: number, timeSlotId: number, customerName: string, customerPhone: string) => {
+        console.log("reservation: ", cartItemId, timeSlotId, customerName, customerPhone)
+        const response = await ServiceReservationApi.create({
+            cartItemId: Number(cartItemId),
+            timeSlotId: timeSlotId,
+            customerName: customerName,
+            customerPhone: customerPhone,
+            bookingTime: new Date(),
+            isCancelled: false
+        })
+        console.log("reservation create: ", response.result)
+        if (!response.result) {
+            console.log(response.error)
+            return
+        }
+    }
+
+    const handleTimeSlotUpdate = async (timeSlotId: number) => {
+        const response = await TimeSlotApi.getTimeSlotById(timeSlotId);
+        if (!response.result) {
+            console.log(response.error);
+            return;
+        }
+        setSelectedTimeSlot(response.result)
+        const timeSlot = response.result;
+        console.log("timeSlot: ", response.result)
+        if (!timeSlot) {
+            console.error("TimeSlot not found");
+            return;
+        }
+    
+        const updateResponse = await TimeSlotApi.update({
+            id: Number(timeSlot.id),
+            employeeVersionId: Number(timeSlot.employeeVersionId),
+            startTime: timeSlot.startTime,
+            isAvailable: false,
+        })
+
+        if (updateResponse.result) {
+            console.log("TimeSlot updated successfully")
+        } else {
+            console.error("Failed to update TimeSlot:", updateResponse.error)
+        }
     }
 
     const handleCartDiscount = async (formPayload: FormPayload) => {

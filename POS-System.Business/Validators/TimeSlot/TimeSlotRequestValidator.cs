@@ -8,7 +8,7 @@ namespace POS_System.Business.Validators.TimeSlot
         public TimeSlotRequestValidator()
         {
             RuleFor(x => x.IsAvailable)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("Availability for time slot must be set.");
 
             RuleFor(x => x.StartTime)

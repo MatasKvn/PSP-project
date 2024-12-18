@@ -18,7 +18,14 @@ export const useTimeSlots = (pageNumber: number) => {
                     setIsLoading(false);
                     return;
                 }
-                setTimeSlots(response.result.results);
+
+                const currentDate = new Date();
+
+                const filteredTimeSlots = response.result.results.filter((timeSlot: TimeSlot) => {
+                    const timeSlotDate = new Date(timeSlot.startTime);
+                    return timeSlotDate > currentDate;
+                });
+                setTimeSlots(filteredTimeSlots);
             } catch (error: any) {
                 setErrorMsg(error.message || 'An error occurred');
             } finally {

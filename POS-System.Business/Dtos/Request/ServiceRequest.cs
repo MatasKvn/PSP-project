@@ -7,5 +7,6 @@
         public required int Duration { get; set; }
         public required int Price { get; set; }
         public required string ImageURL { get; set; }
+        public required int EmployeeId { get; set; }
     }
 }

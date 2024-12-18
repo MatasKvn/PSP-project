@@ -11,6 +11,7 @@ export const GetPageUrl = {
     services: (pageNumber: number) => `/dashboard/services/${pageNumber}`,
     taxes: (pageNumber: number) => `/dashboard/taxes/${pageNumber}`,
     timeSlots: (pageNumber: number) => `/dashboard/time-slots/${pageNumber}`,
+    serviceReservations: (pageNumber: number) => `/dashboard/reservations/${pageNumber}`,
     discounts: (pageNumber: number) => `/dashboard/discounts/${pageNumber}`,
     businessDetails: `/dashboard/business-details`,
     employees: (pageNumber: number) => `/dashboard/employees/${pageNumber}`,

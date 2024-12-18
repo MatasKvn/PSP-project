@@ -1,4 +1,15 @@
+@use '@/assets/styles/variables' as *;
+
 .services_view {
     height: 60vh;
     overflow-y: scroll;
+}
+
+.selected {
+    background-color: rgba($color-selected, 0.3);
+    border-radius: 5em;
+}
+
+.table {
+    background-color: aqua;
 }

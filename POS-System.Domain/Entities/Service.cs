@@ -25,6 +25,8 @@ namespace POS_System.Domain.Entities
         public required int Duration { get; set; }
         public required int Price { get; set; }
         public required string ImageURL { get; set; }
+        [ForeignKey("Employee")]
+        public required int EmployeeId { get; set; }
 
         //Versioning
         public DateTime Version { get; set; }

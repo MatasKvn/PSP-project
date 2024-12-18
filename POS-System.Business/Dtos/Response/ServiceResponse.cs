@@ -11,5 +11,6 @@
         public required string ImageURL { get; set; }
         public DateTime Version { get; set; }
         public bool IsDeleted { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

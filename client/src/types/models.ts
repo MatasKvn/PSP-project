@@ -89,10 +89,10 @@ export type ServiceCartItem = {
     quantity: number
     serviceId: number
     service?: Service
-    serviceReservationId: number
-    serviceReservation?: ServiceReservation
+    serviceReservationId: number | null
+    serviceReservation?: ServiceReservation | null
     timeSlotId: number
-    timeSlot?: TimeSlot
+    timeSlot?: TimeSlot | null
     discounts?: ItemDiscount[]
     taxes: Tax[]
 }
@@ -115,11 +115,12 @@ export type ServiceReservation = {
     bookingTime: Date
     customerPhone: string
     customerName: string
+    isCancelled: boolean
 }
 
 export type TimeSlot = {
     id: number
-    employeeId: number
+    employeeVersionId: number
     startTime: Date
     isAvailable: boolean
 }
