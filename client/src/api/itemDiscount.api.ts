@@ -22,7 +22,7 @@ export default class ItemDiscountApi {
 
     static async getAllDiscounts(pageNumber: number): Promise<FetchResponse<PagedResponse<ItemDiscount>>> {
         return fetch({
-            url: `${apiBaseUrl}/item-discount?pageNumber=${pageNumber}&onlyActive=true`,
+            url: `${apiBaseUrl}/item-discount?pageNum=${pageNumber}&onlyActive=true`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
