@@ -89,8 +89,8 @@ export type ServiceCartItem = {
     quantity: number
     serviceId: number
     service?: Service
-    serviceReservationId: number
-    serviceReservation?: ServiceReservation
+    serviceReservationId: number | null
+    serviceReservation?: ServiceReservation | null
     timeSlotId: number
     timeSlot?: TimeSlot | null
     discounts?: ItemDiscount[]

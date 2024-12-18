@@ -42,9 +42,13 @@ const getServiceCartItemSubItems = async (cartItem: ServiceCartItem): Promise<st
     const serviceResponse = await ServiceApi.getById(cartItem.serviceId)
     if (!serviceResponse.result) return serviceResponse.error || 'Failed to get service'
     const service = serviceResponse.result
-    const reservationResponse = await ServiceReservationApi.getReservationById(cartItem.serviceReservationId)
-    if (!reservationResponse.result) return reservationResponse.error || 'Failed to get reservation'
-    const reservation = reservationResponse.result
+    let multivalueReservation = null
+    if (cartItem.serviceReservationId) {
+        const reservationResponse = await ServiceReservationApi.getReservationById(cartItem.serviceReservationId)
+        if (!reservationResponse.result) return reservationResponse.error || 'Failed to get reservation'
+        multivalueReservation = reservationResponse.result
+    }
+    const reservation = multivalueReservation
     let multivalueTimeSlot = null
     if (cartItem.timeSlotId) {
         const timeSlotResponse = await TimeSlotApi.getTimeSlotById(cartItem.timeSlotId)
