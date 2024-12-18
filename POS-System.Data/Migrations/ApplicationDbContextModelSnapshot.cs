@@ -631,7 +631,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6358)
+                            Version = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7646)
                         },
                         new
                         {
@@ -643,7 +643,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6360)
+                            Version = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7648)
                         },
                         new
                         {
@@ -1198,28 +1198,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6306)
+                            StartTime = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7612)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6311)
+                            StartTime = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7616)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6313)
+                            StartTime = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7617)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6314)
+                            StartTime = new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7618)
                         });
                 });
 

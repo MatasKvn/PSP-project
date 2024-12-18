@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace POS_System.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Inig : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -610,8 +610,8 @@ namespace POS_System.Data.Migrations
                 values: new object[,]
                 {
                     { 1, "Desc1", null, true, true, 1, null, 12, new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6358) },
-                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6360) },
+                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7646) },
+                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7648) },
                     { 4, "Desc1 Update", null, true, true, 1, null, 18, new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -676,10 +676,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6306) },
-                    { 2, 1, true, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6311) },
-                    { 3, 2, false, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6313) },
-                    { 4, 3, true, new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6314) }
+                    { 1, 1, true, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7612) },
+                    { 2, 1, true, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7616) },
+                    { 3, 2, false, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7617) },
+                    { 4, 3, true, new DateTime(2024, 12, 18, 10, 18, 2, 601, DateTimeKind.Utc).AddTicks(7618) }
                 });
 
             migrationBuilder.InsertData(
