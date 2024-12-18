@@ -29,7 +29,7 @@ export default class TimeSlotApi {
         }
 
         const values = response.result.results.filter(
-            (timeSlot: TimeSlot) => timeSlot.employeeVersionId === employeeId && timeSlot.isAvailable === isAvailable
+            (timeSlot: TimeSlot) => timeSlot.employeeVersionId === employeeId && timeSlot.isAvailable === isAvailable && new Date(timeSlot.startTime) > new Date()
         );
     
         return Promise.resolve({ result: values });

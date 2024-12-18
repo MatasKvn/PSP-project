@@ -631,7 +631,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6358)
+                            Version = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(292)
                         },
                         new
                         {
@@ -643,7 +643,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6360)
+                            Version = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(294)
                         },
                         new
                         {
@@ -1083,7 +1083,7 @@ namespace POS_System.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
-                    b.Property<int>("TimeSlotId")
+                    b.Property<int?>("TimeSlotId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("isCancelled")
@@ -1208,28 +1208,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6306)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(240)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6311)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(243)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6313)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(244)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6314)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(244)
                         });
                 });
 
@@ -1471,9 +1471,7 @@ namespace POS_System.Data.Migrations
 
                     b.HasOne("POS_System.Domain.Entities.TimeSlot", "TimeSlot")
                         .WithOne("ServiceReservation")
-                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId");
 
                     b.Navigation("CartItem");
 

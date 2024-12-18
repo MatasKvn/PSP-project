@@ -7,7 +7,7 @@ import Table from '@/components/shared/Table'
 import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
-import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction } from '@/types/models'
+import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction, TimeSlot } from '@/types/models'
 import { useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
@@ -72,7 +72,8 @@ const CartPage = (props: Props) => {
         cartItems,
         errorMsg,
         isLoading: isCartItemsLoading,
-        refetchCartItems
+        refetchCartItems,
+        setCartItems
     } = useCartItems(cartId, pageNumber)
 
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
@@ -80,6 +81,7 @@ const CartPage = (props: Props) => {
     const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('none')
     const [cartDiscount, setCartDiscount] = useState<number>(0)
     const [appliedTip, setAppliedTip] = useState<number>(0);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>()
 
     if (!isCartLoading && !cart) return null
 
@@ -159,7 +161,7 @@ const CartPage = (props: Props) => {
             { name: 'Deconste', key: 'deconste' },
         ]
     const serviceRows = serviceItems.map((item) => {
-        const startTime = new Date(item.timeSlot.startTime)
+        const startTime = new Date(item.timeSlot.startTime).toLocaleDateString()
         const price = item.service.price / 100;
         const totalVal = item.quantity * price;
         const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;
@@ -169,7 +171,7 @@ const CartPage = (props: Props) => {
             name: item.service?.name || '',
             quantity: item.quantity,
             price,
-            time: `${startTime.getMonth() + 1}/${startTime.getDate()} ${startTime.toLocaleTimeString()}`,
+            time: startTime,
             totalVal,
             discounts,
             taxes,
@@ -287,20 +289,18 @@ const CartPage = (props: Props) => {
             return
         }
         const response = await CartItemApi.createCartItem({
-                cartId,
-                type: 'service',
-                quantity: 1,
-                serviceVersionId: serviceId,
-            })
+            cartId,
+            type: 'service',
+            quantity: 1,
+            serviceVersionId: Number(serviceId)
+        })
+        console.log("serviceCreate resp: ", response.result)
         if (!response.result) {
             console.log(response.error)
             return
         }
-        
-        const cartItemResponse = response.result
-
-        //const cartItemId = cartItemResponse.cartItemId;
-        //handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
+        const cartItemId = response.result.id
+        handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
         handleTimeSlotUpdate(timeSlotId)
         refetchCartItems()
         sideDrawerRef.current?.close()
@@ -329,7 +329,7 @@ const CartPage = (props: Props) => {
             console.log(response.error);
             return;
         }
-
+        setSelectedTimeSlot(response.result)
         const timeSlot = response.result;
         console.log("timeSlot: ", response.result)
         if (!timeSlot) {

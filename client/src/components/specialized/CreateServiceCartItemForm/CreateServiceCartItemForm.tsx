@@ -2,15 +2,13 @@ import Button from '@/components/shared/Button';
 import { useServices } from '@/hooks/services.hook';
 import React, { useEffect, useState } from 'react';
 import ServicesView from '../ServicesView';
-import { Service, ServiceReservation, TimeSlot } from '@/types/models';
+import { Service, TimeSlot } from '@/types/models';
 
 import styles from './CreateServiceCartItemView.module.scss';
 import PageChanger from '@/components/shared/PageChanger';
 import Table from '@/components/shared/Table';
 import { useTimeSlots } from '@/hooks/timeSlots.hook';
 import DynamicForm, { DynamicFormPayload } from '@/components/shared/DynamicForm';
-import { useServiceReservations } from '@/hooks/serviceReservations.hook';
-import ServiceReservationApi from '@/api/serviceReservation.api';
 import TimeSlotApi from '@/api/timeSlot.api';
 
 type Props = {
@@ -27,10 +25,7 @@ const CreateServiceCartItemForm = ({ onSubmit }: Props) => {
     const [step, setStep] = useState<'addService' | 'timeSlot' | 'customerInfo' | 'completed'>('addService')
     const { errorMsg, isLoading, services } = useServices(0);
     const [selectedService, setSelectedService] = useState<Service | undefined>()
-    const { timeSlots, setTimeSlots} = useTimeSlots(0)
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>()
-    const { serviceReservations, setServiceReservations } = useServiceReservations(0)
-    const [selectedReservation, setSelectedReservation] = useState<ServiceReservation | undefined>()
     const [filteredTimeSlots, setFilteredTimeSlots] = useState<TimeSlot[]>([]);
 
     useEffect(() => {
@@ -39,6 +34,8 @@ const CreateServiceCartItemForm = ({ onSubmit }: Props) => {
         const fetchTimeSlots = async () => {
             try {
                 let empId = selectedService.employeeId
+                if (!empId) return
+
                 const response = await TimeSlotApi.getAllTimeSlotsByEmployeeIdAndAvailability(empId, true)
                 if (response.result) {
                     setFilteredTimeSlots(response.result);
@@ -73,7 +70,7 @@ const CreateServiceCartItemForm = ({ onSubmit }: Props) => {
             timeSlotId: selectedTimeSlot.id,
             customerName: customerName,
             customerPhone: customerPhone
-         })
+        })
         cancelForm
     }
 

@@ -67,7 +67,7 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
             startTime: new Date(startTime),
             isAvailable: isAvailableValue,
         })
-
+        console.log("slot resp: ", response.result)
         if (!response.result) {
             console.error(response.error || 'Failed to update the TimeSlot');
             return;
@@ -137,13 +137,6 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
         )
     }
 
-    const dummyTimeSlotRow = {
-        id: 0,
-        employeeVersionId: 0,
-        startTime: new Date(),
-        isAvailable: '',
-        edit: ''
-    }
     const rows = timeSlots.map((timeSlot) => ({
         ...timeSlot,
         startTime: new Date(timeSlot.startTime).toLocaleString(),

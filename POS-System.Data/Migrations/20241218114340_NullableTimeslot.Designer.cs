@@ -12,8 +12,8 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241217222657_Inig")]
-    partial class Inig
+    [Migration("20241218114340_NullableTimeslot")]
+    partial class NullableTimeslot
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -634,7 +634,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6358)
+                            Version = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(292)
                         },
                         new
                         {
@@ -646,7 +646,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6360)
+                            Version = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(294)
                         },
                         new
                         {
@@ -933,6 +933,9 @@ namespace POS_System.Data.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("integer");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ImageURL")
                         .IsRequired()
                         .HasColumnType("text");
@@ -968,6 +971,7 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             Description = "S1 desc",
                             Duration = 45,
+                            EmployeeId = 1,
                             ImageURL = "",
                             IsDeleted = false,
                             Name = "Service1",
@@ -980,6 +984,7 @@ namespace POS_System.Data.Migrations
                             Id = 2,
                             Description = "S2 desc",
                             Duration = 25,
+                            EmployeeId = 2,
                             ImageURL = "",
                             IsDeleted = true,
                             Name = "Service2",
@@ -992,6 +997,7 @@ namespace POS_System.Data.Migrations
                             Id = 3,
                             Description = "S3 desc",
                             Duration = 10,
+                            EmployeeId = 2,
                             ImageURL = "",
                             IsDeleted = true,
                             Name = "Service3",
@@ -1004,6 +1010,7 @@ namespace POS_System.Data.Migrations
                             Id = 4,
                             Description = "S2 v2 desc",
                             Duration = 40,
+                            EmployeeId = 3,
                             ImageURL = "",
                             IsDeleted = false,
                             Name = "Service2 v2",
@@ -1079,8 +1086,11 @@ namespace POS_System.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
-                    b.Property<int>("TimeSlotId")
+                    b.Property<int?>("TimeSlotId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("isCancelled")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -1201,28 +1211,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6306)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(240)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6311)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(243)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6313)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(244)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 17, 22, 26, 56, 475, DateTimeKind.Utc).AddTicks(6314)
+                            StartTime = new DateTime(2024, 12, 18, 11, 43, 39, 818, DateTimeKind.Utc).AddTicks(244)
                         });
                 });
 
@@ -1464,9 +1474,7 @@ namespace POS_System.Data.Migrations
 
                     b.HasOne("POS_System.Domain.Entities.TimeSlot", "TimeSlot")
                         .WithOne("ServiceReservation")
-                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId");
 
                     b.Navigation("CartItem");
 

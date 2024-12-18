@@ -26,13 +26,20 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
         const fetchRows = async () => {
             const updatedReservations = await Promise.all(
                 serviceReservations.map(async (reservation) => {
-                    const response = await TimeSlotApi.getTimeSlotStartTime(reservation.timeSlotId)
+                    let timeSlot = 'N/A'
+                    if (reservation.timeSlotId){
+                        const response = await TimeSlotApi.getTimeSlotStartTime(reservation.timeSlotId)
+                        if (!response.result) {
+                            console.error(response.result)
+                            return
+                        }
+
+                        timeSlot = response.result.toLocaleTimeString()
+                    }
 
                     return {
                         ...reservation,
-                        timeSlotId: response.result
-                            ? new Date(response.result).toLocaleString()
-                            : 'N/A',
+                        timeSlotId: timeSlot,
                         bookingTime: new Date(reservation.bookingTime).toLocaleString(),
                         isCancelled: reservation.isCancelled ? 'Yes' : 'No',
                         actions: reservation.isCancelled ? (
@@ -59,7 +66,6 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
             return
         }
 
-        // Prevent redundant cancellation
         if (selectedReservation.isCancelled) {
             console.log("Reservation is already cancelled")
             return
@@ -70,13 +76,14 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
         const response = await ServiceReservationApi.update({
             id: selectedReservation.id,
             cartItemId: Number(selectedReservation.cartItemId),
-            timeSlotId: selectedReservation.timeSlotId,
+            // @ts-ignore
+            timeSlotId: null,
             customerName: selectedReservation.customerName,
             customerPhone: selectedReservation.customerPhone,
             bookingTime: selectedReservation.bookingTime,
             isCancelled: true,
         })
-
+        console.log(response)
         if (!response.result) {
             console.error(response.error || 'Failed to update the reservation')
             return
@@ -84,7 +91,10 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
 
         console.log("Reservation cancelled successfully")
 
-        refetch()
+        setServiceReservations([
+            ...serviceReservations.filter((reservation) => reservation.id !== response.result?.id),
+            response.result
+        ])
     }
 
     const columns = [

@@ -14,11 +14,11 @@ namespace POS_System.Domain.Entities
         [ForeignKey("CartItem")]
         public int CartItemId { get; set; }
         [ForeignKey("Timeslot")]
-        public int TimeSlotId { get; set; }
+        public int? TimeSlotId { get; set; }
 
         //Navigation properties
         public virtual CartItem CartItem { get; set; }
-        public virtual TimeSlot TimeSlot { get; set; }
+        public virtual TimeSlot? TimeSlot { get; set; }
 
         //Fields
         public required DateTime BookingTime { get; set; }
