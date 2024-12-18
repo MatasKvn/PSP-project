@@ -1,5 +1,3 @@
-using POS_System.Common.Enums;
-
 namespace POS_System.Business.Dtos.Request
 {
     public record CashRequest(

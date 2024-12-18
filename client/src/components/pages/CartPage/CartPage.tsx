@@ -114,7 +114,7 @@ const CartPage = (props: Props) => {
         const totalVal = item.quantity * (price + modificationsPrice)
         const discounts = calculateDiscountsValue(item, (item.product.price + calculateProductModificationsValue(item)) * item.quantity) / 100
         const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100
-        const netPrice = totalVal - discounts - taxes
+        const netPrice = totalVal - discounts + taxes
         return {
             name: name,
             quantity: item.quantity,
@@ -479,7 +479,7 @@ const CartPage = (props: Props) => {
         }
     }
 
-    const handleCartCheckout = () => {
+    const handleCartCheckout = async () => {
         const splitCountValue = splitCountRef.current?.value.trim();
         const splitCountParsed = splitCountValue ? parseInt(splitCountValue) : null;
 
@@ -502,16 +502,17 @@ const CartPage = (props: Props) => {
                 cartItems: cartItems.map(item => {
                     if (item.type === "product") {
                         const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
-                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                        const afterTax = Math.round(afterDiscount - calculateTaxesValue(item, afterDiscount));
                         const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
                         return cartItem;
                     } else {
                         const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
-                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                        const afterTax = Math.round(afterDiscount - calculateTaxesValue(item, afterDiscount));
                         return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
                     }
                 })
             };
+            console.log(body);
             handlePayment(body);
         } else {
             if (totalPrice - cartDiscount < 30) {
@@ -526,18 +527,18 @@ const CartPage = (props: Props) => {
                     cartItems: cartItems.map(item => {
                         if (item.type === "product") {
                             const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
-                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                            const afterTax = Math.round(afterDiscount - calculateTaxesValue(item, afterDiscount));
                             const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
                             return cartItem;
                         } else {
                             const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
-                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                            const afterTax = Math.round(afterDiscount - calculateTaxesValue(item, afterDiscount));
                             return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
                         }
                     })
                 };
 
-                handleSplitPaymentInit(body);
+                await handleSplitPaymentInit(body);
             }
         }
     }
