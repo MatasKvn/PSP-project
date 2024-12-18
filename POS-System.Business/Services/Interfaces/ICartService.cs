@@ -18,5 +18,7 @@ namespace POS_System.Business.Services.Interfaces
         Task UpdateCartStatusAsync(int id, CartStatusEnum status, CancellationToken cancellationToken = default);
 
         Task<CartDiscountResponse> ApplyDiscountForCartAsync(int id, ApplyDiscountRequest discountRequest, CancellationToken cancellationToken);
+    
+        Task<CartDiscountResponse?> GetCartDiscountAsync(int id, CancellationToken cancellationToken);
     }
 }

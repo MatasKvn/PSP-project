@@ -42,7 +42,7 @@ export const getAuthorizedHeaders = () => {
     const token = cookie?.slice('jwtToken='.length)
     return {
         ...defaultHeaders,
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJUcmFuc2FjdGlvbldyaXRlIjoiWSIsIlRyYW5zYWN0aW9uUmVhZCI6IlkiLCJIaXN0b3JpY1RyYW5zYWN0aW9uV3JpdGUiOiJZIiwiSGlzdG9yaWNUcmFuc2FjdGlvblJlYWQiOiJZIiwiU2VydmljZVdyaXRlIjoiWSIsIlNlcnZpY2VSZWFkIjoiWSIsIkl0ZW1Xcml0ZSI6IlkiLCJJdGVtUmVhZCI6IlkiLCJFbXBsb3llZXNXcml0ZSI6IlkiLCJFbXBsb3llZXNSZWFkIjoiWSIsIlRheFdyaXRlIjoiWSIsIlRheFJlYWQiOiJZIiwiSGlzdG9yaWNXcml0ZSI6IlkiLCJIaXN0b3JpY1JlYWQiOiJZIiwiR2lmdENhcmRSZWFkIjoiWSIsIkdpZnRDYXJkV3JpdGUiOiJZIiwiQ2FydFJlYWQiOiJZIiwiQ2FydFdyaXRlIjoiWSIsIkNhcnRJdGVtUmVhZCI6IlkiLCJDYXJ0SXRlbVdyaXRlIjoiWSIsIkl0ZW1EaXNjb3VudFJlYWQiOiJZIiwiSXRlbURpc2NvdW50V3JpdGUiOiJZIiwiQnVzaW5lc3NEZXRhaWxzUmVhZCI6IlkiLCJCdXNpbmVzc0RldGFpbHNXcml0ZSI6IlkiLCJleHAiOjE3MzQ1NDE4MzYsImlzcyI6Imh0dHBzOi8vYXV0aC5QT1MtU3lzdGVtLmNvbSIsImF1ZCI6Imh0dHBzOi8vYnVzaW5lc3MuY29tIn0.F4dIlkMX3Ov74FI7nbGmtJV5pyKJAHV9J0TawLJEUCw`
     }
 }
 

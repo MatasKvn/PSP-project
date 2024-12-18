@@ -8,7 +8,7 @@ import { useCartItems } from '@/hooks/cartItems.hook'
 import { useCart } from '@/hooks/carts.hook'
 import { TableColumnData } from '@/types/components/table'
 import { RequiredCartItem, CartStatusEnum, ProductCartItem, ServiceCartItem, ProductModification, RequiredProductCartItem, RequiredServiceCartItem, TransactionStatusEnum, Transaction, TimeSlot } from '@/types/models'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CreateProductCartItemForm from '../../specialized/CreateProductCartItemForm.tsx/CreateProductCartItemForm'
 import CreateServiceCartItemView from '@/components/specialized/CreateServiceCartItemForm'
 import DynamicForm from '@/components/shared/DynamicForm'
@@ -20,7 +20,8 @@ import { loadStripe } from '@stripe/stripe-js'
 import PaymentApi from '@/api/payment.api'
 import ServiceReservationApi from '@/api/serviceReservation.api'
 import TimeSlotApi from '@/api/timeSlot.api'
-import { CashCheckoutBody, DateTimeWithMicroseconds, FullCheckoutBody, GiftCardDetails, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction, RefundBody } from '@/types/payment'
+import { CashCheckoutBody, CheckoutCartItem, DateTimeWithMicroseconds, FullCheckoutBody, GiftCardDetails, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction, RefundBody } from '@/types/payment'
+import { useCartDiscount } from '@/hooks/cartDiscount.hook'
 
 type Props = {
     cartId: number
@@ -63,9 +64,9 @@ const calculateTaxesValue = (cartItem: RequiredCartItem, discountedValue: number
 
 const CartPage = (props: Props) => {
     const splitCountRef = useRef<HTMLInputElement | null>(null);
-
+    
     const { cartId, pageNumber } = props
-
+    
     const { cart, setCart, isLoading: isCartLoading, isCartOpen, setIsCartOpen } = useCart(cartId)
     const { cartTransactions, setCartTransactions, isLoading: isCartTransactionsLoading} = useCartTransactions(cartId)
     const {
@@ -75,18 +76,17 @@ const CartPage = (props: Props) => {
         refetchCartItems,
         setCartItems
     } = useCartItems(cartId, pageNumber)
-
+    
     const sideDrawerRef = useRef<SideDrawerRef | null>(null)
     type SideDrawerContentType = 'createProduct' | 'createService' | 'none'
     const [sideDrawerContentType, setSideDrawerContentType] = useState<SideDrawerContentType>('none')
-    const [cartDiscount, setCartDiscount] = useState<number>(0)
     const [appliedTip, setAppliedTip] = useState<number>(0);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>()
 
     if (!isCartLoading && !cart) return null
 
-    const handleCartItemDeconste = async (cartItemId: number) => {
-        const response = await CartItemApi.deconsteCartItem(cartItemId)
+    const handleCartItemDelete = async (cartItemId: number) => {
+        const response = await CartItemApi.deleteCartItem(cartId, cartItemId)
         if (!response.result) {
             console.log(response.error)
             return
@@ -105,7 +105,7 @@ const CartPage = (props: Props) => {
         { name: 'Discounts', key: 'discounts' },
         { name: 'Taxes', key: 'taxes' },
         { name: 'Net price', key: 'netPrice' },
-        { name: 'Deconste', key: 'deconste' }
+        { name: 'Delete', key: 'delete' }
     ]
     const productRows = productItems.map((item) => {
         const { name } = item.product
@@ -120,11 +120,11 @@ const CartPage = (props: Props) => {
             quantity: item.quantity,
             modifications: item.productModifications.map((modification) => modification.name).join(', '),
             modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
-            deconste: (
+            delete: (
                 <Button
-                    onClick={() => handleCartItemDeconste(item.id)}
+                    onClick={() => handleCartItemDelete(item.id)}
                 >
-                    Deconste
+                    Delete
                 </Button>
             )
         }
@@ -158,7 +158,7 @@ const CartPage = (props: Props) => {
             { name: 'Discounts', key: 'discounts' },
             { name: 'Taxes', key: 'taxes' },
             { name: 'Net price', key: 'netPrice' },
-            { name: 'Deconste', key: 'deconste' },
+            { name: 'Delete', key: 'delete' },
         ]
 
     const serviceRows = serviceItems.map((item) => {
@@ -181,11 +181,11 @@ const CartPage = (props: Props) => {
             discounts,
             taxes,
             netPrice,
-            deconste: (
+            delete: (
                 <Button
-                    onClick={() => handleCartItemDeconste(item.id)}
+                    onClick={() => handleCartItemDelete(item.id)}
                 >
-                    Deconste
+                    Delete
                 </Button>
             )
         }
@@ -209,8 +209,10 @@ const CartPage = (props: Props) => {
         netPrice: serviceRows.reduce((acc, row) => acc + row.netPrice, 0).toFixed(2),
     }
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
+    
+    let totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0);
 
-    const totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0) - cartDiscount;
+    const { cartDiscount, setCartDiscount } = useCartDiscount(totalPrice, cartId);
     const cartTransactionTable = () => {
         const cartTransactionColumns = [
             { name: 'Id', key: 'id' },
@@ -228,7 +230,7 @@ const CartPage = (props: Props) => {
 
         const cartTransactionRows = cartTransactions.map(transaction => ({
             id: transaction.id,
-            amount: `${transaction.amount.toFixed(2)} €`,
+            amount: `${(transaction.amount / 100).toFixed(2)} €`,
             tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
             card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
@@ -379,7 +381,7 @@ const CartPage = (props: Props) => {
                 ? totalPrice * response.result.value
                 : response.result.value;
 
-            setCartDiscount(discount);
+            setCartDiscount(discount / 100);
         }
     }
 
@@ -490,13 +492,21 @@ const CartPage = (props: Props) => {
         if (splitCountParsed === 1 || splitCountValue === '') {
             console.log('Triggering single checkout');
             const body: FullCheckoutBody = {
-                cartId: 1,
-                employeeId: 6,
+                cartId: cartId,
+                employeeId: cart?.employeeVersionId as number,
                 tip: appliedTip,
-                cartItems: [
-                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
-                    { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
-                ]
+                cartItems: cartItems.map(item => {
+                    if (item.type === "product") {
+                        const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
+                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                        const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
+                        return cartItem;
+                    } else {
+                        const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
+                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                        return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
+                    }
+                })
             };
             handlePayment(body);
         } else {
@@ -505,14 +515,22 @@ const CartPage = (props: Props) => {
             } else {
                 console.log('Triggering multiple checkout');
                 const body: InitPartialCheckoutBody = {
-                    cartId: 1,
-                    employeeId: 6,
+                    cartId: cartId,
+                    employeeId: cart?.employeeVersionId as number,
                     tip: appliedTip,
                     paymentCount: splitCountParsed,
-                    cartItems: [
-                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" },
-                        { name: "a", description: "a", price: 10000, quantity: 2, imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmCy16nhIbV3pI1qLYHMJKwbH2458oiC9EmA&s" }
-                    ]
+                    cartItems: cartItems.map(item => {
+                        if (item.type === "product") {
+                            const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
+                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                            const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
+                            return cartItem;
+                        } else {
+                            const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
+                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
+                            return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
+                        }
+                    })
                 };
 
                 handleSplitPaymentInit(body);
@@ -572,7 +590,15 @@ const CartPage = (props: Props) => {
             return;
         }
         if (response.result&& Array.isArray(response.result.transactions)) {
-            let transactions = response.result.transactions; // Access the transactions array
+            let transactions = response.result.transactions;
+            transactions.map(tr => {
+                let t = {...tr, amount: tr.amount / 100}; 
+
+                if (tr.tip !== undefined)
+                    t.tip = tr.tip;
+
+                return t;
+            });
             setCartTransactions((prev) => [...prev, ...transactions]);
         }
     }
@@ -623,8 +649,8 @@ const CartPage = (props: Props) => {
                     <div>
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
-                        <p>{`Tip: ${appliedTip.toFixed(2)} €`}</p>
-                        <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip).toFixed(2)} €`}</p>
+                        <p>{`Tip: ${(appliedTip / 100).toFixed(2)} €`}</p>
+                        <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip / 100).toFixed(2)} €`}</p>
                         <div className={styles.split_checkout}>
                             <Button
                                 onClick={handleCashCheckout}
