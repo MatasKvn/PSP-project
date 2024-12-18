@@ -1,5 +1,6 @@
 import { defaultHeaders } from "@/constants/api";
 import { FetchParams, FetchResponse } from "@/types/fetch"
+import { getCookie } from 'cookies-next/client'
 
 async function fetchWrapper({ url, method, headers, body }: FetchParams): Promise<FetchResponse<any>> {
     try {
@@ -38,8 +39,7 @@ async function fetchWrapper({ url, method, headers, body }: FetchParams): Promis
 export { fetchWrapper as fetch }
 
 export const getAuthorizedHeaders = () => {
-    const cookie = document.cookie.split(';').find(x => x.startsWith('jwtToken='))
-    const token = cookie?.slice('jwtToken='.length)
+    const token = getCookie('jwtToken')
     return {
         ...defaultHeaders,
         Authorization: `Bearer ${token}`

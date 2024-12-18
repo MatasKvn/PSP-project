@@ -8,13 +8,12 @@ import styles from './LoginPage.module.scss'
 import AuthApi from '@/api/auth.api'
 import { useRouter } from 'next/navigation'
 import { GetPageUrl } from '@/constants/route'
-import { useCookies } from 'next-client-cookies'
 import { setEmployeeId } from '@/utils/employeeId'
+import { setCookie } from 'cookies-next/client'
 
 const LoginPage = () => {
     const [errorMsg, setErrorMsg] = useState<string>('')
     const router = useRouter()
-    const cookies = useCookies()
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
@@ -28,7 +27,7 @@ const LoginPage = () => {
             return
         }
         const { jwtToken, id } = response.result!
-        cookies.set('jwtToken', jwtToken, { secure: true, sameSite: 'strict' })
+        setCookie('jwtToken', jwtToken, { secure: true, sameSite: 'strict' })
         setEmployeeId(id)
         router.push(GetPageUrl.carts(0))
     }
