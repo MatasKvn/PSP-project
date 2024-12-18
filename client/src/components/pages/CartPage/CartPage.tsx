@@ -211,8 +211,12 @@ const CartPage = (props: Props) => {
     const servicesTableRows = [...serviceRowsStringified, summaryRow]
     
     let totalPrice = productRows.reduce((acc, row) => acc + row.netPrice, 0) + serviceRows.reduce((acc, row) => acc + row.netPrice, 0);
-
     const { cartDiscount, setCartDiscount } = useCartDiscount(totalPrice, cartId);
+
+    if (!isNaN(cartDiscount)) {
+        totalPrice -= cartDiscount;
+    }
+
     const cartTransactionTable = () => {
         const cartTransactionColumns = [
             { name: 'Id', key: 'id' },
@@ -650,7 +654,7 @@ const CartPage = (props: Props) => {
                         <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
                         <p>{`Tip: ${(appliedTip / 100).toFixed(2)} €`}</p>
-                        <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip / 100).toFixed(2)} €`}</p>
+                        <p>{`Total: ${((totalPrice) + appliedTip / 100).toFixed(2)} €`}</p>
                         <div className={styles.split_checkout}>
                             <Button
                                 onClick={handleCashCheckout}

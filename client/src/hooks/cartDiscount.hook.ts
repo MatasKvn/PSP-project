@@ -16,9 +16,10 @@ export const useCartDiscount = (totalPrice: number, cartId: number) => {
             const discount = response.result.isPercentage
                 ? totalPrice * response.result.value
                 : response.result.value;
-
-            setCartDiscount(discount / 100);
-            console.log("aaaa " + totalPrice);
+            
+            if (!isNaN){
+                setCartDiscount(discount / 100);
+            }
         }
     
         handleFetch();
