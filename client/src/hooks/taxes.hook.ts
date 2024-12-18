@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Tax } from '@/types/models'
+import { Product, Service, Tax } from '@/types/models'
 import PagedResponseMapper from '@/mappers/pagedResponse.mapper'
 import TaxApi from '@/api/tax.api'
+import ProductApi from '@/api/product.api'
+import ServiceApi from '@/api/service.api'
 
 export const useTaxes = (pageNumber: number) => {
     const [taxes, setTaxes] = useState<Tax[]>([])
@@ -24,4 +26,44 @@ export const useTaxes = (pageNumber: number) => {
     }, [pageNumber])
 
     return { taxes, setTaxes, isLoading, errorMsg }
+}
+
+export const useTaxedItems = (selectedTax: Tax | undefined) => {
+    const [appliedProducts, setAppliedProducts] = useState<Product[]>([])
+    const [appliedServices, setAppliedServices] = useState<Service[]>([])
+    const [errorMsg, setErrorMsg] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    useEffect(() => {
+        if (!selectedTax) return
+        const getSelectedTaxItems = async () => {
+            const responses = await Promise.all([
+                ProductApi.getProductsByTaxId(selectedTax.id),
+                ServiceApi.getServicesByTaxId(selectedTax.id)
+            ])
+            const { result: products, error: productsErr } = responses[0]
+            const { result: services, error: servicesErr } = responses[1]
+            if (!products) {
+                setErrorMsg(productsErr!)
+                setIsLoading(false)
+                return
+            }
+            if (!services) {
+                setErrorMsg(servicesErr!)
+                setIsLoading(false)
+                return
+            }
+            setAppliedProducts(products)
+            setAppliedServices(services)
+        }
+        getSelectedTaxItems()
+    }, [selectedTax])
+
+    return {
+        appliedProducts,
+        appliedServices,
+        setAppliedProducts,
+        setAppliedServices,
+        isLoading,
+        errorMsg
+    }
 }

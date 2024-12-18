@@ -1,3 +1,5 @@
+using POS_System.Common.Enums;
+
 namespace POS_System.Business.Dtos.Request
 {
     public record EmployeeRequest(
@@ -6,6 +8,7 @@ namespace POS_System.Business.Dtos.Request
         DateOnly BirthDate,
         string UserName,
         string Email,
-        string PhoneNumber
+        string PhoneNumber,
+        int RoleId
     );
 }

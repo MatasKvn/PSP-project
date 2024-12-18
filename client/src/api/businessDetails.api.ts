@@ -1,13 +1,8 @@
 import { apiBaseUrl, defaultHeaders } from '@/constants/api'
 import { BusinessDetails } from '@/types/models'
-import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
+import { fetch, getAuthorizedHeaders, sanitizeData } from '@/utils/fetch'
 import { HTTPMethod, FetchResponse } from '@/types/fetch'
 
-const sanitizeData = (data: any) => {
-    return Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [key, value === undefined ? null : value])
-    )
-}
 
 export default class BusinessDetailsApi {
     static async getBusinessDetails(): Promise<FetchResponse<BusinessDetails>> {

@@ -72,7 +72,7 @@ namespace POS_System.Api.Controllers
         [Authorize("TaxRead")]
         public async Task<IActionResult> GetTaxesLinkedToItemId(int id, [FromQuery] bool isProduct, [FromQuery] DateTime? timeStamp, CancellationToken cancellationToken)
         {
-            var taxes = await _taxService.GetTaxesLinkedToItemId(id, isProduct, timeStamp, cancellationToken); 
+            var taxes = await _taxService.GetTaxesLinkedToItemId(id, isProduct, timeStamp, cancellationToken);
             return Ok(taxes);
         }
     }

@@ -18,9 +18,9 @@ import styles from './CartPage.module.scss'
 import { useCartTransactions } from '../../../hooks/transactions.hook'
 import { loadStripe } from '@stripe/stripe-js'
 import PaymentApi from '@/api/payment.api'
-import { DateTimeWithMicroseconds, FullCheckoutBody, InitPartialCheckoutBody, PartialCheckoutBody, RefundBody } from '@/types/payment'
 import ServiceReservationApi from '@/api/serviceReservation.api'
 import TimeSlotApi from '@/api/timeSlot.api'
+import { CashCheckoutBody, DateTimeWithMicroseconds, FullCheckoutBody, GiftCardDetails, InitPartialCheckoutBody, PartialCheckoutBody, PartialTransaction, RefundBody } from '@/types/payment'
 
 type Props = {
     cartId: number
@@ -34,27 +34,31 @@ const calculateProductModificationsValue = (cartItem: RequiredCartItem) => {
     return 0
 }
 
-const calculateDiscountsValue = (cartItem: RequiredCartItem) => {
-    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
-    const productModificaitonValue = calculateProductModificationsValue(cartItem)
-    const netPrice = (value + productModificaitonValue) * cartItem.quantity
-    return cartItem.discounts.reduce((acc, discount) => {
-        if (!discount.isPercentage) {
-            return acc + discount.value
-        }
-        return acc + netPrice * discount.value / 100
-    }, 0)
+const calculateDiscountsValue = (cartItem: RequiredCartItem, discountableValue: number) => {
+    const percentageDiscount = cartItem.discounts.reduce((acc, discount) => (
+        discount.isPercentage ? acc + discount.value : acc
+    ), 0)
+    const flatDiscount = cartItem.discounts.reduce((acc, discount) => (
+        discount.isPercentage ? acc : acc + discount.value
+    ), 0)
+
+    const discountValue = flatDiscount + ((discountableValue - flatDiscount) * percentageDiscount / 10000)
+    if (discountValue < 0) return 0
+    return discountValue
+
 }
 
-const calculateTaxesValue = (cartItem: RequiredCartItem) => {
-    const value = cartItem.type === 'product' ? cartItem.product?.price : cartItem.service?.price
-    const taxableValue = (value + calculateProductModificationsValue(cartItem)) * cartItem.quantity
-    return cartItem.taxes.reduce((acc, tax) => {
-        if (tax.isPercentage) {
-            return acc + taxableValue * tax.rate / 100
-        }
-        return acc + tax.rate
-    }, 0)
+const calculateTaxesValue = (cartItem: RequiredCartItem, discountedValue: number) => {
+    const percentageTax = cartItem.taxes.reduce((acc, discount) => (
+        discount.isPercentage ? acc + discount.rate : acc
+    ), 0)
+    const flatTax = cartItem.taxes.reduce((acc, discount) => (
+        discount.isPercentage ? acc : acc + discount.rate
+    ), 0)
+
+    const taxValue = flatTax + ((discountedValue - flatTax) * percentageTax / 10000)
+    if (taxValue < 0) return 0
+    return taxValue
 }
 
 const CartPage = (props: Props) => {
@@ -62,10 +66,8 @@ const CartPage = (props: Props) => {
 
     const { cartId, pageNumber } = props
 
-    const { cart, setCart, isLoading: isCartLoading } = useCart(cartId)
+    const { cart, setCart, isLoading: isCartLoading, isCartOpen, setIsCartOpen } = useCart(cartId)
     const { cartTransactions, setCartTransactions, isLoading: isCartTransactionsLoading} = useCartTransactions(cartId)
-
-    const isCartOpen = cart?.status === CartStatusEnum.IN_PROGRESS
     const {
         cartItems,
         errorMsg,
@@ -95,7 +97,7 @@ const CartPage = (props: Props) => {
         { name: 'Name', key: 'name' },
         { name: 'Quantity', key: 'quantity' },
         { name: 'Price', key: 'price' },
-        { name: 'Modification Ids', key: 'modifications' },
+        { name: 'Modifications', key: 'modifications' },
         { name: 'Modifications Total', key: 'modificationTotal' },
         { name: 'Total Value', key: 'totalVal' },
         { name: 'Discounts', key: 'discounts' },
@@ -106,15 +108,15 @@ const CartPage = (props: Props) => {
     const productRows = productItems.map((item) => {
         const { name } = item.product
         const price = item.product.price / 100
-        const modificationsPrice = calculateProductModificationsValue(item)
-        const totalVal = item.quantity * (item.product.price + modificationsPrice) / 100
-        const discounts = calculateDiscountsValue(item) / 100
-        const taxes = calculateTaxesValue(item) / 100
-        const netPrice = totalVal - discounts + taxes
+        const modificationsPrice = calculateProductModificationsValue(item) / 100
+        const totalVal = item.quantity * (price + modificationsPrice)
+        const discounts = calculateDiscountsValue(item, (item.product.price + calculateProductModificationsValue(item)) * item.quantity) / 100
+        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100
+        const netPrice = totalVal - discounts - taxes
         return {
             name: name,
             quantity: item.quantity,
-            modifications: item.productModifications.map((modification) => modification.id).join(', '),
+            modifications: item.productModifications.map((modification) => modification.name).join(', '),
             modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
             deconste: (
                 <Button
@@ -158,15 +160,20 @@ const CartPage = (props: Props) => {
         ]
     const serviceRows = serviceItems.map((item) => {
         const startTime = new Date(item.timeSlot.startTime)
+        const price = item.service.price / 100;
+        const totalVal = item.quantity * price;
+        const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;
+        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100;
+        const netPrice = totalVal - discounts - taxes;
         return {
-            name: item.service.name,
+            name: item.service?.name || '',
             quantity: item.quantity,
-            price: item.service?.price,
-            time: `${startTime.getMonth() + 1} ${startTime.getDay()} ${startTime.toLocaleTimeString()}`,
-            totalVal: item.quantity * (item.service?.price ? item.service.price : 0),
-            discounts: calculateDiscountsValue(item),
-            taxes: calculateTaxesValue(item),
-            netPrice: (item.quantity * (item.service?.price ? item.service.price : 0)) - calculateDiscountsValue(item) + calculateTaxesValue(item),
+            price,
+            time: `${startTime.getMonth() + 1}/${startTime.getDate()} ${startTime.toLocaleTimeString()}`,
+            totalVal,
+            discounts,
+            taxes,
+            netPrice,
             deconste: (
                 <Button
                     onClick={() => handleCartItemDeconste(item.id)}
@@ -218,14 +225,17 @@ const CartPage = (props: Props) => {
             tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
             card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
-                <Button onClick={async () => await handlePayment({ cartId: cartId, id: transaction.id })}>
-                    Pay by card
-                </Button>
-            ) : null,
-            cash_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
-                <Button>
-                    Pay by cash
-                </Button>
+                <DynamicForm
+                    inputs={{
+                        giftCardCode: { label: 'GiftCard', placeholder: 'Gift card:', type: 'string' },
+                        valueToSpend: { label: 'Value to spend', placeholder: 'Value to spend:', type: 'string' },
+                    }}
+                    onSubmit={async (formPayload) => await handlePayment({ cartId: cartId, id: transaction.id }, { formPayload: formPayload })}
+                >
+                    <DynamicForm.Button>
+                        Pay by card
+                    </DynamicForm.Button>
+                </DynamicForm>
             ) : null,
             refund_action: ((transaction.status === TransactionStatusEnum.SUCEEDED) && allTransactionsSucceededOrRefunded(cartTransactions)) || transaction.status === TransactionStatusEnum.CASH ? (
                 <Button onClick={async () => await handleRefund(transaction.id, { cartId: cartId, isCard: transaction.status === TransactionStatusEnum.SUCEEDED ? true : false })}>
@@ -254,15 +264,13 @@ const CartPage = (props: Props) => {
             return
         }
 
-        const response = await CartItemApi.createCartItem(
-            cartId,
-            {
+        const response = await CartItemApi.createCartItem({
                 type: 'product',
+                cartId,
                 quantity: quantityParsed,
                 productVersionId: productId,
                 variationIds: modificationIds,
-            }
-        )
+            })
         if (!response.result) {
             console.log(response.error)
             return
@@ -278,27 +286,21 @@ const CartPage = (props: Props) => {
             console.log('Invalid input')
             return
         }
-        const response = await CartItemApi.createCartItem(
-            cartId,
-            {
+        const response = await CartItemApi.createCartItem({
+                cartId,
                 type: 'service',
                 quantity: 1,
                 serviceVersionId: serviceId,
-            }
-        )
+            })
         if (!response.result) {
             console.log(response.error)
             return
         }
         
-        const cartItemResponse = await CartItemApi.getHighestCartItemIdByCartId(cartId)
-        if (!cartItemResponse.result) {
-            console.log(cartItemResponse.error);
-            return;
-        }
+        const cartItemResponse = response.result
 
-        const cartItemId = cartItemResponse.result;
-        handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
+        //const cartItemId = cartItemResponse.cartItemId;
+        //handleServiceReservationCreate(cartItemId, timeSlotId, customerName, customerPhone)
         handleTimeSlotUpdate(timeSlotId)
         refetchCartItems()
         sideDrawerRef.current?.close()
@@ -440,6 +442,32 @@ const CartPage = (props: Props) => {
         </div>
     )
 
+    const handleCashCheckout = async () => {
+        let body: CashCheckoutBody = {
+            cartId: cartId,
+            amount: 10000,
+            tip: appliedTip, // sita palikt ir kai sujungta bus
+            transactionRef: new Date().toISOString() // sita palikt ir kai sujungta bus
+        };
+
+        let response = await PaymentApi.cashCheckout(body);
+
+        if (response.error) {
+            alert("Cash transaction was not created.");
+            return;
+        }
+
+        if (response.result !== undefined) {
+            if (cartTransactions !== undefined) {
+                setCartTransactions(prev => [...prev, { ...response.result as Transaction, id: response.result!.id } ]);
+                setIsCartOpen(false);
+            } else {
+                console.log(response.result);
+                setCartTransactions([response.result]);
+            }
+        }
+    }
+
     const handleCartCheckout = () => {
         const splitCountValue = splitCountRef.current?.value.trim();
         const splitCountParsed = splitCountValue ? parseInt(splitCountValue) : null;
@@ -487,10 +515,28 @@ const CartPage = (props: Props) => {
         }
     }
 
-    const handlePayment = async (body: FullCheckoutBody | PartialCheckoutBody) => {
-        const response = 'employeeId' in body
+    const handlePayment = async (body: FullCheckoutBody | PartialCheckoutBody, giftCard?: { formPayload: FormPayload } ) => {
+        let giftCardDetails: GiftCardDetails | null = null;
+        
+        if (giftCard) {
+            const { giftCardCode, valueToSpend } = giftCard.formPayload; 
+            const valueAsInt = Number(valueToSpend);
+            
+            console.log(valueAsInt);
+
+            if (!isNaN(valueAsInt) && valueAsInt !== 0) {
+                giftCardDetails = {
+                    code: giftCardCode,
+                    valueToSpend: valueAsInt
+                };
+            }
+        }
+
+        let response = 'employeeId' in body
             ? await PaymentApi.fullCheckout(body as FullCheckoutBody)
-            : await PaymentApi.partialCheckout(body as PartialCheckoutBody);
+            : giftCardDetails === null
+                ? await PaymentApi.partialCheckout(body as PartialCheckoutBody)
+                : await PaymentApi.partialCheckout({...body, giftCard: giftCardDetails } as PartialCheckoutBody);
 
         if (response.error) {
             alert("Payment session was not created.");
@@ -519,6 +565,10 @@ const CartPage = (props: Props) => {
         if (response.error) {
             alert("Payments were not initialized.");
             return;
+        }
+        if (response.result&& Array.isArray(response.result.transactions)) {
+            let transactions = response.result.transactions; // Access the transactions array
+            setCartTransactions((prev) => [...prev, ...transactions]);
         }
     }
 
@@ -571,6 +621,12 @@ const CartPage = (props: Props) => {
                         <p>{`Tip: ${appliedTip.toFixed(2)} €`}</p>
                         <p>{`Total: ${((totalPrice - cartDiscount) + appliedTip).toFixed(2)} €`}</p>
                         <div className={styles.split_checkout}>
+                            <Button
+                                onClick={handleCashCheckout}
+                                disabled={isCartLoading || isCartItemsLoading || !isCartOpen}    
+                            >
+                                Cash
+                            </Button>
                             <Button
                                 onClick={handleCartCheckout}
                                 disabled={isCartLoading || isCartItemsLoading || !isCartOpen}

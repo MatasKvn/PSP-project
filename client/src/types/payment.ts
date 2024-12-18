@@ -1,5 +1,13 @@
+import { TransactionStatusEnum } from "./models";
 
 export type DateTimeWithMicroseconds = string;
+
+export type CashCheckoutBody = {
+    cartId: number,
+    amount: number,
+    tip?: number,
+    transactionRef: string
+}
 
 export type RefundBody = {
     cartId: number,
@@ -11,12 +19,16 @@ export type Checkout = {
     pubKey: string
 }
 
+export type PartialTransactions = {
+    transactions: PartialTransaction[]
+}
+
 export type PartialTransaction = {
-    id: string,
+    id: DateTimeWithMicroseconds,
     amount: number,
     tip?: number,
     transactionRef: string,
-    status: string
+    status: TransactionStatusEnum
 }
 
 export interface FullCheckoutBody {
@@ -41,4 +53,10 @@ export type CheckoutCartItem = {
 export interface PartialCheckoutBody {
     cartId: number,
     id: DateTimeWithMicroseconds
+    giftCard?: GiftCardDetails
+}
+
+export type GiftCardDetails = {
+    code: string,
+    valueToSpend: number
 }

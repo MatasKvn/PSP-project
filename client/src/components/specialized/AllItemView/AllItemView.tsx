@@ -16,6 +16,8 @@ export type SelectedItems = {
 }
 
 type Props = {
+    errorMsg?: string
+    isLoading?: boolean
     style?: CSSProperties
     className?: string
     headerText: string
@@ -27,6 +29,8 @@ type Props = {
 
 const AllItemView = (props: Props) => {
     const {
+        errorMsg,
+        isLoading,
         className,
         style,
         headerText,
@@ -75,6 +79,12 @@ const AllItemView = (props: Props) => {
         )
     }
 
+    const view = () => {
+        if (errorMsg) return <div>{errorMsg}</div>
+        if (isLoading) return <div>Loading...</div>
+        return itemView()
+    }
+
     return (
         <div>
             <div className={styles.header}>
@@ -87,7 +97,7 @@ const AllItemView = (props: Props) => {
                 className={className || styles.item_view_container}
                 style={style}
             >
-                {itemView()}
+                {view()}
                 <PageChanger
                     onClickNext={() => {
                         if (itemType === 'product') setProductPageNumber(productPageNumber + 1)

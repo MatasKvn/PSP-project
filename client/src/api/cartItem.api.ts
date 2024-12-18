@@ -1,106 +1,87 @@
-import CartItemMapper from '@/mappers/cartItem.mapper'
-import { TimeSlot, ServiceCartItem } from './../types/models'
-import { FetchResponse, PagedResponse } from '@/types/fetch'
+import { FetchResponse, HTTPMethod, PagedResponse } from '@/types/fetch'
 import { CartItem } from '@/types/models'
+import { fetch, getAuthorizedHeaders } from '@/utils/fetch'
+import { apiBaseUrl } from '@/constants/api'
 
-export type CartItemResponse = ProductCartItemResposne | ServiceCartItemResponse
-export type ProductCartItemResposne = {
+export type CartItemResponse = {
     isProduct: true
     id: number
     cartId: number
     quantity: number
-    productVersionId: number
-}
-export type ServiceCartItemResponse = {
-    isProduct: false
-    id: number
+} & ( { productVersionId: number } | { serviceVersionId: number } )
+
+type CreateCartItemRequest = CreateProductCartItemRequest | CreateServiceCartItemRequest
+type CreateProductCartItemRequest = {
     cartId: number
-    quantity: number
-    serviceVersionId: number
-    serviceReservationId: number
-    timeSlotId: number
-}
-
-let cartItems: CartItemResponse[] = [
-    {
-        id: 1,
-        cartId: 1,
-        quantity: 13,
-        isProduct: true,
-        productVersionId: 1
-    },
-    {
-        id: 2,
-        cartId: 1,
-        quantity: 1,
-        isProduct: false,
-        serviceVersionId: 1,
-        serviceReservationId: 1,
-        timeSlotId: 1
-    }
-]
-
-export default class CartItemApi {
-    static async getCartItems(cartId: number, pageNum: number): Promise<FetchResponse<PagedResponse<CartItemResponse>>> {
-        const results = cartItems.filter((cartItem) => cartItem.cartId == cartId)
-        const result = {
-            pageNum,
-            pageSize: 35,
-            totalCount: results.length,
-            results: results
-        }
-        return Promise.resolve({ result })
-    }
-
-    static async getHighestCartItemIdByCartId(cartId: number): Promise<FetchResponse<number>> {
-        const maxId = Math.max(...cartItems.map((cartItem) => cartItem.id))
-        return Promise.resolve({ result: maxId })
-    }
-
-    static async createCartItem(cartId: number, dto: CreateCartItemDto): Promise<FetchResponse<CartItem>> {
-        const maxId = Math.max(...cartItems.map((cartItem) => cartItem.id))
-
-        // @ts-ignore
-        let cartItem: CartItemFetch= {
-            id: maxId + 1,
-            cartId,
-            quantity: dto.quantity
-        }
-
-        if (dto.type === 'product' && dto.productVersionId) {
-            cartItem = {
-                ...cartItem,
-                isProduct: true,
-                productVersionId: dto.productVersionId
-            }
-        } else if (dto.type === 'service' && dto.serviceVersionId) {
-            cartItem = {
-                ...cartItem,
-                isProduct: false,
-                serviceVersionId: dto.serviceVersionId
-            }
-        }
-
-        cartItems.push(cartItem)
-        return Promise.resolve({ result: cartItem })
-    }
-
-    static async deleteCartItem(id: number): Promise<FetchResponse<any>> {
-        const cartItemToDelete = cartItems.find((cartItem) => cartItem.id === id)
-        if (!cartItemToDelete) return Promise.resolve({ error: 'Cart item not found' })
-        const filteredCartItems = cartItems.filter((cartItem) => cartItem.id !== id)
-        cartItems = filteredCartItems
-        return Promise.resolve({ result: cartItemToDelete })
-    }
-}
-
-type CreateCartItemDto = {
     type: 'product'
     quantity: number
     productVersionId: number
     variationIds: number[]
-} | {
+}
+
+type CreateServiceCartItemRequest = {
+    cartId: number
     type: 'service'
     quantity: number
     serviceVersionId: number
 }
+
+type CreateCartItemRequestMapped = {
+    cartId: number
+    isProduct: boolean
+    quantity: number
+    productVersionId: number
+    serviceVersionId: number
+}
+
+const mapCreateCartItemRequest = (request: CreateCartItemRequest): CreateCartItemRequestMapped => {
+    return {
+        cartId: request.cartId,
+        isProduct: request.type === 'product',
+        quantity: request.quantity,
+        productVersionId: (request as CreateProductCartItemRequest).productVersionId,
+        serviceVersionId: (request as CreateServiceCartItemRequest).serviceVersionId
+    }
+}
+
+export default class CartItemApi {
+    static async getCartItems(cartId: number, pageNum: number): Promise<FetchResponse<PagedResponse<CartItemResponse>>> {
+        return fetch({
+            url: `${apiBaseUrl}/carts/${cartId}/items?pageNum=${pageNum}`,
+            method: HTTPMethod.GET,
+            headers: getAuthorizedHeaders()
+        })
+    }
+
+    static async createCartItem(dto: CreateCartItemRequest): Promise<FetchResponse<CartItem>> {
+        const cartItemResponse = await fetch({
+            url: `${apiBaseUrl}/carts/${dto.cartId}/items`,
+            method: HTTPMethod.POST,
+            headers: getAuthorizedHeaders(),
+            body: JSON.stringify(mapCreateCartItemRequest(dto))
+        })
+        if (!cartItemResponse.result) {
+            return cartItemResponse
+        }
+        const cartItem = cartItemResponse.result
+        if (dto.type === 'product') {
+            const res = await fetch({
+                url: `${apiBaseUrl}/carts/${dto.cartId}/items/${cartItem.id}/link`,
+                method: HTTPMethod.PUT,
+                headers: getAuthorizedHeaders(),
+                body: JSON.stringify(dto.variationIds)
+            })
+        }
+
+        return cartItemResponse
+    }
+
+    static async deleteCartItem(cartId: number, itemId: number): Promise<FetchResponse<any>> {
+        return fetch({
+            url: `${apiBaseUrl}/carts/${cartId}/items/${itemId}`,
+            method: HTTPMethod.DELETE,
+            headers: getAuthorizedHeaders()
+        })
+    }
+}
+

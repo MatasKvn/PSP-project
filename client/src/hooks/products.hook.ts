@@ -14,7 +14,6 @@ export const useProducts = (pageNumber: number | undefined, compareFn?: (a: Prod
                 setIsLoading(false)
                 return
             }
-            console.log('products fetched')
             const response = await ProductApi.getAllProducts(pageNumber, true)
             if (response.result) {
                 const products = PagedResponseMapper.fromPageResponse(response.result!)

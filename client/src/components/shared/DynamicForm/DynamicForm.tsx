@@ -11,6 +11,7 @@ export type DynamicFormInputs = {
         label: string
         placeholder?: React.InputHTMLAttributes<HTMLInputElement>['placeholder']
         type: React.InputHTMLAttributes<HTMLInputElement>['type']
+        note?: string
     }
 }
 export type FormPayload = {
@@ -44,7 +45,9 @@ const DynamicForm = <T extends DynamicFormInputs,>(props: Props<T>) => {
         <form onSubmit={submit} className={styles.form}>
             {inputsKeyValuePairs.map(([key, { label, ...inputProps }]) => (
                 <div key={key} id='form-section'>
-                    <label>{label}</label><br />
+                    <label>{label}</label>
+                    {inputProps.note && <span id="note">{`*${inputProps.note}`}</span>}
+                    <br />
                     <Input {...inputProps} name={key}/>
                 </div>
             ))}

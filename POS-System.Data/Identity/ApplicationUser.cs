@@ -13,6 +13,7 @@ namespace POS_System.Data.Identity
         public DateOnly BirthDate { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
+        public required int RoleId { get; set; }
 
         //Versioning
         public DateTime Version { get; set; }

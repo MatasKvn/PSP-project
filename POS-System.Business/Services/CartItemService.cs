@@ -86,11 +86,11 @@ public class CartItemService(IUnitOfWork _unitOfWork, IManyToManyService<Product
 
     public async Task LinkCartItemToProductModificationsAsync(int cartItemId, int[] productModificationIdList, CancellationToken cancellationToken)
     {
-        await _productModificationOnCartItemService.LinkItemToItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, true, cancellationToken);
+        await _productModificationOnCartItemService.LinkItemToItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, false, cancellationToken);
     }
 
     public async Task UnlinkCartItemFromProductModificationsAsync(int cartItemId, int[] productModificationIdList, CancellationToken cancellationToken)
     {
-        await _productModificationOnCartItemService.UnlinkItemFromItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, true, cancellationToken);
+        await _productModificationOnCartItemService.UnlinkItemFromItemsAsync(_unitOfWork.ProductModificationRepository, _unitOfWork.CartItemRepository, _unitOfWork.ProductModificationOnCartItemRepository, cartItemId, productModificationIdList, false, cancellationToken);
     }
 }

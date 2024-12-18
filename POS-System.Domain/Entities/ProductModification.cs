@@ -17,7 +17,7 @@ namespace POS_System.Domain.Entities
 
         //Navigation properties
         public virtual Product Product { get; set; }
-        public virtual ProductModificationOnCartItem ProductModificationOnCartItems { get; set; }
+        public virtual ICollection<ProductModificationOnCartItem> ProductModificationOnCartItems { get; set; }
 
         //Fields
         public int ProductModificationId { get; set; }
