@@ -6,9 +6,10 @@ namespace POS_System.Business.Logger
     {
         private readonly string _categoryName;
         private readonly Func<ApplicationLoggerOptions> _getOptions;
-        private DateTime _lastEventFileCreatedTime;
-        private DateTime _lastExceptionFileCreatedTime;
-        private string? _currentFileName;
+        private static DateTime _lastEventFileCreatedTime = DateTime.MinValue;
+        private static DateTime _lastExceptionFileCreatedTime = DateTime.MinValue;
+        private static string _currentExceptionFileName = "";
+        private static string _currentEventFileName = "";
 
         public ApplicationLogger(string categoryName, Func<ApplicationLoggerOptions> getOptions)
         {
@@ -19,9 +20,6 @@ namespace POS_System.Business.Logger
 
             _categoryName = categoryName;
             _getOptions = getOptions ?? throw new ArgumentNullException(nameof(getOptions));
-            _lastEventFileCreatedTime = DateTime.UtcNow;
-            _lastExceptionFileCreatedTime = DateTime.UtcNow;
-            
         }
 
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull
@@ -38,17 +36,18 @@ namespace POS_System.Business.Logger
 
             var options = _getOptions();
             string logEntry = $"[{_categoryName}, {logLevel}] {formatter(state, exception)} [{DateTime.UtcNow}]";
+            logEntry = RedactPasswords(logEntry);
 
             try
             {
                 if (logLevel >= LogLevel.Warning)
                 {
-                    string exceptionFilePath = GetTimestampedFilePath(options.Exceptions, ref _lastExceptionFileCreatedTime);
+                    string exceptionFilePath = GetTimestampedFilePath(options.Exceptions, ref _lastExceptionFileCreatedTime, ref _currentExceptionFileName);
                     WriteLogToFile(exceptionFilePath, logEntry);
                 }
                 else
                 {
-                    string eventFilePath = GetTimestampedFilePath(options.Events, ref _lastEventFileCreatedTime);
+                    string eventFilePath = GetTimestampedFilePath(options.Events, ref _lastEventFileCreatedTime, ref _currentEventFileName);
                     WriteLogToFile(eventFilePath, logEntry);
                 }
             }
@@ -58,9 +57,17 @@ namespace POS_System.Business.Logger
             }
         }
 
-        private string GetTimestampedFilePath(LogFileOptions logFileOptions, ref DateTime lastFileCreatedTime)
+        private static string RedactPasswords(string str)
         {
-            if (DateTime.UtcNow - lastFileCreatedTime > logFileOptions.FileCreationInterval || _currentFileName is null)
+            string pattern = "\"password\":\\s*\"[^\"]*\"";
+            string replacement = "\"password\": \"[REDACTED]\"";
+
+            return System.Text.RegularExpressions.Regex.Replace(str, pattern, replacement);
+        }
+
+        private string GetTimestampedFilePath(LogFileOptions logFileOptions, ref DateTime lastFileCreatedTime, ref string _currentFileName)
+        {
+            if (DateTime.UtcNow - lastFileCreatedTime > logFileOptions.FileCreationInterval)
             {
                 lastFileCreatedTime = DateTime.UtcNow;
 
@@ -79,12 +86,14 @@ namespace POS_System.Business.Logger
 
         private static void WriteLogToFile(string filePath, string logEntry)
         {
-            using (Stream outputStream = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.None))
-            using (StreamWriter writer = new StreamWriter(outputStream))
+            lock (filePath)
             {
-                writer.WriteLine(logEntry);
+                using (Stream outputStream = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.None))
+                using (StreamWriter writer = new StreamWriter(outputStream))
+                {
+                    writer.WriteLine(logEntry);
+                }
             }
         }
     }
-
 }
