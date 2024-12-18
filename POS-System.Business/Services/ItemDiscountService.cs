@@ -17,7 +17,7 @@ namespace POS_System.Business.Services
         public async Task<PagedResponse<ItemDiscountResponse>> GetAllItemDiscountsAsync(CancellationToken cancellationToken, int pageNum, int pageSize)
         {
             var (discounts, totalCount) = await _unitOfWork.ItemDiscountRepository.GetAllByExpressionWithIncludesAndPaginationAsync(
-                x => !x.IsDeleted && x.EndDate >= DateTime.UtcNow,
+                x => !x.IsDeleted && (x.EndDate >= DateTime.UtcNow || x.EndDate == null),
                 pageSize,
                 pageNum,
                 cancellationToken
