@@ -48,8 +48,8 @@ const ItemCard = (props: Props) => {
                 className={styles.image}
                 alt='Image'
                 src={imageUrl || '/image_icon.png'}
-                width={100}
-                height={100}
+                width={120}
+                height={120}
             />
             <h6>{label}</h6>
             <p className={styles.description}>{description}</p>

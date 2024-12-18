@@ -5,17 +5,16 @@ import styles from './Navbar.module.scss'
 import { navItems } from '@/constants/navbar'
 import Button from '@/components/shared/Button'
 import { GetPageUrl } from '@/constants/route'
-import { useCookies } from 'next-client-cookies'
 import { removeEmployeeId } from '@/utils/employeeId'
+import { deleteCookie } from 'cookies-next'
 
 const Navbar = () => {
     const location = usePathname()
     const locationNoNumbers = location.split('/').filter((item) => Number.isNaN(parseInt(item))).join('/')
     const router = useRouter()
-    const cookies = useCookies()
 
     const handleLogOut = () => {
-        cookies.remove('jwtToken', { secure: true })
+        deleteCookie('jwtToken', { secure: true, sameSite: 'strict' })
         removeEmployeeId()
         router.push(GetPageUrl.login)
     }
