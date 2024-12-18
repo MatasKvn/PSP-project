@@ -167,7 +167,6 @@ const TimeSlotsPage = ({ pageNumber }: Props) => {
     }))
     
     const columns = [
-        { name: 'ID', key: 'id' },
         { name: 'Employee', key: 'employeeVersionId' },
         { name: 'Start Time', key: 'startTime' },
         { name: 'Availability', key: 'isAvailable' },

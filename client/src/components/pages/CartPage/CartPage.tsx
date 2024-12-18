@@ -305,6 +305,7 @@ const CartPage = (props: Props) => {
     }
 
     const handleServiceReservationCreate = async (cartItemId: number, timeSlotId: number, customerName: string, customerPhone: string) => {
+        console.log("reservation: ", cartItemId, timeSlotId, customerName, customerPhone)
         const response = await ServiceReservationApi.create({
             cartItemId: Number(cartItemId),
             timeSlotId: timeSlotId,
@@ -313,6 +314,7 @@ const CartPage = (props: Props) => {
             bookingTime: new Date(),
             isCancelled: false
         })
+        console.log("reservation create: ", response.result)
         if (!response.result) {
             console.log(response.error)
             return
@@ -339,7 +341,6 @@ const CartPage = (props: Props) => {
             startTime: timeSlot.startTime,
             isAvailable: false,
         })
-        console.log("updatedResp: ", updateResponse.result)
 
         if (updateResponse.result) {
             console.log("TimeSlot updated successfully")

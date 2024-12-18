@@ -89,7 +89,6 @@ const ServiceReservationsPage = ({ pageNumber }: Props) => {
 
     const columns = [
         { name: 'ID', key: 'id' },
-        { name: 'Cart Item', key: 'cartItemId' },
         { name: 'Time Slot', key: 'timeSlotId' },
         { name: 'Booking Time', key: 'bookingTime' },
         { name: 'Customer Name', key: 'customerName' },
