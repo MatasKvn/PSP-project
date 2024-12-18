@@ -65,6 +65,8 @@ const BusinessDetailsPage = () => {
     }
 
     const handleBusinessDetailsUpdate = async (formPayload: DynamicFormPayload) => {
+        if (!businessDetails) return;
+
         const {
             businessName,
             businessEmail,
@@ -77,13 +79,13 @@ const BusinessDetailsPage = () => {
         } = formPayload
 
         const response = await BusinessDetailsApi.updateBusinessDetails({
-            businessName: businessName,
-            businessEmail: businessEmail,
-            businessPhone: businessPhone,
-            country: businessCountry,
-            city: businessCity,
-            street: businessStreet,
-            houseNumber: Number.parseInt(businessHouseNumber),
+            businessName: businessName || businessDetails.businessName,
+            businessEmail: businessEmail || businessDetails.businessEmail,
+            businessPhone: businessPhone || businessDetails.businessPhone,
+            country: businessCountry || businessDetails.country,
+            city: businessCity || businessDetails.city,
+            street: businessStreet || businessDetails.street,
+            houseNumber: Number.parseInt(businessHouseNumber) || businessDetails.houseNumber,
             flatNumber: Number.parseInt(businessFlatNumber)
         })
 
