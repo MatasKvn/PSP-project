@@ -45,5 +45,13 @@ namespace POS_System.Api.Controllers
             
             return Ok(response);
         }
+
+        [HttpGet("{id:int}/discount")]
+        public async Task<IActionResult> GetCartDiscountAsync([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var response = await _cartService.GetCartDiscountAsync(id, cancellationToken);
+
+            return Ok(response);
+        }
     }
 }
