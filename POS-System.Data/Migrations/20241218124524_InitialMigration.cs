@@ -571,7 +571,7 @@ namespace POS_System.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CartItemId = table.Column<int>(type: "integer", nullable: false),
-                    TimeSlotId = table.Column<int>(type: "integer", nullable: false),
+                    TimeSlotId = table.Column<int>(type: "integer", nullable: true),
                     BookingTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CustomerName = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     CustomerPhone = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
@@ -590,8 +590,7 @@ namespace POS_System.Data.Migrations
                         name: "FK_ServiceReservations_TimeSlots_TimeSlotId",
                         column: x => x.TimeSlotId,
                         principalTable: "TimeSlots",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -612,8 +611,8 @@ namespace POS_System.Data.Migrations
                 values: new object[,]
                 {
                     { 1, "Desc1", null, true, true, 1, null, 12, new DateTime(2024, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1528) },
-                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1530) },
+                    { 2, "Desc2", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, 2, null, 15, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3318) },
+                    { 3, "Desc3", new DateTime(2025, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 500, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3320) },
                     { 4, "Desc1 Update", null, true, true, 1, null, 18, new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -678,10 +677,10 @@ namespace POS_System.Data.Migrations
                 columns: new[] { "Id", "EmployeeVersionId", "IsAvailable", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, true, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1458) },
-                    { 2, 1, true, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1463) },
-                    { 3, 2, false, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1464) },
-                    { 4, 3, true, new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1465) }
+                    { 1, 1, true, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3241) },
+                    { 2, 1, true, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3244) },
+                    { 3, 2, false, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3245) },
+                    { 4, 3, true, new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3246) }
                 });
 
             migrationBuilder.InsertData(

@@ -12,7 +12,7 @@ using POS_System.Data.Database;
 namespace POS_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241218094729_InitialMigration")]
+    [Migration("20241218124524_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -634,7 +634,7 @@ namespace POS_System.Data.Migrations
                             IsPercentage = true,
                             ItemDiscountId = 2,
                             Value = 15,
-                            Version = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1528)
+                            Version = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3318)
                         },
                         new
                         {
@@ -646,7 +646,7 @@ namespace POS_System.Data.Migrations
                             ItemDiscountId = 3,
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Value = 500,
-                            Version = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1530)
+                            Version = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3320)
                         },
                         new
                         {
@@ -1086,7 +1086,7 @@ namespace POS_System.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
-                    b.Property<int>("TimeSlotId")
+                    b.Property<int?>("TimeSlotId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("isCancelled")
@@ -1211,28 +1211,28 @@ namespace POS_System.Data.Migrations
                             Id = 1,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1458)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3241)
                         },
                         new
                         {
                             Id = 2,
                             EmployeeVersionId = 1,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1463)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3244)
                         },
                         new
                         {
                             Id = 3,
                             EmployeeVersionId = 2,
                             IsAvailable = false,
-                            StartTime = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1464)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3245)
                         },
                         new
                         {
                             Id = 4,
                             EmployeeVersionId = 3,
                             IsAvailable = true,
-                            StartTime = new DateTime(2024, 12, 18, 9, 47, 28, 570, DateTimeKind.Utc).AddTicks(1465)
+                            StartTime = new DateTime(2024, 12, 18, 12, 45, 24, 68, DateTimeKind.Utc).AddTicks(3246)
                         });
                 });
 
@@ -1474,9 +1474,7 @@ namespace POS_System.Data.Migrations
 
                     b.HasOne("POS_System.Domain.Entities.TimeSlot", "TimeSlot")
                         .WithOne("ServiceReservation")
-                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("POS_System.Domain.Entities.ServiceReservation", "TimeSlotId");
 
                     b.Navigation("CartItem");
 

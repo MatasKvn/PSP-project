@@ -60,3 +60,9 @@ export type GiftCardDetails = {
     code: string,
     valueToSpend: number
 }
+
+export type GiftCardsDetailFull = {
+    id: number,
+    date: string,
+    value: number
+}

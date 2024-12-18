@@ -9,6 +9,7 @@ export const navItems = [
     { name: 'Time Slots', url: '/dashboard/time-slots', href: GetPageUrl.timeSlots(0) },
     { name: 'Reservations', url: '/dashboard/reservations', href: GetPageUrl.serviceReservations(0) },
     { name: 'Discounts', url: '/dashboard/discounts', href: GetPageUrl.discounts(0) },
+    { name: 'GiftCards', url: '/dashboard/giftcards', href: GetPageUrl.giftcards(0) },
     { name: 'Business Details', url: '/dashboard/business-details', href: GetPageUrl.businessDetails },
     { name: 'Employees', url: '/dashboard/employees', href: GetPageUrl.employees(0) }
 ]

@@ -51,7 +51,7 @@ namespace POS_System.Business.Validators.BusinessDetails
                 .WithMessage(BusinessDetailsValidationMessages.BusinessHouseNumberValueConstraint);
 
             RuleFor(x => x.FlatNumber)
-                .GreaterThan(BusinessDetailsValidationConstants.BusinessFlatNumberMinValue)
+                .GreaterThanOrEqualTo(BusinessDetailsValidationConstants.BusinessFlatNumberMinValue)
                 .LessThanOrEqualTo(BusinessDetailsValidationConstants.BusinessFlatNumberMaxValue)
                 .When(x => x.FlatNumber.HasValue)
                 .WithMessage(BusinessDetailsValidationMessages.BusinessFlatNumberValueConstraint);
