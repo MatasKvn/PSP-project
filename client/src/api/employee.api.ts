@@ -1,14 +1,8 @@
-import { apiBaseUrl, defaultHeaders } from '@/constants/api';
-import { Employee, RoleEnum } from '@/types/models';
-import { fetch } from '@/utils/fetch';
-import { getAuthorizedHeaders } from '@/utils/auth'
-import { HTTPMethod, FetchResponse, PagedResponse } from '@/types/fetch';
-
-const sanitizeData = (data: any) => {
-    return Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [key, value === undefined ? null : value])
-    );
-};
+import { apiBaseUrl } from '@/constants/api'
+import { Employee } from '@/types/models'
+import { fetch, sanitizeData } from '@/utils/fetch'
+import { getAuthorizedHeaders } from '@/utils/fetch'
+import { HTTPMethod, FetchResponse, PagedResponse } from '@/types/fetch'
 
 export default class EmployeeApi {
     static async getEmployees(
@@ -69,5 +63,4 @@ export default class EmployeeApi {
 }
 
 export type CreateEmployeeRequest = Omit<Employee, 'id' | 'startDate' | 'endDate'>;
-
 

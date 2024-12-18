@@ -15,7 +15,7 @@ export default class TimeSlotApi {
 
     static async getAllTimeSlots(pageNumber: number): Promise<FetchResponse<PagedResponse<TimeSlot>>> {
         return await fetch({
-            url: `${apiBaseUrl}/time-slot?pageNum=${pageNumber}`,
+            url: `${apiBaseUrl}/time-slot?pageNumber=${pageNumber}&onlyActive=true`,
             method: HTTPMethod.GET,
             headers: getAuthorizedHeaders()
         })
