@@ -40,7 +40,7 @@ namespace POS_System.Business.Services
             await cartService.UpdateCartStatusAsync(cashRequest.CartId, cartStatus, token);
 
             if (cashRequest.PhoneNumber is not null)
-                await smsService.SendMessageAsync(cashRequest.PhoneNumber, cashRequest.CartId);
+                await smsService.SendMessageAsync(cashRequest.PhoneNumber, $"You order {cashRequest.CartId} was completed successfully. Thank you for purchasing!");
 
             return mapper.Map<TransactionResponse>(transaction);
         }
@@ -176,6 +176,9 @@ namespace POS_System.Business.Services
 
         public async Task<PartialCheckoutResponse> InitializePartialCheckoutAsync(InitPartialCheckoutRequest checkoutRequest, CancellationToken token)
         {
+            if (checkoutRequest.PaymentCount > ApplicationConstants.MAXIMUM_SPLIT_CASHOUT_COUNT)
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+
             var totalPrice = checkoutRequest.CartItems.Sum(item => item.Price * item.Quantity);
             var cart = await cartService.GetByIdAsync(checkoutRequest.CartId, token);
 
@@ -300,7 +303,7 @@ namespace POS_System.Business.Services
                 transactionStatus = TransactionStatusEnum.SUCCEEDED;
 
                 if (phoneNumber is not null)
-                    await smsService.SendMessageAsync(phoneNumber, cartId);
+                    await smsService.SendMessageAsync(phoneNumber, $"You order {cartId} was completed successfully. Thank you for purchasing!");
             }
 
             await UpdateTransactionStatus(transactionDate, session.PaymentIntentId, transactionStatus);
@@ -326,7 +329,7 @@ namespace POS_System.Business.Services
                 await cartService.UpdateCartStatusAsync(cartId, CartStatusEnum.COMPLETED);
                 
                 if (phoneNumber is not null)
-                    await smsService.SendMessageAsync(phoneNumber, cartId);
+                    await smsService.SendMessageAsync(phoneNumber, $"You order {cartId} was completed successfully. Thank you for purchasing!");
             }
             else
             {

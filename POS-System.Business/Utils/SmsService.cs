@@ -8,7 +8,7 @@ namespace POS_System.Business.Utils
 {
     public class SmsService(IConfiguration configuration)
     {
-        public async Task SendMessageAsync(string phoneNumber, int cartId)
+        public async Task SendMessageAsync(string phoneNumber, string message)
         {
             var accessKeyId = configuration["AWS:AccessKeyId"];
             var secretAccessKey = configuration["AWS:SecretAccessKey"];
@@ -21,9 +21,8 @@ namespace POS_System.Business.Utils
 
             var request = new PublishRequest
             {
-
                 PhoneNumber = $"+{phoneNumber}",
-                Message = $"You order {cartId} was completed successfully. Thank you for purchasing!"
+                Message = message
             };
 
             try

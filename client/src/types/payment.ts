@@ -54,7 +54,8 @@ export type CheckoutCartItem = {
 
 export interface PartialCheckoutBody {
     cartId: number,
-    id: DateTimeWithMicroseconds
+    id: DateTimeWithMicroseconds,
+    phoneNumber?: string,
     giftCard?: GiftCardDetails
 }
 

@@ -29,8 +29,8 @@ const CartsPage = ({ pageNumber }: Props) => {
     }
 
     const handleCartDelete = async (cart: Cart) => {
-        if (cart.status !== CartStatusEnum.PENDING) {
-            console.log('Cannot delete a non-pending cart.')
+        if (cart.status !== CartStatusEnum.IN_PROGRESS) {
+            console.log('Cannot delete a not in progress cart.')
             return
         }
         const response = await CartApi.deleteCart(cart.id)
