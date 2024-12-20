@@ -29,6 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton(emailConfig!);
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddSingleton<SmsService>();
 
             // Register Business layer services
             services.AddAuthentication(options =>

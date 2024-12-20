@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using POS_System.Business.Dtos.Request;
 using POS_System.Business.Dtos.Response;
 using POS_System.Business.Services.Interfaces;
+using POS_System.Business.Utils;
 using POS_System.Common.Constants;
 using POS_System.Common.Enums;
 using POS_System.Common.Exceptions;
@@ -21,7 +22,8 @@ namespace POS_System.Business.Services
         IServiceProvider serviceProvider,
         IMapper mapper,
         ICartService cartService,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        SmsService smsService
     ) : IPaymentService
     {
         public async Task<TransactionResponse> RegisterCashTransactionAsync(CashRequest cashRequest, CancellationToken token)
@@ -32,10 +34,13 @@ namespace POS_System.Business.Services
             transaction.TransactionRef = $"CASH_{cashRequest.TransactionRef}";
             transaction.Status = TransactionStatusEnum.CASH;
             await unitOfWork.TransactionRepository.CreateAsync(transaction, token);
-            await unitOfWork.SaveChangesAsync(token);
+            await unitOfWork.SaveChangesAsync();
 
             var cartStatus = CartStatusEnum.COMPLETED;
             await cartService.UpdateCartStatusAsync(cashRequest.CartId, cartStatus, token);
+
+            if (cashRequest.PhoneNumber is not null)
+                await smsService.SendMessageAsync(cashRequest.PhoneNumber, $"You order {cashRequest.CartId} was completed successfully. Thank you for purchasing!");
 
             return mapper.Map<TransactionResponse>(transaction);
         }
@@ -147,6 +152,9 @@ namespace POS_System.Business.Services
             if (cart.CartDiscountId is not null)
                 options.Discounts = [ new SessionDiscountOptions { Coupon = cart.CartDiscountId } ];
 
+            if (checkoutRequest.PhoneNumber is not null)
+                options.SuccessUrl += $"&phoneNumber={checkoutRequest.PhoneNumber}";
+
             var session = await sessionService.CreateAsync(options, cancellationToken: token);
 
             var transaction = new Transaction
@@ -168,6 +176,9 @@ namespace POS_System.Business.Services
 
         public async Task<PartialCheckoutResponse> InitializePartialCheckoutAsync(InitPartialCheckoutRequest checkoutRequest, CancellationToken token)
         {
+            if (checkoutRequest.PaymentCount > ApplicationConstants.MAXIMUM_SPLIT_CASHOUT_COUNT)
+                throw new BadRequestException(ApplicationMessages.BAD_REQUEST_MESSAGE);
+
             var totalPrice = checkoutRequest.CartItems.Sum(item => item.Price * item.Quantity);
             var cart = await cartService.GetByIdAsync(checkoutRequest.CartId, token);
 
@@ -267,6 +278,9 @@ namespace POS_System.Business.Services
                 options.CancelUrl += $"&giftCardCode={checkoutRequest.GiftCard.Code}&discount={discount}";
             }
 
+            if (checkoutRequest.PhoneNumber is not null)
+                options.SuccessUrl += $"&phoneNumber={checkoutRequest.PhoneNumber}";
+
             var session = await sessionService.CreateAsync(options, cancellationToken:token);
         
             transactionToExec.TransactionRef = session.Id;
@@ -275,7 +289,7 @@ namespace POS_System.Business.Services
             return new CheckoutResponse(session.Id, configuration["Stripe:PublicKey"]!); 
         }
 
-        public async Task<string> FullCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId)
+        public async Task<string> FullCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId, string? phoneNumber)
         {
             var sessionService = new SessionService();
 
@@ -287,6 +301,9 @@ namespace POS_System.Business.Services
             {
                 cartStatus = CartStatusEnum.COMPLETED;
                 transactionStatus = TransactionStatusEnum.SUCCEEDED;
+
+                if (phoneNumber is not null)
+                    await smsService.SendMessageAsync(phoneNumber, $"You order {cartId} was completed successfully. Thank you for purchasing!");
             }
 
             await UpdateTransactionStatus(transactionDate, session.PaymentIntentId, transactionStatus);
@@ -295,7 +312,7 @@ namespace POS_System.Business.Services
             return ApplicationConstants.REDIRECT_URL;
         }
 
-        public async Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId)
+        public async Task<string> PartialCheckoutSuccessAsync(DateTime transactionDate, string sessionId, int cartId, string? phoneNumber)
         {
             var transactionsTask = unitOfWork.TransactionRepository.GetAllByExpressionAsync(t => t.CartId == cartId && t.Status == TransactionStatusEnum.PENDING);
             var sessionService = new SessionService();
@@ -308,9 +325,16 @@ namespace POS_System.Business.Services
             await UpdateTransactionStatus(transactionDate, session.PaymentIntentId, transactionStatus);
 
             if (transactions.Count == 1 && transactionStatus == TransactionStatusEnum.SUCCEEDED)
+            {
                 await cartService.UpdateCartStatusAsync(cartId, CartStatusEnum.COMPLETED);
+                
+                if (phoneNumber is not null)
+                    await smsService.SendMessageAsync(phoneNumber, $"You order {cartId} was completed successfully. Thank you for purchasing!");
+            }
             else
+            {
                 await unitOfWork.SaveChangesAsync();
+            }
 
             return ApplicationConstants.REDIRECT_URL;
         }

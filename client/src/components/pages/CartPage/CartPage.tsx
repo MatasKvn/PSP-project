@@ -109,17 +109,25 @@ const CartPage = (props: Props) => {
     ]
     const productRows = productItems.map((item) => {
         const { name } = item.product
-        const price = item.product.price / 100
-        const modificationsPrice = calculateProductModificationsValue(item) / 100
-        const totalVal = item.quantity * (price + modificationsPrice)
-        const discounts = calculateDiscountsValue(item, (item.product.price + calculateProductModificationsValue(item)) * item.quantity) / 100
-        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100
-        const netPrice = totalVal - discounts - taxes
+        const price = item.product.price
+        const modificationsPrice = calculateProductModificationsValue(item)
+        const totalVal = item.quantity * (item.product.price + modificationsPrice)
+        const discountPerItem = Math.round(calculateDiscountsValue(item, (item.product.price + modificationsPrice)));
+        const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+        const discounts = discountPerItem * item.quantity;
+        const taxes = taxPerItem * item.quantity
+        const netPrice = totalVal - discounts + taxes
+
         return {
             name: name,
             quantity: item.quantity,
             modifications: item.productModifications.map((modification) => modification.name).join(', '),
-            modificationTotal: modificationsPrice, price, totalVal, discounts, taxes, netPrice,
+            modificationTotal: modificationsPrice, 
+            price: price / 100, 
+            totalVal: totalVal / 100, 
+            discounts: discounts / 100, 
+            taxes: taxes / 100, 
+            netPrice: netPrice / 100,
             delete: (
                 <Button
                     onClick={() => handleCartItemDelete(item.id)}
@@ -167,20 +175,24 @@ const CartPage = (props: Props) => {
             timeSlotStartTime = new Date(item.timeSlot.startTime).toLocaleDateString()
         }
         const startTime = timeSlotStartTime
-        const price = item.service.price / 100;
-        const totalVal = item.quantity * price;
-        const discounts = calculateDiscountsValue(item, totalVal * 100) / 100;
-        const taxes = calculateTaxesValue(item, (totalVal - discounts) * 100) / 100;
-        const netPrice = totalVal - discounts - taxes;
+
+        const price = item.service.price
+        const modificationsPrice = calculateProductModificationsValue(item)
+        const totalVal = item.quantity * (item.service.price + modificationsPrice)
+        const discountPerItem = Math.round(calculateDiscountsValue(item, (item.service.price + modificationsPrice)));
+        const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+        const discounts = discountPerItem * item.quantity;
+        const taxes = taxPerItem * item.quantity
+        const netPrice = totalVal - discounts + taxes
         return {
             name: item.service?.name || '',
             quantity: item.quantity,
-            price,
+            price: price / 100,
             time: startTime,
-            totalVal,
-            discounts,
-            taxes,
-            netPrice,
+            totalVal: totalVal / 100,
+            discounts: discounts / 100,
+            taxes: taxes / 100,
+            netPrice: netPrice / 100,
             delete: (
                 <Button
                     onClick={() => handleCartItemDelete(item.id)}
@@ -235,7 +247,7 @@ const CartPage = (props: Props) => {
         const cartTransactionRows = cartTransactions.map(transaction => ({
             id: transaction.id,
             amount: `${(transaction.amount / 100).toFixed(2)} €`,
-            tip: transaction.tip === null ? "" : `${transaction.tip?.toFixed(2)} €`,
+            tip: transaction.tip === undefined ? "" : `${(transaction.tip / 100).toFixed(2)} €`,
             status: TransactionStatusEnum[transaction.status] || 'Unknown',
             card_payment_action: transaction.status === TransactionStatusEnum.PENDING ? (
                 <DynamicForm
@@ -364,7 +376,6 @@ const CartPage = (props: Props) => {
 
     const handleCartDiscount = async (formPayload: FormPayload) => {
         const { code } = formPayload;
-        console.log(code);
         if (cart === undefined)
             throw new Error("Cart data could not be loaded.");
 
@@ -392,6 +403,12 @@ const CartPage = (props: Props) => {
     const handconstip = async (formPayload: FormPayload) => {
         const { tip } = formPayload;
         const tipParsed = parseInt(tip);
+
+        if (cart !== undefined && cart.status !== CartStatusEnum.IN_PROGRESS) {
+            return Promise.resolve({
+                error: 'Cannot apply tip to not in progress cart.'
+            })
+        }
 
         if (isNaN(tipParsed)) {
             console.log('Invalid input')
@@ -456,9 +473,10 @@ const CartPage = (props: Props) => {
     const handleCashCheckout = async () => {
         let body: CashCheckoutBody = {
             cartId: cartId,
-            amount: 10000,
-            tip: appliedTip, // sita palikt ir kai sujungta bus
-            transactionRef: new Date().toISOString() // sita palikt ir kai sujungta bus
+            amount: Math.trunc(totalPrice * 100),
+            tip: appliedTip,
+            // phoneNumber: "",
+            transactionRef: new Date().toISOString()
         };
 
         let response = await PaymentApi.cashCheckout(body);
@@ -467,19 +485,19 @@ const CartPage = (props: Props) => {
             alert("Cash transaction was not created.");
             return;
         }
-
+        console.log(response);
         if (response.result !== undefined) {
             if (cartTransactions !== undefined) {
-                setCartTransactions(prev => [...prev, { ...response.result as Transaction, id: response.result!.id } ]);
+                setCartTransactions(prev => [...prev, { ...response.result as Transaction, id: response.result!.id.slice(0, -2) } ]);
                 setIsCartOpen(false);
             } else {
                 console.log(response.result);
-                setCartTransactions([response.result]);
+                setCartTransactions([{ ...response.result as Transaction, id: response.result!.id.slice(0, -2) }]);
             }
         }
     }
 
-    const handleCartCheckout = () => {
+    const handleCartCheckout = async () => {
         const splitCountValue = splitCountRef.current?.value.trim();
         const splitCountParsed = splitCountValue ? parseInt(splitCountValue) : null;
 
@@ -499,19 +517,29 @@ const CartPage = (props: Props) => {
                 cartId: cartId,
                 employeeId: cart?.employeeVersionId as number,
                 tip: appliedTip,
+                // phoneNumber: "",
                 cartItems: cartItems.map(item => {
                     if (item.type === "product") {
-                        const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
-                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
-                        const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
+                        const price = item.product.price
+                        const modificationsPrice = calculateProductModificationsValue(item)
+                        const totalVal = item.product.price + modificationsPrice
+                        const discountPerItem = Math.round(calculateDiscountsValue(item, (item.product.price + modificationsPrice)));
+                        const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+                        const netPrice = totalVal - discountPerItem + taxPerItem
+                        const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: netPrice, quantity: item.quantity, imageURL: item.product.imageURL };
                         return cartItem;
                     } else {
-                        const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
-                        const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
-                        return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
+                        const price = item.service.price
+                        const modificationsPrice = calculateProductModificationsValue(item)
+                        const totalVal = item.service.price + modificationsPrice
+                        const discountPerItem = Math.round(calculateDiscountsValue(item, (item.service.price + modificationsPrice)));
+                        const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+                        const netPrice = totalVal - discountPerItem + taxPerItem
+                        return { name: item.service.name, description: item.service.description, price: netPrice, quantity: item.quantity, imageURL: item.service.imageURL }
                     }
                 })
             };
+
             handlePayment(body);
         } else {
             if (totalPrice - cartDiscount < 30) {
@@ -525,19 +553,26 @@ const CartPage = (props: Props) => {
                     paymentCount: splitCountParsed,
                     cartItems: cartItems.map(item => {
                         if (item.type === "product") {
-                            const afterDiscount = item.product.price - calculateDiscountsValue(item, item.product.price);
-                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
-                            const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: afterTax, quantity: item.quantity, imageURL: item.product.imageURL };
+                            const price = item.product.price
+                            const modificationsPrice = calculateProductModificationsValue(item)
+                            const totalVal = item.product.price + modificationsPrice
+                            const discountPerItem = Math.round(calculateDiscountsValue(item, (item.product.price + modificationsPrice)));
+                            const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+                            const netPrice = totalVal - discountPerItem + taxPerItem
+                            const cartItem: CheckoutCartItem = { name: item.product.name, description: item.product.description, price: netPrice, quantity: item.quantity, imageURL: item.product.imageURL };
                             return cartItem;
                         } else {
-                            const afterDiscount = item.service.price - calculateDiscountsValue(item, item.service.price);
-                            const afterTax = afterDiscount - calculateTaxesValue(item, afterDiscount);
-                            return { name: item.service.name, description: item.service.description, price: afterTax, quantity: item.quantity, imageURL: item.service.imageURL }
+                            const price = item.service.price
+                            const modificationsPrice = calculateProductModificationsValue(item)
+                            const totalVal = item.service.price + modificationsPrice
+                            const discountPerItem = Math.round(calculateDiscountsValue(item, (item.service.price + modificationsPrice)));
+                            const taxPerItem = Math.round(calculateTaxesValue(item, (price - discountPerItem)));
+                            const netPrice = totalVal - discountPerItem + taxPerItem
+                            return { name: item.service.name, description: item.service.description, price: netPrice, quantity: item.quantity, imageURL: item.service.imageURL }
                         }
                     })
                 };
-
-                handleSplitPaymentInit(body);
+                await handleSplitPaymentInit(body);
             }
         }
     }
@@ -651,7 +686,7 @@ const CartPage = (props: Props) => {
                 <div className={styles.summary_container}>
                     <h4>Checkout</h4>
                     <div>
-                        <p>{`Total: ${totalPrice.toFixed(2)} €`}</p>
+                        <p>{`Total: ${(totalPrice + cartDiscount).toFixed(2)} €`}</p>
                         <p>{`Discount: ${cartDiscount.toFixed(2)} €`}</p>
                         <p>{`Tip: ${(appliedTip / 100).toFixed(2)} €`}</p>
                         <p>{`Total: ${((totalPrice) + appliedTip / 100).toFixed(2)} €`}</p>
